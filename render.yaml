@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: clara-ruther-art
+    runtime: static
+    staticPublishPath: .
+    buildCommand: echo "No build needed"
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=3600
+      - path: /*.css
+        name: Cache-Control
+        value: public, max-age=86400
+      - path: /*.js
+        name: Cache-Control
+        value: public, max-age=86400

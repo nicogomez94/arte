@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tienda Clara Ruther — Comprá impresiones y obras digitales originales de Clara Ruther, ilustradora de Buenos Aires." />
+  <meta property="og:title" content="Tienda · Clara Ruther Arte" />
+  <meta property="og:description" content="Obras originales, impresiones y encargos personalizados." />
+  <meta property="og:type" content="website" />
+  <title>Tienda · Clara Ruther Arte</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <header class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <nav class="navbar-links" aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="index.html#portfolio">Portfolio</a>
+        <a href="tienda.html">Tienda</a>
+        <a href="index.html#sobre-mi">Sobre mí</a>
+        <a href="index.html#contacto">Contacto</a>
+      </nav>
+      <a href="index.html" class="navbar-logo" aria-label="Clara Ruther Arte — Inicio">Clara Ruther</a>
+      <div class="navbar-icons">
+        <a href="tienda.html" aria-label="Tienda" aria-current="page"><i class="fas fa-shopping-bag"></i></a>
+        <a href="https://instagram.com/clara_ruther_dibujante" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Menú móvil">
+    <a href="index.html">Inicio</a>
+    <a href="index.html#portfolio">Portfolio</a>
+    <a href="tienda.html">Tienda</a>
+    <a href="index.html#sobre-mi">Sobre mí</a>
+    <a href="index.html#contacto">Contacto</a>
+  </nav>
+
+  <!-- ========== TIENDA HERO ========== -->
+  <section class="tienda-hero" aria-label="Tienda de arte">
+    <div class="tienda-hero-bg" role="presentation"></div>
+    <div class="tienda-hero-content fade-in">
+      <span class="section-label">Galería &amp; Tienda</span>
+      <h1>Arte Original</h1>
+      <p>Impresiones &nbsp;·&nbsp; Originales &nbsp;·&nbsp; Encargos</p>
+    </div>
+  </section>
+
+  <!-- ========== FILTROS ========== -->
+  <div class="filtros" role="group" aria-label="Filtrar por categoría">
+    <button class="filtro-btn active" data-filter="todos">Todos</button>
+    <button class="filtro-btn" data-filter="originales">Originales</button>
+    <button class="filtro-btn" data-filter="impresiones">Impresiones</button>
+    <button class="filtro-btn" data-filter="encargos">Encargos</button>
+  </div>
+
+  <!-- ========== PRODUCTOS ========== -->
+  <section class="productos" aria-labelledby="productos-heading">
+    <span id="productos-heading" class="visually-hidden">Catálogo de obras</span>
+    <div class="productos-grid">
+
+      <!-- Obra 1 -->
+      <article class="producto-card fade-in" data-category="originales">
+        <div class="producto-img">
+          <div class="art-ph art-ph-1"></div>
+          <span class="producto-badge">Original</span>
+        </div>
+        <div class="producto-info">
+          <h3>La Dama del Río</h3>
+          <span class="producto-medium">Ilustración digital · A3</span>
+          <span class="producto-price">$22.000</span>
+          <a href="index.html#contacto" class="btn-outline">Consultar</a>
+        </div>
+      </article>
+
+      <!-- Obra 2 -->
+      <article class="producto-card fade-in" data-category="impresiones">
+        <div class="producto-img">
+          <div class="art-ph art-ph-2"></div>
+        </div>
+        <div class="producto-info">
+          <h3>Ojos en la Sombra</h3>
+          <span class="producto-medium">Impresión premium · A3</span>
+          <span class="producto-price">$7.500</span>
+          <a href="index.html#contacto" class="btn-outline">Consultar</a>
+        </div>
+      </article>
+
+      <!-- Obra 3 -->
+      <article class="producto-card fade-in" data-category="impresiones">
+        <div class="producto-img">
+          <div class="art-ph art-ph-3"></div>
+        </div>
+        <div class="producto-info">
+          <h3>Cabello de Medianoche</h3>
+          <span class="producto-medium">Impresión digital · A4</span>
+          <span class="producto-price">$5.800</span>
+          <a href="index.html#contacto" class="btn-outline">Consultar</a>
+        </div>
+      </article>
+
+      <!-- Obra 4 -->
+      <article class="producto-card fade-in" data-category="originales">
+        <div class="producto-img">
+          <div class="art-ph art-ph-4"></div>
+          <span class="producto-badge">Original</span>
+        </div>
+        <div class="producto-info">
+          <h3>Teresa</h3>
+          <span class="producto-medium">Retrato digital · Serie limitada</span>
+          <span class="producto-price">$28.000</span>
+          <a href="index.html#contacto" class="btn-outline">Consultar</a>
+        </div>
+      </article>
+
+      <!-- Obra 5 -->
+      <article class="producto-card fade-in" data-category="originales">
+        <div class="producto-img">
+          <div class="art-ph art-ph-5"></div>
+          <span class="producto-badge">Original</span>
+        </div>
+        <div class="producto-info">
+          <h3>Bruja Lunar</h3>
+          <span class="producto-medium">Arte digital · Serie Witch</span>
+          <span class="producto-price">$35.000</span>
+          <a href="index.html#contacto" class="btn-outline">Consultar</a>
+        </div>
+      </article>
+
+      <!-- Obra 6 -->
+      <article class="producto-card fade-in" data-category="impresiones">
+        <div class="producto-img">
+          <div class="art-ph art-ph-6"></div>
+        </div>
+        <div class="producto-info">
+          <h3>El Reflejo</h3>
+          <span class="producto-medium">Impresión premium · A3</span>
+          <span class="producto-price">$7.200</span>
+          <a href="index.html#contacto" class="btn-outline">Consultar</a>
+        </div>
+      </article>
+
+      <!-- Obra 7 -->
+      <article class="producto-card fade-in" data-category="originales">
+        <div class="producto-img">
+          <div class="art-ph art-ph-7"></div>
+          <span class="producto-badge">Original</span>
+        </div>
+        <div class="producto-info">
+          <h3>Mujeres del Viento</h3>
+          <span class="producto-medium">Ilustración digital · A2</span>
+          <span class="producto-price">$32.000</span>
+          <a href="index.html#contacto" class="btn-outline">Consultar</a>
+        </div>
+      </article>
+
+      <!-- Obra 8 -->
+      <article class="producto-card fade-in" data-category="impresiones">
+        <div class="producto-img">
+          <div class="art-ph art-ph-8"></div>
+        </div>
+        <div class="producto-info">
+          <h3>La Danza</h3>
+          <span class="producto-medium">Impresión digital · A4</span>
+          <span class="producto-price">$5.500</span>
+          <a href="index.html#contacto" class="btn-outline">Consultar</a>
+        </div>
+      </article>
+
+      <!-- Obra 9 -->
+      <article class="producto-card fade-in" data-category="impresiones">
+        <div class="producto-img">
+          <div class="art-ph art-ph-9"></div>
+        </div>
+        <div class="producto-info">
+          <h3>Raíces Antiguas</h3>
+          <span class="producto-medium">Impresión premium · A3</span>
+          <span class="producto-price">$8.000</span>
+          <a href="index.html#contacto" class="btn-outline">Consultar</a>
+        </div>
+      </article>
+
+      <!-- Encargo personalizado -->
+      <article class="producto-card fade-in" data-category="encargos" style="border: 1px solid rgba(196,146,58,0.22);">
+        <div class="producto-img" style="background: radial-gradient(ellipse at 50% 50%, rgba(196,146,58,0.12) 0%, transparent 65%), linear-gradient(160deg, #141008 0%, #0b0b0b 100%); display:flex; align-items:center; justify-content:center;">
+          <div style="text-align:center; padding:2rem; position:relative; z-index:1;">
+            <i class="fas fa-pencil-alt" style="font-size:2.5rem; color:rgba(196,146,58,0.5); margin-bottom:1rem; display:block;"></i>
+            <p style="font-family:var(--font-display); font-size:1.4rem; font-weight:300; font-style:italic; color:var(--dorado-light); line-height:1.3;">Tu obra,<br>tu historia</p>
+          </div>
+        </div>
+        <div class="producto-info">
+          <h3>Encargo Personalizado</h3>
+          <span class="producto-medium">Retrato · Ilustración · Arte a medida</span>
+          <span class="producto-price" style="color:var(--crema); font-size:1rem;">Desde $18.000</span>
+          <a href="index.html#contacto" class="btn-filled" style="display:block; text-align:center; padding:0.65rem 1rem; font-size:0.58rem;">Pedir encargo</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ========== ENCARGOS CTA ========== -->
+  <section class="encargos-cta fade-in" aria-labelledby="encargos-heading">
+    <span class="section-label">Personalizado</span>
+    <h2 id="encargos-heading">Encargá tu<br><em style="font-style:italic; color:var(--dorado-light);">obra única</em></h2>
+    <p>¿Tenés una idea en mente? Clara trabaja con encargos personalizados: retratos, ilustraciones temáticas y arte digital a medida. Cada pieza es única y firmada por la artista.</p>
+    <a href="index.html#contacto" class="btn-filled">Pedir encargo</a>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">Clara Ruther</span>
+        <p>Dibujante e ilustradora digital.<br>Escobar, Buenos Aires, Argentina.</p>
+        <div class="footer-social">
+          <a href="https://instagram.com/clara_ruther_dibujante" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://linktr.ee/clara.ruther" target="_blank" rel="noopener noreferrer" aria-label="Linktree">
+            <i class="fas fa-link"></i>
+          </a>
+          <a href="https://threads.net/@clara_ruther_dibujante" target="_blank" rel="noopener noreferrer" aria-label="Threads">
+            <i class="fas fa-at"></i>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="index.html#portfolio">Portfolio</a></li>
+          <li><a href="tienda.html">Tienda</a></li>
+          <li><a href="index.html#sobre-mi">Sobre mí</a></li>
+          <li><a href="index.html#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Tienda</h4>
+        <ul>
+          <li><a href="tienda.html">Obras originales</a></li>
+          <li><a href="tienda.html">Impresiones</a></li>
+          <li><a href="tienda.html">Encargos</a></li>
+          <li><a href="https://linktr.ee/clara.ruther" target="_blank" rel="noopener noreferrer">Linktree</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Clara Ruther Arte. Todos los derechos reservados.</p>
+      <p>Hecho con cuidado.</p>
+    </div>
+  </footer>
+
+  <!-- WhatsApp flotante -->
+  <a href="https://wa.me/5491100000000" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <script src="main.js"></script>
+</body>
+</html>
