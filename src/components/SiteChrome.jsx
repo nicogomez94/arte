@@ -18,10 +18,9 @@ export function Header() {
         <Link className="wordmark" to="/">andrea alkalay</Link>
         <nav className={open ? 'site-nav is-open' : 'site-nav'} aria-label="Navegación principal">
           <NavLink to="/" onClick={() => setOpen(false)}>inicio</NavLink>
-          <Link to="/#portfolio" onClick={() => setOpen(false)}>portfolio</Link>
           <NavLink to="/galeria" onClick={() => setOpen(false)}>galería</NavLink>
-          <Link to="/#artista" onClick={() => setOpen(false)}>sobre mí</Link>
-          <Link to="/#contacto" onClick={() => setOpen(false)}>contacto</Link>
+          <NavLink to="/acerca-de-mi" onClick={() => setOpen(false)}>acerca de mí</NavLink>
+          <NavLink to="/contacto" onClick={() => setOpen(false)}>contacto</NavLink>
         </nav>
         <div className="header-actions">
           <a href="https://instagram.com/andrealkalay" target="_blank" rel="noopener noreferrer" aria-label="Instagram">ig</a>
@@ -45,6 +44,8 @@ export function Footer() {
         <nav aria-label="Navegación secundaria">
           <Link to="/">Inicio</Link>
           <Link to="/galeria">Galería</Link>
+          <Link to="/acerca-de-mi">Acerca de mí</Link>
+          <Link to="/contacto">Contacto</Link>
           <Link to="/admin">Panel de artista</Link>
         </nav>
         <div className="footer-contact">

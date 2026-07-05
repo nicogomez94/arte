@@ -39,7 +39,7 @@ export default function Home() {
             <h2>Paisaje, materia<br />y memoria</h2>
             <p>Andrea Alkalay es artista visual y diseñadora industrial graduada de la Universidad de Buenos Aires. Su práctica se despliega en la intersección entre fotografía, materialidad e investigación.</p>
             <p>Su obra entiende el paisaje y el territorio como archivos sensibles de memoria, expandiendo la imagen hacia la instalación, el collage y otros medios.</p>
-            <Link className="outline-link" to="/galeria">Explorar galería</Link>
+            <Link className="outline-link" to="/acerca-de-mi">Conocer más</Link>
           </div>
         </section>
 
@@ -65,7 +65,7 @@ export default function Home() {
         <section className="home-contact" id="contacto">
           <span className="eyebrow">Consultas &amp; colaboraciones</span>
           <h2>Hablemos de<br /><em>la próxima obra.</em></h2>
-          <a className="text-link light" href="mailto:info@andrealkalay.com">Escribirme <span>↗</span></a>
+          <Link className="text-link light" to="/contacto">Contacto <span>↗</span></Link>
         </section>
       </main>
       <Footer />
