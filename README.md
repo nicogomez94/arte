@@ -4,12 +4,10 @@ Sitio React + Vite con galería inmersiva y panel privado para administrar obras
 
 ## Desarrollo
 
-1. Copiar `.env.example` a `.env` y configurar PostgreSQL.
-2. Ejecutar `npm install`.
-3. Ejecutar `npx prisma migrate dev`.
-4. En dos terminales, ejecutar `npm run dev:server` y `npm run dev`.
+1. Ejecutar `npm install`.
+2. Ejecutar `npm run dev`.
 
-El sitio queda en `http://localhost:5173` y el panel en `/admin`.
+El sitio queda en `http://localhost:4173` y el panel en `/admin`. En desarrollo, la contraseña es `admin` y las obras se guardan automáticamente en `.local/artworks.json`, sin requerir PostgreSQL. Para desarrollar contra PostgreSQL, se puede copiar `.env.example` a `.env` y ejecutar las migraciones de Prisma.
 
 ## Producción
 
