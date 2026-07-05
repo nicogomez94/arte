@@ -45,6 +45,15 @@ img { display: block; max-width: 100%; }
 .outline-link { display: inline-block; margin-top: 22px; padding: 13px 24px; border: 1px solid #aaa59a; font-size: 12px; transition: background .25s, color .25s; }
 .outline-link:hover { background: var(--ink); color: var(--paper); }
 
+/* Shared editorial container. Every content section must opt into both
+   the page width and automatic horizontal centering. */
+.artist-intro,
+.portfolio-section,
+.gallery-landing,
+.gallery-archive {
+  margin-inline: auto;
+}
+
 .home-hero { width: var(--page); min-height: max(700px,100vh); margin: 0 auto; padding-top: var(--header); position: relative; display: grid; grid-template-columns: .76fr 1.45fr; align-items: center; gap: clamp(20px,5vw,88px); }
 .hero-copy { position: relative; z-index: 2; padding-left: clamp(0px,2vw,28px); }
 .hero-copy h1 { margin: 25px 0 18px; font: 400 clamp(72px,9vw,138px)/.77 var(--display); letter-spacing: -.065em; }

@@ -107,7 +107,7 @@ export default function Gallery() {
           </figure>
         </section>
 
-        <section className="gallery-archive">
+        <section className="gallery-archive" id="archivo">
           <header><span className="eyebrow">Índice visual</span><p>También podés recorrer el archivo completo desde acá.</p></header>
           {loading ? <Loading /> : !artworks.length ? <p className="empty-state">Todavía no hay obras publicadas.</p> : (
             <div className="archive-list">
