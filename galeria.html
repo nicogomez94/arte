@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Galería de Andrea Alkalay — fotografía expandida, medios mixtos, paisaje y territorio." />
+  <meta property="og:title" content="Galería · Andrea Alkalay" />
+  <meta property="og:description" content="Proyectos, series y exhibiciones de Andrea Alkalay." />
+  <meta property="og:type" content="website" />
+  <title>Galería · Andrea Alkalay</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Zilla+Slab:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="navbar" id="navbar">
+    <div class="navbar-inner">
+      <nav class="navbar-links" aria-label="Navegación principal">
+        <a href="index.html">Inicio</a>
+        <a href="index.html#portfolio">Portfolio</a>
+        <a href="galeria.html" aria-current="page">Galería</a>
+        <a href="index.html#sobre-mi">Sobre mí</a>
+        <a href="index.html#contacto">Contacto</a>
+      </nav>
+      <a href="index.html" class="navbar-logo" aria-label="Andrea Alkalay — Inicio">Andrea Alkalay</a>
+      <div class="navbar-icons">
+        <a href="galeria.html" aria-label="Galería" aria-current="page"><i class="far fa-images"></i></a>
+        <a href="https://instagram.com/andrealkalay" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Menú móvil">
+    <a href="index.html">Inicio</a>
+    <a href="index.html#portfolio">Portfolio</a>
+    <a href="galeria.html" aria-current="page">Galería</a>
+    <a href="index.html#sobre-mi">Sobre mí</a>
+    <a href="index.html#contacto">Contacto</a>
+  </nav>
+
+  <main>
+    <section class="gallery-hero" aria-labelledby="gallery-title">
+      <div class="gallery-hero-copy fade-in">
+        <span class="section-label">Fotografía expandida · Medios mixtos</span>
+        <h1 id="gallery-title">Proyectos<br>&amp; obras</h1>
+        <p>Investigaciones sobre paisaje, territorio y memoria que desbordan los límites de la imagen fotográfica.</p>
+        <a href="#unfixed" class="hero-cta">Comenzar recorrido</a>
+      </div>
+      <div class="gallery-hero-art" aria-hidden="true">
+        <img src="assets/exhibicion-01.png" alt="" />
+        <span>Unfixed Landscapes · Taiwan · 2026</span>
+      </div>
+    </section>
+
+    <section class="gallery-index" aria-label="Índice de series">
+      <span>Series</span>
+      <nav>
+        <a href="#unfixed">01 — Unfixed Landscapes</a>
+        <a href="#rock-cycle">02 — The Rock Cycle</a>
+        <a href="#unearth">03 — Unearth</a>
+      </nav>
+    </section>
+
+    <section class="gallery-series" id="unfixed" aria-labelledby="unfixed-title">
+      <div class="series-copy fade-in">
+        <span class="series-number">01</span>
+        <span class="section-label">Instalación · 2026</span>
+        <h2 id="unfixed-title">Unfixed<br>Landscapes</h2>
+        <p>Paisajes heridos y sistemas inestables. Una exhibición que vincula territorio, materia y memoria en el espacio.</p>
+      </div>
+      <div class="slideshow fade-in" data-slideshow aria-roledescription="carrusel" aria-label="Unfixed Landscapes, Wounded Systems">
+        <div class="slides">
+          <figure class="gallery-slide is-active">
+            <img src="assets/exhibicion-01.png" alt="Vista general de Unfixed Landscapes, Wounded Systems" />
+            <figcaption><strong>Vista de sala I</strong><span>Soulangh Cultural Park · Taiwan</span></figcaption>
+          </figure>
+          <figure class="gallery-slide">
+            <img src="assets/exhibicion-02.png" alt="Instalaciones y obras de Unfixed Landscapes" />
+            <figcaption><strong>Vista de sala II</strong><span>Instalación · Medios mixtos</span></figcaption>
+          </figure>
+          <figure class="gallery-slide">
+            <img src="assets/exhibicion-03.png" alt="Fotografía expandida en sala oscura" />
+            <figcaption><strong>Vista de sala III</strong><span>Fotografía expandida · 2026</span></figcaption>
+          </figure>
+          <figure class="gallery-slide">
+            <img src="assets/exhibicion-04.png" alt="Instalación de paisaje y bambú" />
+            <figcaption><strong>Vista de sala IV</strong><span>Paisaje · Territorio · Memoria</span></figcaption>
+          </figure>
+        </div>
+        <div class="slideshow-controls">
+          <button type="button" class="slide-arrow slide-prev" aria-label="Obra anterior"><i class="fas fa-arrow-left"></i></button>
+          <span class="slide-count"><span class="slide-current">01</span> / 04</span>
+          <button type="button" class="slide-arrow slide-next" aria-label="Obra siguiente"><i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery-series gallery-series-alt" id="rock-cycle" aria-labelledby="rock-cycle-title">
+      <div class="series-copy fade-in">
+        <span class="series-number">02</span>
+        <span class="section-label">Fotografía &amp; materialidad</span>
+        <h2 id="rock-cycle-title">The Rock<br>Cycle</h2>
+        <p>Una investigación visual sobre los ciclos geológicos, la transformación de la materia y las huellas del tiempo.</p>
+      </div>
+      <div class="slideshow slideshow-wide fade-in" data-slideshow aria-roledescription="carrusel" aria-label="The Rock Cycle">
+        <div class="slides">
+          <figure class="gallery-slide is-active">
+            <img src="assets/exhibicion-04.png" alt="Instalación de The Rock Cycle" />
+            <figcaption><strong>Landscape as archive</strong><span>The Rock Cycle · 2024</span></figcaption>
+          </figure>
+          <figure class="gallery-slide">
+            <img src="assets/exhibicion-01.png" alt="Materiales y fotografías en exhibición" />
+            <figcaption><strong>Material memory</strong><span>Fotografía · Objetos · Archivo</span></figcaption>
+          </figure>
+          <figure class="gallery-slide">
+            <img src="assets/exhibicion-02.png" alt="Obras de papel y objetos minerales" />
+            <figcaption><strong>Layers of time</strong><span>Medios mixtos · Instalación</span></figcaption>
+          </figure>
+          <figure class="gallery-slide">
+            <img src="assets/exhibicion-03.png" alt="Obra fotográfica y textil en sala" />
+            <figcaption><strong>Geological fictions</strong><span>Imagen · Materia · Tiempo</span></figcaption>
+          </figure>
+        </div>
+        <div class="slideshow-controls">
+          <button type="button" class="slide-arrow slide-prev" aria-label="Obra anterior"><i class="fas fa-arrow-left"></i></button>
+          <span class="slide-count"><span class="slide-current">01</span> / 04</span>
+          <button type="button" class="slide-arrow slide-next" aria-label="Obra siguiente"><i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery-series" id="unearth" aria-labelledby="unearth-title">
+      <div class="series-copy fade-in">
+        <span class="series-number">03</span>
+        <span class="section-label">Proyecto en proceso</span>
+        <h2 id="unearth-title">Unearth</h2>
+        <p>Excavar la imagen para revelar otras capas de sentido. El territorio aparece como documento, ficción y superficie sensible.</p>
+      </div>
+      <div class="slideshow slideshow-portrait fade-in" data-slideshow aria-roledescription="carrusel" aria-label="Unearth">
+        <div class="slides">
+          <figure class="gallery-slide is-active">
+            <img src="assets/exhibicion-03.png" alt="Obra de paisaje en la serie Unearth" />
+            <figcaption><strong>Sensitive archives</strong><span>Unearth · Proyecto en proceso</span></figcaption>
+          </figure>
+          <figure class="gallery-slide">
+            <img src="assets/exhibicion-04.png" alt="Instalación vinculada al paisaje" />
+            <figcaption><strong>Territory and trace</strong><span>Fotografía expandida</span></figcaption>
+          </figure>
+          <figure class="gallery-slide">
+            <img src="assets/exhibicion-01.png" alt="Archivo material en exhibición" />
+            <figcaption><strong>Field notes</strong><span>Archivo · Objetos · Imagen</span></figcaption>
+          </figure>
+          <figure class="gallery-slide">
+            <img src="assets/exhibicion-02.png" alt="Obras de papel e instalación" />
+            <figcaption><strong>Surface studies</strong><span>Papel · Materia · Investigación</span></figcaption>
+          </figure>
+        </div>
+        <div class="slideshow-controls">
+          <button type="button" class="slide-arrow slide-prev" aria-label="Obra anterior"><i class="fas fa-arrow-left"></i></button>
+          <span class="slide-count"><span class="slide-current">01</span> / 04</span>
+          <button type="button" class="slide-arrow slide-next" aria-label="Obra siguiente"><i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery-contact fade-in">
+      <span class="section-label">Consultas &amp; colaboraciones</span>
+      <h2>¿Querés conocer<br>más sobre una obra?</h2>
+      <a href="index.html#contacto" class="btn-outline">Escribirme</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">Andrea Alkalay</span>
+        <p>Artista visual · fotografía expandida.<br>Buenos Aires, Argentina.</p>
+        <div class="footer-social">
+          <a href="https://instagram.com/andrealkalay" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.andrealkalay.com/" target="_blank" rel="noopener noreferrer" aria-label="Sitio oficial"><i class="fas fa-globe"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="index.html#portfolio">Portfolio</a></li>
+          <li><a href="galeria.html">Galería</a></li>
+          <li><a href="index.html#sobre-mi">Sobre mí</a></li>
+          <li><a href="index.html#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Series</h4>
+        <ul>
+          <li><a href="#unfixed">Unfixed Landscapes</a></li>
+          <li><a href="#rock-cycle">The Rock Cycle</a></li>
+          <li><a href="#unearth">Unearth</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Andrea Alkalay. Todos los derechos reservados.</p>
+      <p>Hecho por <a href="https://zigodev.com.ar" target="_blank" rel="noopener noreferrer">zigodev</a></p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

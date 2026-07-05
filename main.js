@@ -3,9 +3,11 @@
    ================================================ */
 const navbar = document.getElementById('navbar');
 
-window.addEventListener('scroll', () => {
-  navbar.classList.toggle('scrolled', window.scrollY > 50);
-}, { passive: true });
+if (navbar) {
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+  }, { passive: true });
+}
 
 /* ================================================
    HAMBURGER — menú móvil
@@ -51,23 +53,119 @@ const fadeObserver = new IntersectionObserver((entries) => {
 document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
 
 /* ================================================
-   FILTROS DE TIENDA
+   GALERÍA — slideshows independientes
    ================================================ */
-const filtroBtns = document.querySelectorAll('.filtro-btn');
-const productCards = document.querySelectorAll('.producto-card');
+document.querySelectorAll('[data-slideshow]').forEach(slideshow => {
+  const slides = Array.from(slideshow.querySelectorAll('.gallery-slide'));
+  const prev = slideshow.querySelector('.slide-prev');
+  const next = slideshow.querySelector('.slide-next');
+  const currentLabel = slideshow.querySelector('.slide-current');
+  let current = 0;
 
-filtroBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    filtroBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+  const showSlide = index => {
+    current = (index + slides.length) % slides.length;
 
-    const filter = btn.dataset.filter;
+    slides.forEach((slide, slideIndex) => {
+      const isActive = slideIndex === current;
+      slide.classList.toggle('is-active', isActive);
+      slide.setAttribute('aria-hidden', String(!isActive));
+    });
 
-    productCards.forEach(card => {
-      const match = filter === 'todos' || card.dataset.category === filter;
-      card.style.display = match ? 'flex' : 'none';
+    if (currentLabel) {
+      currentLabel.textContent = String(current + 1).padStart(2, '0');
+    }
+  };
+
+  prev?.addEventListener('click', () => showSlide(current - 1));
+  next?.addEventListener('click', () => showSlide(current + 1));
+
+  slideshow.setAttribute('tabindex', '0');
+  slideshow.addEventListener('keydown', event => {
+    if (event.key === 'ArrowLeft') showSlide(current - 1);
+    if (event.key === 'ArrowRight') showSlide(current + 1);
+  });
+
+  showSlide(0);
+});
+
+/* ================================================
+   PANEL ADMIN — interacciones de demostración
+   ================================================ */
+const adminSidebar = document.getElementById('adminSidebar');
+const adminMenuToggle = document.getElementById('adminMenuToggle');
+const adminToast = document.getElementById('adminToast');
+let toastTimer;
+
+const showAdminToast = () => {
+  if (!adminToast) return;
+  adminToast.classList.add('is-visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => adminToast.classList.remove('is-visible'), 2600);
+};
+
+if (adminMenuToggle && adminSidebar) {
+  adminMenuToggle.addEventListener('click', () => {
+    const isOpen = adminSidebar.classList.toggle('is-open');
+    adminMenuToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+}
+
+document.querySelectorAll('.admin-nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.admin-nav-item').forEach(navItem => navItem.classList.remove('is-active'));
+    item.classList.add('is-active');
+    showAdminToast();
+  });
+});
+
+document.querySelectorAll('[data-demo-action], .admin-view-all').forEach(button => {
+  button.addEventListener('click', showAdminToast);
+});
+
+document.querySelector('[data-focus-upload]')?.addEventListener('click', () => {
+  document.getElementById('adminUpload')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+const obraFile = document.getElementById('obraFile');
+const adminDropzone = document.getElementById('adminDropzone');
+const adminUploadPreview = document.getElementById('adminUploadPreview');
+
+const previewAdminFile = file => {
+  if (!file || !file.type.startsWith('image/') || !adminUploadPreview) return;
+  const imageUrl = URL.createObjectURL(file);
+  adminUploadPreview.style.backgroundImage = `url("${imageUrl}")`;
+  adminUploadPreview.classList.add('has-image');
+};
+
+obraFile?.addEventListener('change', event => {
+  previewAdminFile(event.target.files?.[0]);
+});
+
+if (adminDropzone) {
+  ['dragenter', 'dragover'].forEach(eventName => {
+    adminDropzone.addEventListener(eventName, event => {
+      event.preventDefault();
+      adminDropzone.classList.add('is-dragging');
     });
   });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    adminDropzone.addEventListener(eventName, event => {
+      event.preventDefault();
+      adminDropzone.classList.remove('is-dragging');
+    });
+  });
+
+  adminDropzone.addEventListener('drop', event => {
+    previewAdminFile(event.dataTransfer?.files?.[0]);
+  });
+}
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && adminSidebar?.classList.contains('is-open')) {
+    adminSidebar.classList.remove('is-open');
+    adminMenuToggle?.setAttribute('aria-expanded', 'false');
+  }
 });
 
 /* ================================================
@@ -101,13 +199,15 @@ function handleFormSubmit(e) {
   // Simulación de envío (reemplazar con integración real)
   setTimeout(() => {
     btn.textContent = '¡Mensaje enviado!';
-    btn.style.background = '#2a7a2a';
+    btn.style.color = '#5c7559';
+    btn.style.borderColor = '#5c7559';
     form.reset();
 
     setTimeout(() => {
       btn.textContent = originalText;
       btn.disabled = false;
-      btn.style.background = '';
+      btn.style.color = '';
+      btn.style.borderColor = '';
     }, 3500);
   }, 1200);
 }

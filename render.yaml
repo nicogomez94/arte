@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: clara-ruther-art
+    name: andrea-alkalay-art
     runtime: static
     staticPublishPath: .
     buildCommand: echo "No build needed"
