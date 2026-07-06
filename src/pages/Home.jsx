@@ -1,15 +1,27 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
+import FullscreenSlideshow from '../components/FullscreenSlideshow';
 import { Footer, Header, Loading } from '../components/SiteChrome';
 
 export default function Home() {
   const [artworks, setArtworks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [slideshowOpen, setSlideshowOpen] = useState(false);
 
   useEffect(() => {
     api.artworks().then(setArtworks).catch(() => setArtworks([])).finally(() => setLoading(false));
   }, []);
+
+  const heroSlides = artworks.length ? artworks : [{
+    id: 'home-hero',
+    imageUrl: '/exhibicion-01.png',
+    alt: 'Andrea Alkalay installation at Soulangh Cultural Park',
+    title: 'Unfixed Landscapes',
+    series: 'Soulangh Cultural Park, Taiwan',
+    year: '2026',
+    technique: 'Art photography'
+  }];
 
   return (
     <div className="site-page">
@@ -17,7 +29,9 @@ export default function Home() {
       <main>
         <section className="home-hero" aria-label="Andrea Alkalay exhibition">
           <figure className="hero-image reveal">
-            <img src="/exhibicion-01.png" alt="Andrea Alkalay installation at Soulangh Cultural Park" />
+            <button className="hero-image-button" type="button" onClick={() => setSlideshowOpen(true)} aria-label="Open homepage slideshow">
+              <img src="/exhibicion-01.png" alt="Andrea Alkalay installation at Soulangh Cultural Park" />
+            </button>
             <figcaption>Unfixed Landscapes · Soulangh Cultural Park, Taiwan · 2026</figcaption>
           </figure>
           {/* <a className="hero-scroll-cue" href="#portfolio" aria-label="Scroll to work">↓</a> */}
@@ -49,6 +63,7 @@ export default function Home() {
         </section>
       </main>
       <Footer />
+      <FullscreenSlideshow artworks={heroSlides} open={slideshowOpen} initialIndex={0} onClose={() => setSlideshowOpen(false)} label="Homepage slideshow" />
     </div>
   );
 }
