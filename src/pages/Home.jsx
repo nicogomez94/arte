@@ -15,44 +15,34 @@ export default function Home() {
     <div className="site-page">
       <Header />
       <main>
-        <section className="home-hero">
-          <div className="hero-copy reveal">
-            <span className="eyebrow">Buenos Aires · Fotografía expandida</span>
-            <h1>Andrea<br /><em>Alkalay</em></h1>
-            <p>Artista visual &amp; medios mixtos</p>
-            <Link className="text-link" to="/galeria">Ver portfolio <span>↗</span></Link>
-          </div>
-          <figure className="hero-image reveal-delay">
-            <img src="/exhibicion-01.png" alt="Exhibición de Andrea Alkalay" />
-            <figcaption>Soulangh Cultural Park · Taiwan · 2026</figcaption>
+        <section className="home-hero" aria-label="Andrea Alkalay exhibition">
+          <figure className="hero-image reveal">
+            <img src="/exhibicion-01.png" alt="Andrea Alkalay installation at Soulangh Cultural Park" />
           </figure>
-          <span className="hero-index">AA / 01</span>
         </section>
 
         <section className="artist-intro" id="artista">
           <figure>
-            <img src="/exhibicion-03.png" alt="Obra de Andrea Alkalay en exhibición" />
-            <figcaption>La imagen como superficie sensible</figcaption>
+            <img src="/exhibicion-03.png" alt="Andrea Alkalay artwork on exhibition" />
           </figure>
           <div className="artist-copy">
-            <span className="eyebrow">La artista</span>
-            <h2>Paisaje, materia<br />y memoria</h2>
-            <p>Andrea Alkalay es artista visual y diseñadora industrial graduada de la Universidad de Buenos Aires. Su práctica se despliega en la intersección entre fotografía, materialidad e investigación.</p>
-            <p>Su obra entiende el paisaje y el territorio como archivos sensibles de memoria, expandiendo la imagen hacia la instalación, el collage y otros medios.</p>
-            <Link className="outline-link" to="/acerca-de-mi">Conocer más</Link>
+            <span className="eyebrow">The artist</span>
+            <h2>Landscape, matter<br />and memory.</h2>
+            <p>Andrea Alkalay works across photography, materiality and installation.</p>
+            <Link className="text-link" to="/acerca-de-mi">About <span>↗</span></Link>
           </div>
         </section>
 
         <section className="portfolio-section" id="portfolio">
           <header className="section-heading">
-            <div><span className="eyebrow">Archivo seleccionado</span><h2>Obras</h2></div>
-            <Link to="/galeria">Ver recorrido completo →</Link>
+            <div><span className="eyebrow">Selected archive</span><h2>Work</h2></div>
+            <Link to="/galeria">View all →</Link>
           </header>
           {loading ? <Loading /> : (
             <div className="art-grid">
-              {artworks.slice(0, 6).map((artwork, index) => (
-                <article className={`art-card art-card-${index % 3}`} key={artwork.id}>
-                  <Link to="/galeria" aria-label={`Ver ${artwork.title} en la galería`}>
+              {artworks.slice(0, 4).map((artwork, index) => (
+                <article className="art-card" key={artwork.id}>
+                  <Link to="/galeria" aria-label={`View ${artwork.title} in the gallery`}>
                     <div className="art-image"><img src={artwork.imageUrl} alt={artwork.alt || artwork.title} /></div>
                     <div className="art-meta"><span>{String(index + 1).padStart(2, '0')}</span><h3>{artwork.title}</h3><p>{artwork.series} · {artwork.year}</p></div>
                   </Link>
@@ -63,9 +53,9 @@ export default function Home() {
         </section>
 
         <section className="home-contact" id="contacto">
-          <span className="eyebrow">Consultas &amp; colaboraciones</span>
-          <h2>Hablemos de<br /><em>la próxima obra.</em></h2>
-          <Link className="text-link light" to="/contacto">Contacto <span>↗</span></Link>
+          <span className="eyebrow">Inquiries &amp; collaborations</span>
+          <h2>Let’s talk.</h2>
+          <Link className="text-link" to="/contacto">Contact <span>↗</span></Link>
         </section>
       </main>
       <Footer />

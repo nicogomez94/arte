@@ -45,7 +45,7 @@ function Slideshow({ artworks, open, initialIndex, onClose }) {
       className="fullscreen-gallery"
       role="dialog"
       aria-modal="true"
-      aria-label="Recorrido de obras"
+      aria-label="Artwork slideshow"
       onPointerDown={event => { pointerStart.current = event.clientX; }}
       onPointerUp={event => {
         if (pointerStart.current === null) return;
@@ -56,7 +56,7 @@ function Slideshow({ artworks, open, initialIndex, onClose }) {
     >
       <header className="slideshow-header">
         <span className="slideshow-brand">andrea alkalay</span>
-        <div><button type="button" onClick={() => setPlaying(value => !value)}>{playing ? 'pausar' : 'reproducir'}</button><button ref={closeButton} type="button" onClick={onClose}>cerrar ×</button></div>
+        <div><button type="button" onClick={() => setPlaying(value => !value)}>{playing ? 'pause' : 'play'}</button><button ref={closeButton} type="button" onClick={onClose}>close ×</button></div>
       </header>
       <div className="slideshow-stage">
         {artworks.map((item, itemIndex) => (
@@ -68,9 +68,9 @@ function Slideshow({ artworks, open, initialIndex, onClose }) {
       <footer className="slideshow-footer">
         <div className="slide-caption"><span>{artwork.series} · {artwork.year}</span><h2>{artwork.title}</h2><p>{artwork.technique}</p></div>
         <div className="slide-navigation">
-          <button type="button" onClick={() => move(-1)} aria-label="Obra anterior">←</button>
+          <button type="button" onClick={() => move(-1)} aria-label="Previous artwork">←</button>
           <span>{String(index + 1).padStart(2, '0')} / {String(artworks.length).padStart(2, '0')}</span>
-          <button type="button" onClick={() => move(1)} aria-label="Obra siguiente">→</button>
+          <button type="button" onClick={() => move(1)} aria-label="Next artwork">→</button>
         </div>
         <div className="slide-progress" aria-hidden="true"><span key={`${index}-${playing}`} className={playing ? 'is-playing' : ''} /></div>
       </footer>
@@ -94,22 +94,20 @@ export default function Gallery() {
       <main>
         <section className="gallery-landing">
           <div className="gallery-title-block">
-            <span className="eyebrow">Archivo vivo · {artworks.length || '—'} obras</span>
-            <h1>Proyectos<br />&amp; <em>obras</em></h1>
-            <p>Investigaciones sobre paisaje, territorio y memoria que desbordan los límites de la imagen fotográfica.</p>
+            <span className="eyebrow">Selected archive · {artworks.length || '—'} works</span>
+            <h1>Projects<br />&amp; <em>work</em></h1>
             <button className="tour-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }} disabled={!artworks.length}>
-              <span>Empezar recorrido</span><b>→</b>
+              <span>Start viewing</span><b>→</b>
             </button>
           </div>
           <figure className="gallery-cover">
-            <img src={artworks[0]?.imageUrl || '/exhibicion-01.png'} alt={artworks[0]?.alt || 'Vista de exhibición'} />
-            <figcaption><span>Vista de sala</span><span>Taiwan · 2026</span></figcaption>
+            <img src={artworks[0]?.imageUrl || '/exhibicion-01.png'} alt={artworks[0]?.alt || 'Exhibition view'} />
           </figure>
         </section>
 
         <section className="gallery-archive" id="archivo">
-          <header><span className="eyebrow">Índice visual</span><p>También podés recorrer el archivo completo desde acá.</p></header>
-          {loading ? <Loading /> : !artworks.length ? <p className="empty-state">Todavía no hay obras publicadas.</p> : (
+          <header><span className="eyebrow">Index</span></header>
+          {loading ? <Loading /> : !artworks.length ? <p className="empty-state">No works published yet.</p> : (
             <div className="archive-list">
               {artworks.map((artwork, index) => (
                 <button type="button" key={artwork.id} onClick={() => { setStartIndex(index); setOpen(true); }} className="archive-row">
