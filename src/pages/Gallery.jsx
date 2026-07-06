@@ -94,8 +94,8 @@ export default function Gallery() {
       <main>
         <section className="gallery-landing">
           <div className="gallery-title-block">
-            <span className="eyebrow">Selected archive · {artworks.length || '—'} works</span>
-            <h1>Projects<br />&amp; <em>work</em></h1>
+            <span className="eyebrow">Selected archive · {artworks.length || '—'} views</span>
+            <h1>Exhibitions</h1>
             <button className="tour-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }} disabled={!artworks.length}>
               <span>Start viewing</span><b>→</b>
             </button>

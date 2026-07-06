@@ -41,7 +41,7 @@ export default function About() {
               <div><dt>Education</dt><dd>Industrial Design · UBA</dd></div>
               <div><dt>Media</dt><dd>Photography · installation · collage</dd></div>
             </dl>
-            <Link className="text-link" to="/galeria">View work <span>→</span></Link>
+            <Link className="text-link" to="/work/unfixed-landscapes">View work <span>→</span></Link>
           </div>
         </section>
       </main>

@@ -5,6 +5,7 @@ import Gallery from './pages/Gallery';
 import Admin from './pages/Admin';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import WorkProject from './pages/WorkProject';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -18,7 +19,9 @@ export default function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/galeria" element={<Gallery />} />
+        <Route path="/galeria" element={<Navigate to="/exhibitions" replace />} />
+        <Route path="/exhibitions" element={<Gallery />} />
+        <Route path="/work/:slug" element={<WorkProject />} />
         <Route path="/acerca-de-mi" element={<About />} />
         <Route path="/contacto" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />

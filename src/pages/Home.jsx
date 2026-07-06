@@ -18,6 +18,7 @@ export default function Home() {
         <section className="home-hero" aria-label="Andrea Alkalay exhibition">
           <figure className="hero-image reveal">
             <img src="/exhibicion-01.png" alt="Andrea Alkalay installation at Soulangh Cultural Park" />
+            <figcaption>Unfixed Landscapes · Soulangh Cultural Park, Taiwan · 2026</figcaption>
           </figure>
         </section>
 
@@ -29,20 +30,20 @@ export default function Home() {
             <span className="eyebrow">The artist</span>
             <h2>Landscape, matter<br />and memory.</h2>
             <p>Andrea Alkalay works across photography, materiality and installation.</p>
-            <Link className="text-link" to="/acerca-de-mi">About <span>↗</span></Link>
+            <Link className="text-link" to="/work/unfixed-landscapes">View project <span>↗</span></Link>
           </div>
         </section>
 
         <section className="portfolio-section" id="portfolio">
           <header className="section-heading">
             <div><span className="eyebrow">Selected archive</span><h2>Work</h2></div>
-            <Link to="/galeria">View all →</Link>
+            <Link to="/work/unfixed-landscapes">View all →</Link>
           </header>
           {loading ? <Loading /> : (
             <div className="art-grid">
               {artworks.slice(0, 4).map((artwork, index) => (
                 <article className="art-card" key={artwork.id}>
-                  <Link to="/galeria" aria-label={`View ${artwork.title} in the gallery`}>
+                  <Link to="/work/unfixed-landscapes" aria-label={`View ${artwork.title} in the gallery`}>
                     <div className="art-image"><img src={artwork.imageUrl} alt={artwork.alt || artwork.title} /></div>
                     <div className="art-meta"><span>{String(index + 1).padStart(2, '0')}</span><h3>{artwork.title}</h3><p>{artwork.series} · {artwork.year}</p></div>
                   </Link>

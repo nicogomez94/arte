@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { projects } from '../projects';
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 28);
@@ -17,9 +19,17 @@ export function Header() {
       <div className="header-inner">
         <Link className="wordmark" to="/">andrea alkalay</Link>
         <nav className={open ? 'site-nav is-open' : 'site-nav'} aria-label="Main navigation">
-          <NavLink to="/" onClick={() => setOpen(false)}>home</NavLink>
-          <NavLink to="/galeria" onClick={() => setOpen(false)}>work</NavLink>
-          <NavLink to="/acerca-de-mi" onClick={() => setOpen(false)}>about</NavLink>
+          <div className="work-menu">
+            <NavLink className={pathname.startsWith('/work/') ? 'active' : ''} to="/work/unfixed-landscapes" aria-haspopup="true">work</NavLink>
+            <div className="work-dropdown">
+              <div className="work-dropdown-inner">
+                {projects.map(project => (
+                  <Link key={project.slug} to={`/work/${project.slug}`} onClick={() => setOpen(false)}>{project.title}</Link>
+                ))}
+              </div>
+            </div>
+          </div>
+          <NavLink to="/exhibitions" onClick={() => setOpen(false)}>exhibitions</NavLink>
           <NavLink to="/contacto" onClick={() => setOpen(false)}>contact</NavLink>
         </nav>
         <div className="header-actions">
@@ -46,8 +56,8 @@ export function Footer() {
         </div>
         <nav aria-label="Secondary navigation">
           <Link to="/">Home</Link>
-          <Link to="/galeria">Work</Link>
-          <Link to="/acerca-de-mi">About</Link>
+          <Link to="/work/unfixed-landscapes">Work</Link>
+          <Link to="/exhibitions">Exhibitions</Link>
           <Link to="/contacto">Contact</Link>
           <Link to="/admin">Artist panel</Link>
         </nav>
