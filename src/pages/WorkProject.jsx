@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Navigate, Link, useParams } from 'react-router-dom';
 import { api } from '../api';
+import FullscreenSlideshow from '../components/FullscreenSlideshow';
 import { Footer, Header, Loading } from '../components/SiteChrome';
 import { findProject, projects } from '../projects';
 
@@ -9,8 +10,8 @@ export default function WorkProject() {
   const project = findProject(slug);
   const [artworks, setArtworks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [index, setIndex] = useState(0);
-  const pointerStart = useRef(null);
+  const [open, setOpen] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
 
   useEffect(() => {
     api.artworks().then(setArtworks).catch(() => setArtworks([])).finally(() => setLoading(false));
@@ -23,20 +24,8 @@ export default function WorkProject() {
     return [...artworks.slice(offset), ...artworks.slice(0, offset)];
   }, [artworks, projectIndex]);
 
-  useEffect(() => setIndex(0), [slug]);
-
-  useEffect(() => {
-    const onKey = event => {
-      if (event.key === 'ArrowLeft') setIndex(current => (current - 1 + slides.length) % slides.length);
-      if (event.key === 'ArrowRight') setIndex(current => (current + 1) % slides.length);
-    };
-    if (slides.length) window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [slides.length]);
-
   if (!project) return <Navigate to="/work/unfixed-landscapes" replace />;
-  const move = direction => setIndex(current => (current + direction + slides.length) % slides.length);
-  const slide = slides[index];
+  const coverSlide = slides[0];
 
   return (
     <div className="site-page project-page">
@@ -47,27 +36,19 @@ export default function WorkProject() {
           <h1>{project.title}</h1>
         </header>
 
-        {loading ? <Loading /> : !slide ? <p className="empty-state">No images available.</p> : (
-          <section
-            className="project-slideshow"
-            aria-label={`${project.title} slideshow`}
-            onPointerDown={event => { pointerStart.current = event.clientX; }}
-            onPointerUp={event => {
-              if (pointerStart.current === null) return;
-              const distance = event.clientX - pointerStart.current;
-              if (Math.abs(distance) > 50) move(distance > 0 ? -1 : 1);
-              pointerStart.current = null;
-            }}
-          >
-            <div className="project-stage">
-              <img key={`${slug}-${slide.id}`} src={slide.imageUrl} alt={slide.alt || slide.title} />
-              <button className="project-hit project-hit-prev" type="button" onClick={() => move(-1)} aria-label="Previous image">←</button>
-              <button className="project-hit project-hit-next" type="button" onClick={() => move(1)} aria-label="Next image">→</button>
-            </div>
-            <footer className="project-controls">
-              <span>{slide.title} · {slide.year}</span>
-              <div><button type="button" onClick={() => move(-1)}>←</button><span>{String(index + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}</span><button type="button" onClick={() => move(1)}>→</button></div>
-            </footer>
+        {loading ? <Loading /> : !coverSlide ? <p className="empty-state">No images available.</p> : (
+          <section className="project-preview" aria-label={project.title}>
+            <button
+              className="project-stage image-open-button"
+              type="button"
+              onClick={() => { setStartIndex(0); setOpen(true); }}
+              aria-label={`Open ${project.title} slideshow`}
+            >
+              <img key={`${slug}-${coverSlide.id}`} src={coverSlide.imageUrl} alt={coverSlide.alt || coverSlide.title} />
+            </button>
+            <button className="tour-button project-start-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }}>
+              <span>Start viewing</span><b>→</b>
+            </button>
           </section>
         )}
 
@@ -76,6 +57,7 @@ export default function WorkProject() {
         </nav>
       </main>
       <Footer />
+      <FullscreenSlideshow artworks={slides} open={open} initialIndex={startIndex} onClose={() => setOpen(false)} label={`${project.title} slideshow`} />
     </div>
   );
 }

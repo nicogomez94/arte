@@ -17,7 +17,10 @@ export function Header() {
   return (
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="header-inner">
-        <Link className="wordmark" to="/">andrea alkalay</Link>
+        <Link className="wordmark" to="/">
+          <span>andrea alkalay</span>
+          <small>Art Photography</small>
+        </Link>
         <nav className={open ? 'site-nav is-open' : 'site-nav'} aria-label="Main navigation">
           <div className="work-menu">
             <NavLink className={pathname.startsWith('/work/') ? 'active' : ''} to="/work/unfixed-landscapes" aria-haspopup="true">work</NavLink>

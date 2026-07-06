@@ -20,18 +20,7 @@ export default function Home() {
             <img src="/exhibicion-01.png" alt="Andrea Alkalay installation at Soulangh Cultural Park" />
             <figcaption>Unfixed Landscapes · Soulangh Cultural Park, Taiwan · 2026</figcaption>
           </figure>
-        </section>
-
-        <section className="artist-intro" id="artista">
-          <figure>
-            <img src="/exhibicion-03.png" alt="Andrea Alkalay artwork on exhibition" />
-          </figure>
-          <div className="artist-copy">
-            <span className="eyebrow">The artist</span>
-            <h2>Landscape, matter<br />and memory.</h2>
-            <p>Andrea Alkalay works across photography, materiality and installation.</p>
-            <Link className="text-link" to="/work/unfixed-landscapes">View project <span>↗</span></Link>
-          </div>
+          {/* <a className="hero-scroll-cue" href="#portfolio" aria-label="Scroll to work">↓</a> */}
         </section>
 
         <section className="portfolio-section" id="portfolio">
