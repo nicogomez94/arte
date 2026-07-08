@@ -23,7 +23,7 @@ export function Header() {
         </Link>
         <nav className={open ? 'site-nav is-open' : 'site-nav'} aria-label="Main navigation">
           <div className="work-menu">
-            <NavLink className={pathname.startsWith('/work/') ? 'active' : ''} to="/work/unfixed-landscapes" aria-haspopup="true">work</NavLink>
+            <NavLink className={pathname.startsWith('/work/') ? 'active' : ''} to="/work/unfixed-landscapes" aria-haspopup="true">Work</NavLink>
             <div className="work-dropdown">
               <div className="work-dropdown-inner">
                 {projects.map(project => (
@@ -32,9 +32,23 @@ export function Header() {
               </div>
             </div>
           </div>
-          <NavLink to="/exhibitions" onClick={() => setOpen(false)}>exhibitions</NavLink>
-          <NavLink to="/contacto" onClick={() => setOpen(false)}>contact</NavLink>
-          <NavLink to="/cv" onClick={() => setOpen(false)}>cv</NavLink>
+          <div className="work-menu exhibitions-menu">
+            <NavLink className={pathname.startsWith('/exhibitions') ? 'active' : ''} to="/exhibitions" aria-haspopup="true">Exhibitions</NavLink>
+            <div className="work-dropdown">
+              <div className="work-dropdown-inner">
+                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Recoleta Cultural Center</Link>
+                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Espacio DAR / Tucuman</Link>
+                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Park Pecno Slovenia</Link>
+                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Museo Bellas Artes Frankling Rawson</Link>
+                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>OdA Arte. Art FAirs</Link>
+                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Mundo Nuevo Gallery Art</Link>
+                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Centro Cultural Mapocho CHILE</Link>
+                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Mundo Nuevo/ Kutho/Group show</Link>
+              </div>
+            </div>
+          </div>
+          <NavLink to="/contacto" onClick={() => setOpen(false)}>Contact</NavLink>
+          <NavLink to="/cv" onClick={() => setOpen(false)}>CV</NavLink>
         </nav>
         <div className="header-actions">
           <button className="language-toggle" type="button" aria-label="Language selector. English is currently active" aria-disabled="true">
