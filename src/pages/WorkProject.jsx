@@ -3,7 +3,7 @@ import { Navigate, Link, useParams } from 'react-router-dom';
 import { api } from '../api';
 import FullscreenSlideshow from '../components/FullscreenSlideshow';
 import { Footer, Header, Loading } from '../components/SiteChrome';
-import { projectAssets } from '../projectAssets';
+import { projectAssets, projectGridAssets } from '../projectAssets';
 import { findProject, projects } from '../projects';
 
 export default function WorkProject() {
@@ -26,6 +26,7 @@ export default function WorkProject() {
     const offset = projectIndex % artworks.length;
     return [...artworks.slice(offset), ...artworks.slice(0, offset)];
   }, [artworks, projectIndex, slug]);
+  const gridSlides = projectGridAssets[slug] || slides.map((slide, index) => ({ ...slide, slideIndex: index }));
 
   if (!project) return <Navigate to="/work/unfixed-landscapes" replace />;
   const coverSlide = slides[0];
@@ -56,8 +57,8 @@ export default function WorkProject() {
 
           <section className="project-archive" aria-label={`${project.title} images`}>
             <div className="artwork-thumb-grid">
-              {slides.map((artwork, index) => (
-                <button type="button" key={`${slug}-${artwork.id}`} onClick={() => { setStartIndex(index); setOpen(true); }} className="artwork-thumb">
+              {gridSlides.map(artwork => (
+                <button type="button" key={`${slug}-${artwork.id}`} onClick={() => { setStartIndex(artwork.slideIndex); setOpen(true); }} className="artwork-thumb">
                   <img src={artwork.imageUrl} alt="" />
                 </button>
               ))}

@@ -113,6 +113,51 @@ export const projectAssets = {
   }, index))
 };
 
+export const projectGridAssets = {
+  'unfixed-landscapes': projectAssets['unfixed-landscapes'].flatMap((slide, index) => {
+    if (slide.title === 'Unfixed Landscapes 15') {
+      return [
+        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-15 - left.jpg'), slideIndex: index },
+        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-15 - right.jpg'), slideIndex: index }
+      ];
+    }
+    if (slide.title === 'Unfixed Landscapes 16') {
+      return [
+        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-16 - left.jpg'), slideIndex: index },
+        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-16 - right.jpg'), slideIndex: index }
+      ];
+    }
+    if (slide.title === 'Unfixed Landscapes 18') {
+      return [
+        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-18 - left.jpg'), slideIndex: index },
+        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-18 - right.jpg'), slideIndex: index }
+      ];
+    }
+    return [{ ...slide, slideIndex: index }];
+  }),
+  'the-rock-cycle': projectAssets['the-rock-cycle'].flatMap((slide, index) => {
+    if (slide.title === 'The Rock Cycle 06') {
+      return [
+        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle Bride - left.jpg'), slideIndex: index },
+        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle Bride - right.jpg'), slideIndex: index }
+      ];
+    }
+    if (slide.title === 'The Rock Cycle 08') {
+      return [
+        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle MEMORY Restoration - left.jpg'), slideIndex: index },
+        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle MEMORY Restoration - right.jpg'), slideIndex: index }
+      ];
+    }
+    if (slide.title === 'The Rock Cycle 10') {
+      return [
+        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle Transitions - left.jpg'), slideIndex: index },
+        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle Transitions - right.jpg'), slideIndex: index }
+      ];
+    }
+    return [{ ...slide, slideIndex: index }];
+  })
+};
+
 const fallbackSlide = ({ slug, title, series = title, year, file }, index = 0) => makeSlide({
   slug,
   title,
