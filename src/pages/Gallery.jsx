@@ -43,11 +43,11 @@ export default function Gallery() {
               {artworks.map((artwork, index) => (
                 <button type="button" key={artwork.id} onClick={() => { setStartIndex(index); setOpen(true); }} className="artwork-thumb">
                   <img src={artwork.imageUrl} alt="" />
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <div>
-                    <h2>{artwork.title}</h2>
+                  <span>{artwork.series} · {artwork.year}</span>
+                  {/* <div>
+                    <h4>{artwork.title}</h4>
                     <p>{artwork.series} · {artwork.year}</p>
-                  </div>
+                  </div> */}
                 </button>
               ))}
             </div>
