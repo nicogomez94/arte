@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { exhibitionProjects } from '../projectAssets';
 import { projects } from '../projects';
 
 export function Header() {
@@ -23,7 +24,7 @@ export function Header() {
         </Link>
         <nav className={open ? 'site-nav is-open' : 'site-nav'} aria-label="Main navigation">
           <div className="work-menu">
-            <NavLink className={pathname.startsWith('/work/') ? 'active' : ''} to="/work/unfixed-landscapes" aria-haspopup="true">Work</NavLink>
+            <NavLink className={pathname.startsWith('/work') ? 'active' : ''} to="/work" aria-haspopup="true">Work</NavLink>
             <div className="work-dropdown">
               <div className="work-dropdown-inner">
                 {projects.map(project => (
@@ -36,14 +37,9 @@ export function Header() {
             <NavLink className={pathname.startsWith('/exhibitions') ? 'active' : ''} to="/exhibitions" aria-haspopup="true">Exhibitions</NavLink>
             <div className="work-dropdown">
               <div className="work-dropdown-inner">
-                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Recoleta Cultural Center</Link>
-                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Espacio DAR / Tucuman</Link>
-                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Park Pecno Slovenia</Link>
-                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Museo Bellas Artes Frankling Rawson</Link>
-                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>OdA Arte. Art FAirs</Link>
-                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Mundo Nuevo Gallery Art</Link>
-                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Centro Cultural Mapocho CHILE</Link>
-                <Link to="/exhibitions#selected" onClick={() => setOpen(false)}>Mundo Nuevo/ Kutho/Group show</Link>
+                {exhibitionProjects.map(project => (
+                  <Link key={project.slug} to={`/exhibitions/${project.slug}`} onClick={() => setOpen(false)}>{project.title}</Link>
+                ))}
               </div>
             </div>
           </div>

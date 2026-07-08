@@ -112,3 +112,50 @@ export const projectAssets = {
     file: `/rockcycle/${file}`
   }, index))
 };
+
+const fallbackSlide = ({ slug, title, series = title, year, file }, index = 0) => makeSlide({
+  slug,
+  title,
+  series,
+  year,
+  technique: 'Exhibition view',
+  file
+}, index);
+
+export const workIndexItems = [
+  { slug: 'unfixed-landscapes', title: 'Unfixed Landscapes', year: 2026, imageUrl: projectAssets['unfixed-landscapes'][0].imageUrl },
+  { slug: 'the-rock-cycle', title: 'The Rock Cycle', year: 2024, imageUrl: projectAssets['the-rock-cycle'][0].imageUrl },
+  { slug: 'unearth', title: 'Unearth / ongoing', year: 2026, imageUrl: '/exhibicion-03.png' },
+  { slug: 'landscape-on-landscape', title: 'Landscape on Landscape', year: 2025, imageUrl: exhibitionAssets.find(item => item.series === 'Espacio DAR / Tucuman')?.imageUrl || '/exhibicion-02.png' },
+  { slug: 'kutho', title: 'Kutho', year: 2021, imageUrl: '/exhibicion-01.png' },
+  { slug: 'brief-shape', title: 'Brief Shape', year: 2023, imageUrl: '/exhibicion-04.png' },
+  { slug: 'urban-territories', title: 'Urban Territories', year: 2018, imageUrl: '/exhibicion-02.png' },
+  { slug: 'borders', title: 'Borders', year: 2018, imageUrl: '/exhibicion-03.png' },
+  { slug: 'about-india', title: 'About India', year: 2021, imageUrl: '/exhibicion-01.png' },
+  { slug: 'uncertain-nature-book', title: 'Uncertain Nature Book', year: 2022, imageUrl: '/exhibicion-04.png' }
+];
+
+export const exhibitionProjects = [
+  { slug: 'recoleta-cultural-center', title: 'Recoleta Cultural Center', year: 2023, imageUrl: exhibitionAssets[0]?.imageUrl || '/exhibicion-01.png' },
+  { slug: 'espacio-dar-tucuman', title: 'Espacio DAR / Tucuman', year: 2025, imageUrl: exhibitionAssets.find(item => item.series === 'Espacio DAR / Tucuman')?.imageUrl || '/exhibicion-02.png' },
+  { slug: 'park-pecno-slovenia', title: 'Park Pecno Slovenia', year: 2024, imageUrl: projectAssets['the-rock-cycle'][0].imageUrl },
+  { slug: 'museo-bellas-artes-frankling-rawson', title: 'Museo Bellas Artes Frankling Rawson', year: 2018, imageUrl: '/exhibicion-04.png' },
+  { slug: 'oda-arte-art-fairs', title: 'OdA Arte. Art FAirs', year: 2021, imageUrl: '/exhibicion-03.png' },
+  { slug: 'mundo-nuevo-gallery-art', title: 'Mundo Nuevo Gallery Art', year: 2019, imageUrl: '/exhibicion-02.png' },
+  { slug: 'centro-cultural-mapocho-chile', title: 'Centro Cultural Mapocho CHILE', year: 2018, imageUrl: '/exhibicion-01.png' },
+  { slug: 'mundo-nuevo-kutho-group-show', title: 'Mundo Nuevo/ Kutho/Group show', year: 2020, imageUrl: '/exhibicion-04.png' }
+];
+
+export const getExhibitionSlides = slug => {
+  if (slug === 'recoleta-cultural-center') return exhibitionAssets.filter(item => item.series === 'Recoleta Cultural Center');
+  if (slug === 'espacio-dar-tucuman') return exhibitionAssets.filter(item => item.series === 'Espacio DAR / Tucuman');
+  if (slug === 'park-pecno-slovenia') return projectAssets['the-rock-cycle'];
+  const project = exhibitionProjects.find(item => item.slug === slug);
+  if (!project) return [];
+  return [fallbackSlide({
+    slug: project.slug,
+    title: project.title,
+    year: project.year,
+    file: project.imageUrl
+  })];
+};
