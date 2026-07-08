@@ -12,7 +12,7 @@ export default function Contact() {
           <div className="contact-content reveal-delay">
             <div className="contact-heading">
               <span className="eyebrow">Contact</span>
-              <h1>Let’s connect.</h1>
+              <h3>Let’s connect.</h3>
               <p>Exhibitions, collaborations and press.</p>
             </div>
             <div className="contact-directory">

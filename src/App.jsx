@@ -5,6 +5,7 @@ import Gallery from './pages/Gallery';
 import Admin from './pages/Admin';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import Cv from './pages/Cv';
 import WorkProject from './pages/WorkProject';
 
 function ScrollToTop() {
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/work/:slug" element={<WorkProject />} />
         <Route path="/acerca-de-mi" element={<About />} />
         <Route path="/contacto" element={<Contact />} />
+        <Route path="/cv" element={<Cv />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

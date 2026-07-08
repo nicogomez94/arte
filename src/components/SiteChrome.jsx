@@ -34,6 +34,7 @@ export function Header() {
           </div>
           <NavLink to="/exhibitions" onClick={() => setOpen(false)}>exhibitions</NavLink>
           <NavLink to="/contacto" onClick={() => setOpen(false)}>contact</NavLink>
+          <NavLink to="/cv" onClick={() => setOpen(false)}>cv</NavLink>
         </nav>
         <div className="header-actions">
           <button className="language-toggle" type="button" aria-label="Language selector. English is currently active" aria-disabled="true">
@@ -52,27 +53,7 @@ export function Header() {
 export function Footer() {
   return (
     <footer className="site-footer">
-      <div className="footer-grid">
-        <div>
-          <span className="footer-name">Andrea Alkalay</span>
-          <p>Visual artist · expanded photography.<br />Buenos Aires, Argentina.</p>
-        </div>
-        <nav aria-label="Secondary navigation">
-          <Link to="/">Home</Link>
-          <Link to="/work/unfixed-landscapes">Work</Link>
-          <Link to="/exhibitions">Exhibitions</Link>
-          <Link to="/contacto">Contact</Link>
-          <Link to="/admin">Artist panel</Link>
-        </nav>
-        <div className="footer-contact">
-          <a href="mailto:info@andrealkalay.com">info@andrealkalay.com</a>
-          <a href="https://instagram.com/andrealkalay" target="_blank" rel="noopener noreferrer">Instagram ↗</a>
-        </div>
-      </div>
-      <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} Andrea Alkalay</span>
-        <span>Made by <a href="https://zigodev.com.ar" target="_blank" rel="noopener noreferrer">zigodev</a></span>
-      </div>
+      <span>andrea alkalay | 2026</span>
     </footer>
   );
 }

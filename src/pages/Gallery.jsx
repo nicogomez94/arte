@@ -17,16 +17,9 @@ export default function Gallery() {
     <div className="site-page gallery-page">
       <Header />
       <main>
-        <section className="gallery-landing">
-          <div className="gallery-title-block">
-            <span className="eyebrow">Selected archive · {artworks.length || '—'} views</span>
-            <h1>Exhibitions</h1>
-            <button className="tour-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }} disabled={!artworks.length}>
-              <span>Start viewing</span><b>→</b>
-            </button>
-          </div>
+        <section className="editorial-intro gallery-landing">
           <button
-            className="gallery-cover image-open-button"
+            className="editorial-intro-image image-open-button"
             type="button"
             onClick={() => { setStartIndex(0); setOpen(true); }}
             disabled={!artworks.length}
@@ -34,18 +27,27 @@ export default function Gallery() {
           >
             <img src={artworks[0]?.imageUrl || '/exhibicion-01.png'} alt={artworks[0]?.alt || 'Exhibition view'} />
           </button>
+          <div className="editorial-intro-copy">
+            <span className="eyebrow">Selected archive · {artworks.length || '—'} views</span>
+            <h3>Exhibitions</h3>
+            <p>Installation views, visual research and exhibition fragments gathered as a quiet index of the work in space.</p>
+            <button className="tour-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }} disabled={!artworks.length}>
+              <span>Start viewing</span><b>→</b>
+            </button>
+          </div>
         </section>
 
         <section className="gallery-archive" id="archivo">
-          <header><span className="eyebrow">Index</span></header>
           {loading ? <Loading /> : !artworks.length ? <p className="empty-state">No works published yet.</p> : (
-            <div className="archive-list">
+            <div className="artwork-thumb-grid">
               {artworks.map((artwork, index) => (
-                <button type="button" key={artwork.id} onClick={() => { setStartIndex(index); setOpen(true); }} className="archive-row">
-                  <span>{String(index + 1).padStart(2, '0')}</span>
+                <button type="button" key={artwork.id} onClick={() => { setStartIndex(index); setOpen(true); }} className="artwork-thumb">
                   <img src={artwork.imageUrl} alt="" />
-                  <div><h2>{artwork.title}</h2><p>{artwork.series}</p></div>
-                  <em>{artwork.year}</em><b>↗</b>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <h2>{artwork.title}</h2>
+                    <p>{artwork.series} · {artwork.year}</p>
+                  </div>
                 </button>
               ))}
             </div>

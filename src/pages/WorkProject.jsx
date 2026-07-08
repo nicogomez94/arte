@@ -31,30 +31,43 @@ export default function WorkProject() {
     <div className="site-page project-page">
       <Header />
       <main className="project-main">
-        <header className="project-heading">
-          <span className="eyebrow">Work · {String(projectIndex + 1).padStart(2, '0')}</span>
-          <h1>{project.title}</h1>
-        </header>
-
         {loading ? <Loading /> : !coverSlide ? <p className="empty-state">No images available.</p> : (
-          <section className="project-preview" aria-label={project.title}>
+          <>
+          <section className="editorial-intro project-preview" aria-label={project.title}>
             <button
-              className="project-stage image-open-button"
+              className="editorial-intro-image image-open-button"
               type="button"
               onClick={() => { setStartIndex(0); setOpen(true); }}
               aria-label={`Open ${project.title} slideshow`}
             >
               <img key={`${slug}-${coverSlide.id}`} src={coverSlide.imageUrl} alt={coverSlide.alt || coverSlide.title} />
             </button>
-            <button className="tour-button project-start-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }}>
-              <span>Start viewing</span><b>→</b>
-            </button>
+            <div className="editorial-intro-copy">
+              <span className="eyebrow">Work · {String(projectIndex + 1).padStart(2, '0')}</span>
+              <h3>{project.title}</h3>
+              <p>A focused selection from the project archive, arranged for browsing before entering the full slideshow.</p>
+              <button className="tour-button project-start-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }}>
+                <span>Start viewing</span><b>→</b>
+              </button>
+            </div>
           </section>
-        )}
 
-        <nav className="project-index" aria-label="Other work">
-          {projects.map(item => <Link className={item.slug === slug ? 'is-current' : ''} key={item.slug} to={`/work/${item.slug}`}>{item.title}</Link>)}
-        </nav>
+          <section className="project-archive" aria-label={`${project.title} images`}>
+            <div className="artwork-thumb-grid">
+              {slides.map((artwork, index) => (
+                <button type="button" key={`${slug}-${artwork.id}`} onClick={() => { setStartIndex(index); setOpen(true); }} className="artwork-thumb">
+                  <img src={artwork.imageUrl} alt="" />
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <h2>{artwork.title}</h2>
+                    <p>{artwork.series} · {artwork.year}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+          </>
+        )}
       </main>
       <Footer />
       <FullscreenSlideshow artworks={slides} open={open} initialIndex={startIndex} onClose={() => setOpen(false)} label={`${project.title} slideshow`} />
