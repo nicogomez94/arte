@@ -123,27 +123,27 @@ const fallbackSlide = ({ slug, title, series = title, year, file }, index = 0) =
 }, index);
 
 export const workIndexItems = [
-  { slug: 'unfixed-landscapes', title: 'Unfixed Landscapes', year: 2026, imageUrl: projectAssets['unfixed-landscapes'][0].imageUrl },
-  { slug: 'the-rock-cycle', title: 'The Rock Cycle', year: 2024, imageUrl: projectAssets['the-rock-cycle'][0].imageUrl },
-  { slug: 'unearth', title: 'Unearth / ongoing', year: 2026, imageUrl: '/exhibicion-03.png' },
-  { slug: 'landscape-on-landscape', title: 'Landscape on Landscape', year: 2025, imageUrl: exhibitionAssets.find(item => item.series === 'Espacio DAR / Tucuman')?.imageUrl || '/exhibicion-02.png' },
-  { slug: 'kutho', title: 'Kutho', year: 2021, imageUrl: '/exhibicion-01.png' },
-  { slug: 'brief-shape', title: 'Brief Shape', year: 2023, imageUrl: '/exhibicion-04.png' },
-  { slug: 'urban-territories', title: 'Urban Territories', year: 2018, imageUrl: '/exhibicion-02.png' },
-  { slug: 'borders', title: 'Borders', year: 2018, imageUrl: '/exhibicion-03.png' },
-  { slug: 'about-india', title: 'About India', year: 2021, imageUrl: '/exhibicion-01.png' },
-  { slug: 'uncertain-nature-book', title: 'Uncertain Nature Book', year: 2022, imageUrl: '/exhibicion-04.png' }
+  { slug: 'unfixed-landscapes', title: 'Unfixed Landscapes', year: 2026, imageUrl: '/andrealkalay-site-first-images/01-unfixed-landscapes.jpg' },
+  { slug: 'the-rock-cycle', title: 'The Rock Cycle', year: 2024, imageUrl: '/andrealkalay-site-first-images/02-the-rock-cycle.jpg' },
+  { slug: 'unearth', title: 'Unearth / ongoing', year: 2026, imageUrl: '/andrealkalay-site-first-images/03-unearth.jpg' },
+  { slug: 'landscape-on-landscape', title: 'Landscape on Landscape', year: 2025, imageUrl: '/andrealkalay-site-first-images/04-landscape-on-landscape.jpg' },
+  { slug: 'kutho', title: 'Kutho', year: 2021, imageUrl: '/andrealkalay-site-first-images/05-kutho.jpg' },
+  { slug: 'brief-shape', title: 'Brief Shape', year: 2023, imageUrl: '/andrealkalay-site-first-images/06-brief-shape.jpg' },
+  { slug: 'urban-territories', title: 'Urban Territories', year: 2018, imageUrl: '/andrealkalay-site-first-images/07-urban-territories.jpg' },
+  { slug: 'borders', title: 'Borders', year: 2018, imageUrl: '/andrealkalay-site-first-images/08-borders.jpg' },
+  { slug: 'about-india', title: 'About India', year: 2021, imageUrl: '/andrealkalay-site-first-images/09-about-india.jpg' },
+  { slug: 'uncertain-nature-book', title: 'Uncertain Nature Book', year: 2022, imageUrl: '/andrealkalay-site-first-images/10-uncertain-nature-book.jpg' }
 ];
 
 export const exhibitionProjects = [
-  { slug: 'recoleta-cultural-center', title: 'Recoleta Cultural Center', year: 2023, imageUrl: exhibitionAssets[0]?.imageUrl || '/exhibicion-01.png' },
-  { slug: 'espacio-dar-tucuman', title: 'Espacio DAR / Tucuman', year: 2025, imageUrl: exhibitionAssets.find(item => item.series === 'Espacio DAR / Tucuman')?.imageUrl || '/exhibicion-02.png' },
-  { slug: 'park-pecno-slovenia', title: 'Park Pecno Slovenia', year: 2024, imageUrl: projectAssets['the-rock-cycle'][0].imageUrl },
-  { slug: 'museo-bellas-artes-frankling-rawson', title: 'Museo Bellas Artes Frankling Rawson', year: 2018, imageUrl: '/exhibicion-04.png' },
-  { slug: 'oda-arte-art-fairs', title: 'OdA Arte. Art FAirs', year: 2021, imageUrl: '/exhibicion-03.png' },
-  { slug: 'mundo-nuevo-gallery-art', title: 'Mundo Nuevo Gallery Art', year: 2019, imageUrl: '/exhibicion-02.png' },
-  { slug: 'centro-cultural-mapocho-chile', title: 'Centro Cultural Mapocho CHILE', year: 2018, imageUrl: '/exhibicion-01.png' },
-  { slug: 'mundo-nuevo-kutho-group-show', title: 'Mundo Nuevo/ Kutho/Group show', year: 2020, imageUrl: '/exhibicion-04.png' }
+  { slug: 'recoleta-cultural-center', title: 'Recoleta Cultural Center', year: 2023, imageUrl: '/andrealkalay-site-exhibition-first-images/02-recoleta-cultural-center.jpg' },
+  { slug: 'espacio-dar-tucuman', title: 'Espacio DAR / Tucuman', year: 2025, imageUrl: '/andrealkalay-site-exhibition-first-images/03-espacio-dar-tucuman.jpg' },
+  { slug: 'park-pecno-slovenia', title: 'Park Pecno Slovenia', year: 2024, imageUrl: '/andrealkalay-site-exhibition-first-images/06-park-pecno-slovenia.jpg' },
+  { slug: 'museo-bellas-artes-frankling-rawson', title: 'Museo Bellas Artes Frankling Rawson', year: 2018, imageUrl: '/andrealkalay-site-exhibition-first-images/05-museo-bellas-artes-frankling-rawson.jpg' },
+  { slug: 'oda-arte-art-fairs', title: 'OdA Arte. Art FAirs', year: 2021, imageUrl: '/andrealkalay-site-exhibition-first-images/04-oda-arte-art-fairs.jpg' },
+  { slug: 'mundo-nuevo-gallery-art', title: 'Mundo Nuevo Gallery Art', year: 2019, imageUrl: '/andrealkalay-site-exhibition-first-images/07-mundo-nuevo-gallery-art.jpg' },
+  { slug: 'centro-cultural-mapocho-chile', title: 'Centro Cultural Mapocho CHILE', year: 2018, imageUrl: '/andrealkalay-site-exhibition-first-images/08-centro-cultural-mapocho-chile.jpg' },
+  { slug: 'mundo-nuevo-kutho-group-show', title: 'Mundo Nuevo/ Kutho/Group show', year: 2020, imageUrl: '/andrealkalay-site-exhibition-first-images/09-mundo-nuevo-kutho-group-show.jpg' }
 ];
 
 export const getExhibitionSlides = slug => {

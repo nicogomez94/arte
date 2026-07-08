@@ -1,0 +1,74 @@
+[
+  {
+    "slug": "exhibitions",
+    "pageUrl": "https://www.andrealkalay.com/exhibitions",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg",
+    "filename": "01-exhibitions.jpg",
+    "bytes": 504520,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "recoleta-cultural-center",
+    "pageUrl": "https://www.andrealkalay.com/copia-de-exhibitions-1",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg",
+    "filename": "02-recoleta-cultural-center.jpg",
+    "bytes": 504520,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "espacio-dar-tucuman",
+    "pageUrl": "https://www.andrealkalay.com/copia-de-recoleta-cultural-center",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg",
+    "filename": "03-espacio-dar-tucuman.jpg",
+    "bytes": 504520,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "oda-arte-art-fairs",
+    "pageUrl": "https://www.andrealkalay.com/copia-de-oda-arte-art-fairs",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg",
+    "filename": "04-oda-arte-art-fairs.jpg",
+    "bytes": 504520,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "museo-bellas-artes-frankling-rawson",
+    "pageUrl": "https://www.andrealkalay.com/museofranklingrawson",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_57edf040bd904cbfbd54c6fd2121198f~mv2_d_5141_3427_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_57edf040bd904cbfbd54c6fd2121198f~mv2_d_5141_3427_s_4_2.jpg",
+    "filename": "05-museo-bellas-artes-frankling-rawson.jpg",
+    "bytes": 1035108,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "park-pecno-slovenia",
+    "pageUrl": "https://www.andrealkalay.com/copia-de-exhibitions",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg",
+    "filename": "06-park-pecno-slovenia.jpg",
+    "bytes": 504520,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "mundo-nuevo-gallery-art",
+    "pageUrl": "https://www.andrealkalay.com/mundonuevogalleryart",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_4234fab2adc844c292ec3dfdeadaa6a3~mv2.jpg/v1/fill/w_850,h_567,al_c/166dc0_4234fab2adc844c292ec3dfdeadaa6a3~mv2.jpg",
+    "filename": "07-mundo-nuevo-gallery-art.jpg",
+    "bytes": 95390,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "centro-cultural-mapocho-chile",
+    "pageUrl": "https://www.andrealkalay.com/centroculturalmapocho",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_af58c17fbf4f451d9287586b46c88059~mv2_d_1915_1436_s_2.jpeg/v1/fill/w_2500,h_1874,al_c/166dc0_af58c17fbf4f451d9287586b46c88059~mv2_d_1915_1436_s_2.jpeg",
+    "filename": "08-centro-cultural-mapocho-chile.jpg",
+    "bytes": 1090849,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "mundo-nuevo-kutho-group-show",
+    "pageUrl": "https://www.andrealkalay.com/mundo-nuevo-kutho",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_4234fab2adc844c292ec3dfdeadaa6a3~mv2.jpg/v1/fill/w_850,h_567,al_c/166dc0_4234fab2adc844c292ec3dfdeadaa6a3~mv2.jpg",
+    "filename": "09-mundo-nuevo-kutho-group-show.jpg",
+    "bytes": 95390,
+    "contentType": "image/jpeg"
+  }
+]

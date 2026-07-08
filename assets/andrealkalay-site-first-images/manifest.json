@@ -1,0 +1,154 @@
+[
+  {
+    "slug": "unfixed-landscapes",
+    "pageUrl": "https://www.andrealkalay.com",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_a4f8724618f24862b80bed2ce544b815~mv2.jpg/v1/fit/w_728,h_530,q_90,enc_avif,quality_auto/166dc0_a4f8724618f24862b80bed2ce544b815~mv2.jpg",
+    "filename": "01-unfixed-landscapes.jpg",
+    "bytes": 64714,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "the-rock-cycle",
+    "pageUrl": "https://www.andrealkalay.com/therockcycle",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_5b700e4055744881a333f2d390382f49~mv2.jpg/v1/fit/w_685,h_488,q_90,enc_avif,quality_auto/166dc0_5b700e4055744881a333f2d390382f49~mv2.jpg",
+    "filename": "02-the-rock-cycle.jpg",
+    "bytes": 61005,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "unearth",
+    "pageUrl": "https://www.andrealkalay.com/unearth",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_22cda0f462094ef2ac6f3cdbd55c2ec5~mv2.jpg/v1/fit/w_560,h_455,q_90,enc_avif,quality_auto/166dc0_22cda0f462094ef2ac6f3cdbd55c2ec5~mv2.jpg",
+    "filename": "03-unearth.jpg",
+    "bytes": 18347,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "landscape-on-landscape",
+    "pageUrl": "https://www.andrealkalay.com/landscapeonlandscape",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_be88ef47accb40519ef1967c30db1413~mv2.jpg/v1/fit/w_632,h_438,q_90,enc_avif,quality_auto/166dc0_be88ef47accb40519ef1967c30db1413~mv2.jpg",
+    "filename": "04-landscape-on-landscape.jpg",
+    "bytes": 52498,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "kutho",
+    "pageUrl": "https://www.andrealkalay.com/kutho",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_4c268a9de0a5438d921072ce97604f53~mv2.jpg/v1/fit/w_729,h_586,q_90,enc_avif,quality_auto/166dc0_4c268a9de0a5438d921072ce97604f53~mv2.jpg",
+    "filename": "05-kutho.jpg",
+    "bytes": 42281,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "brief-shape",
+    "pageUrl": "https://www.andrealkalay.com/briefshape",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_6935785f25154d4b968c75282d9f5d4f~mv2.jpg/v1/fit/w_648,h_520,q_90,enc_avif,quality_auto/166dc0_6935785f25154d4b968c75282d9f5d4f~mv2.jpg",
+    "filename": "06-brief-shape.jpg",
+    "bytes": 24801,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "urban-territories",
+    "pageUrl": "https://www.andrealkalay.com/urbanterritories",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_d4013016813f44a89dbe9f6dca281ff8~mv2.jpg/v1/fit/w_692,h_554,q_90,enc_avif,quality_auto/166dc0_d4013016813f44a89dbe9f6dca281ff8~mv2.jpg",
+    "filename": "07-urban-territories.jpg",
+    "bytes": 118533,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "borders",
+    "pageUrl": "https://www.andrealkalay.com/borders",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_28d3e9e8e9f74cb4a666accf5d890bd5~mv2.jpg/v1/fit/w_637,h_482,q_90,enc_avif,quality_auto/166dc0_28d3e9e8e9f74cb4a666accf5d890bd5~mv2.jpg",
+    "filename": "08-borders.jpg",
+    "bytes": 60528,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "about-india",
+    "pageUrl": "https://www.andrealkalay.com/about-india-series",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_40507ee4deca418091974460fa7cc3b6~mv2.jpg/v1/fill/w_1417,h_945,al_c/166dc0_40507ee4deca418091974460fa7cc3b6~mv2.jpg",
+    "filename": "09-about-india.jpg",
+    "bytes": 60702,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "uncertain-nature-book",
+    "pageUrl": "https://www.andrealkalay.com/uncertainnature-book",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_67374fc802dc4186890b988d594a9eab~mv2.jpg/v1/fill/w_751,h_491,q_90,enc_avif,quality_auto/166dc0_67374fc802dc4186890b988d594a9eab~mv2.jpg",
+    "filename": "10-uncertain-nature-book.jpg",
+    "bytes": 78328,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "exhibitions",
+    "pageUrl": "https://www.andrealkalay.com/exhibitions",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg",
+    "filename": "11-exhibitions.jpg",
+    "bytes": 504520,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "recoleta-cultural-center",
+    "pageUrl": "https://www.andrealkalay.com/copia-de-exhibitions-1",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg",
+    "filename": "12-recoleta-cultural-center.jpg",
+    "bytes": 504520,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "espacio-dar-tucuman",
+    "pageUrl": "https://www.andrealkalay.com/copia-de-recoleta-cultural-center",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg",
+    "filename": "13-espacio-dar-tucuman.jpg",
+    "bytes": 504520,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "oda-arte-art-fairs",
+    "pageUrl": "https://www.andrealkalay.com/copia-de-oda-arte-art-fairs",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg",
+    "filename": "14-oda-arte-art-fairs.jpg",
+    "bytes": 504520,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "museo-bellas-artes-frankling-rawson",
+    "pageUrl": "https://www.andrealkalay.com/museofranklingrawson",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_57edf040bd904cbfbd54c6fd2121198f~mv2_d_5141_3427_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_57edf040bd904cbfbd54c6fd2121198f~mv2_d_5141_3427_s_4_2.jpg",
+    "filename": "15-museo-bellas-artes-frankling-rawson.jpg",
+    "bytes": 1035108,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "park-pecno-slovenia",
+    "pageUrl": "https://www.andrealkalay.com/copia-de-exhibitions",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg/v1/fill/w_2500,h_1666,al_c/166dc0_9dce2ac470544da4a859545e23c3d090~mv2_d_5472_3648_s_4_2.jpg",
+    "filename": "16-park-pecno-slovenia.jpg",
+    "bytes": 504520,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "mundo-nuevo-gallery-art",
+    "pageUrl": "https://www.andrealkalay.com/mundonuevogalleryart",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_4234fab2adc844c292ec3dfdeadaa6a3~mv2.jpg/v1/fill/w_850,h_567,al_c/166dc0_4234fab2adc844c292ec3dfdeadaa6a3~mv2.jpg",
+    "filename": "17-mundo-nuevo-gallery-art.jpg",
+    "bytes": 95390,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "centro-cultural-mapocho-chile",
+    "pageUrl": "https://www.andrealkalay.com/centroculturalmapocho",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_af58c17fbf4f451d9287586b46c88059~mv2_d_1915_1436_s_2.jpeg/v1/fill/w_2500,h_1874,al_c/166dc0_af58c17fbf4f451d9287586b46c88059~mv2_d_1915_1436_s_2.jpeg",
+    "filename": "18-centro-cultural-mapocho-chile.jpg",
+    "bytes": 1090849,
+    "contentType": "image/jpeg"
+  },
+  {
+    "slug": "mundo-nuevo-kutho-group-show",
+    "pageUrl": "https://www.andrealkalay.com/mundo-nuevo-kutho",
+    "imageUrl": "https://static.wixstatic.com/media/166dc0_4234fab2adc844c292ec3dfdeadaa6a3~mv2.jpg/v1/fill/w_850,h_567,al_c/166dc0_4234fab2adc844c292ec3dfdeadaa6a3~mv2.jpg",
+    "filename": "19-mundo-nuevo-kutho-group-show.jpg",
+    "bytes": 95390,
+    "contentType": "image/jpeg"
+  }
+]
