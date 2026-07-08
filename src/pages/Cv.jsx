@@ -52,6 +52,7 @@ export default function Cv() {
             <img src="/contact/Andrea-Alkalay.jpg.avif" alt="Andrea Alkalay" />
           </figure>
           <div className="cv-intro reveal-delay">
+            <h4>About Andrea,</h4>
             <p>{intro}</p>
           </div>
         </section>
