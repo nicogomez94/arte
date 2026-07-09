@@ -44,6 +44,9 @@ export default function Home() {
               </Link>
             ))}
           </div>
+          <h3 className="home-view-more">
+            <Link to="/work/unfixed-landscapes">View more</Link>
+          </h3>
         </section>
       </main>
       <Footer />
