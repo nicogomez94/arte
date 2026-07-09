@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Navigate, Link, useParams } from 'react-router-dom';
 import { api } from '../api';
+import EditorialIntroCopy from '../components/EditorialIntroCopy';
 import FullscreenSlideshow from '../components/FullscreenSlideshow';
 import { Footer, Header, Loading } from '../components/SiteChrome';
 import { projectAssets, projectGridAssets } from '../projectAssets';
@@ -46,13 +47,14 @@ export default function WorkProject() {
             >
               <img key={`${slug}-${coverSlide.id}`} src={coverSlide.imageUrl} alt={coverSlide.alt || coverSlide.title} />
             </button>
-            <div className="editorial-intro-copy">
-              <h3>{project.title}</h3>
-              <p>A focused selection from the project archive, arranged for browsing before entering the full slideshow.</p>
+            <EditorialIntroCopy
+              title={project.title}
+              text={project.intro || 'A focused selection from the project archive, arranged for browsing before entering the full slideshow.'}
+            >
               <button className="tour-button project-start-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }}>
                 <span>Start viewing</span><b>→</b>
               </button>
-            </div>
+            </EditorialIntroCopy>
           </section>
 
           <section className="project-archive" aria-label={`${project.title} images`}>

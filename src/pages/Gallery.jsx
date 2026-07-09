@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api';
+import EditorialIntroCopy from '../components/EditorialIntroCopy';
 import FullscreenSlideshow from '../components/FullscreenSlideshow';
 import { Footer, Header, Loading } from '../components/SiteChrome';
 import { exhibitionAssets } from '../projectAssets';
@@ -30,13 +31,14 @@ export default function Gallery() {
           >
             <img src={slides[0]?.imageUrl || '/exhibicion-01.png'} alt={slides[0]?.alt || 'Exhibition view'} />
           </button>
-          <div className="editorial-intro-copy">
-            <h3>Exhibitions</h3>
-            <p>Installation views, visual research and exhibition fragments gathered as a quiet index of the work in space.</p>
+          <EditorialIntroCopy
+            title="Exhibitions"
+            text="Installation views, visual research and exhibition fragments gathered as a quiet index of the work in space. This archive follows how each project changes when it meets a room, a route, a wall or an outdoor landscape. The images are not only records of display; they show scale, distance, light and the relation between works. Together they trace how the practice expands beyond the individual piece and becomes a spatial experience."
+          >
             <button className="tour-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }} disabled={!slides.length}>
               <span>Start viewing</span><b>→</b>
             </button>
-          </div>
+          </EditorialIntroCopy>
         </section>
 
         <section className="gallery-archive" id="selected">

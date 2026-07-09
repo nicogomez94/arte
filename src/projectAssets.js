@@ -25,18 +25,14 @@ const unfixedFiles = [
   'Unfixed Landscapes_wounded systems-9.jpg',
   'Unfixed Landscapes_wounded systems-10.jpg',
   'Unfixed Landscapes_wounded systems-11.jpg',
-  'Unfixed Landscapes_wounded systems-12.jpg',
-  'Unfixed Landscapes_wounded systems-13.jpg',
-  'Unfixed Landscapes_wounded systems-14.jpg',
-  'Unfixed Landscapes_wounded systems-15.jpg',
-  'Unfixed Landscapes_wounded systems-16.jpg',
-  'Unfixed Landscapes_wounded systems-17.jpg',
-  'Unfixed Landscapes_wounded systems-18.jpg',
-  'Unfixed Landscapes_wounded systems-19.jpg',
-  'Unfixed Landscapes_wounded systems-20.jpg',
   'Unfixed Landscapes_wounded systems-21.jpg',
   'Unfixed Landscapes_wounded systems-22.jpg',
-  'Unfixed Landscapes_wounded systems-23.jpg'
+  'split-frames/Unfixed Landscapes_wounded systems-15 - left.jpg',
+  'split-frames/Unfixed Landscapes_wounded systems-15 - right.jpg',
+  'split-frames/Unfixed Landscapes_wounded systems-16 - left.jpg',
+  'split-frames/Unfixed Landscapes_wounded systems-16 - right.jpg',
+  'split-frames/Unfixed Landscapes_wounded systems-18 - left.jpg',
+  'split-frames/Unfixed Landscapes_wounded systems-18 - right.jpg'
 ];
 
 const rockCycleFiles = [
@@ -49,9 +45,7 @@ const rockCycleFiles = [
   'Rock Cycle Crak Path.jpg',
   'Rock Cycle MEMORY Restoration.jpg',
   'Rock Cycle Sealed Wounds.jpg',
-  'Rock Cycle Transitions.jpg',
-  'Rock Cycle archival.jpg',
-  'Rock Cycle archival 2.jpg'
+  'Rock Cycle Transitions.jpg'
 ];
 
 const recoletaExhibitionFiles = [
@@ -114,27 +108,7 @@ export const projectAssets = {
 };
 
 export const projectGridAssets = {
-  'unfixed-landscapes': projectAssets['unfixed-landscapes'].flatMap((slide, index) => {
-    if (slide.title === 'Unfixed Landscapes 15') {
-      return [
-        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-15 - left.jpg'), slideIndex: index },
-        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-15 - right.jpg'), slideIndex: index }
-      ];
-    }
-    if (slide.title === 'Unfixed Landscapes 16') {
-      return [
-        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-16 - left.jpg'), slideIndex: index },
-        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-16 - right.jpg'), slideIndex: index }
-      ];
-    }
-    if (slide.title === 'Unfixed Landscapes 18') {
-      return [
-        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-18 - left.jpg'), slideIndex: index },
-        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/unfixed/split-frames/Unfixed Landscapes_wounded systems-18 - right.jpg'), slideIndex: index }
-      ];
-    }
-    return [{ ...slide, slideIndex: index }];
-  }),
+  'unfixed-landscapes': projectAssets['unfixed-landscapes'].map((slide, index) => ({ ...slide, slideIndex: index })),
   'the-rock-cycle': projectAssets['the-rock-cycle'].flatMap((slide, index) => {
     if (slide.title === 'The Rock Cycle 06') {
       return [
@@ -181,14 +155,62 @@ export const workIndexItems = [
 ];
 
 export const exhibitionProjects = [
-  { slug: 'recoleta-cultural-center', title: 'Recoleta Cultural Center', year: 2023, imageUrl: asset('/exhibitions/portada/recoleta.png') },
-  { slug: 'espacio-dar-tucuman', title: 'Espacio DAR / Tucuman', year: 2025, imageUrl: asset('/exhibitions/portada/dar.png') },
-  { slug: 'park-pecno-slovenia', title: 'Park Pecno Slovenia', year: 2024, imageUrl: asset('/exhibitions/portada/park.png') },
-  { slug: 'museo-bellas-artes-frankling-rawson', title: 'Museo Bellas Artes Frankling Rawson', year: 2018, imageUrl: asset('/exhibitions/portada/frankkin rawson.png') },
-  { slug: 'oda-arte-art-fairs', title: 'OdA Arte. Art FAirs', year: 2021, imageUrl: asset('/exhibitions/portada/odaarte.png') },
-  { slug: 'mundo-nuevo-gallery-art', title: 'Mundo Nuevo Gallery Art', year: 2019, imageUrl: asset('/exhibitions/portada/mundo nuevo.png') },
-  { slug: 'centro-cultural-mapocho-chile', title: 'Centro Cultural Mapocho CHILE', year: 2018, imageUrl: asset('/exhibitions/portada/chile.png') },
-  { slug: 'mundo-nuevo-kutho-group-show', title: 'Mundo Nuevo/ Kutho/Group show', year: 2020, imageUrl: asset('/exhibitions/portada/kutho.png') }
+  {
+    slug: 'recoleta-cultural-center',
+    title: 'Recoleta Cultural Center',
+    year: 2023,
+    imageUrl: asset('/exhibitions/portada/recoleta.png'),
+    intro: 'An exhibition record of works installed in relation to architecture, distance and public movement. The images trace how each piece changes when it meets the scale and rhythm of the room. Walls, passages and viewing angles become part of the work, shaping the way materials are approached. The documentation preserves that encounter between object, space and viewer.'
+  },
+  {
+    slug: 'espacio-dar-tucuman',
+    title: 'Espacio DAR / Tucuman',
+    year: 2025,
+    imageUrl: asset('/exhibitions/portada/dar.png'),
+    intro: 'A site-responsive presentation where layers of landscape, drawing and installation unfold through the passage of the space. The documentation follows the works as they appear from different thresholds, shifting with distance, light and movement. Each view reveals another relation between surface and architecture, turning the exhibition into a sequence of visual pauses.'
+  },
+  {
+    slug: 'park-pecno-slovenia',
+    title: 'Park Pecno Slovenia',
+    year: 2024,
+    imageUrl: asset('/exhibitions/portada/park.png'),
+    intro: 'A dialogue between sculptural fragments and the surrounding park. The project places material memory outdoors, allowing stone, textile and landscape to share the same changing light. The open setting gives the works a different temporality, exposed to weather, vegetation and passage. Documentation becomes a way of following how the pieces settle into a living environment.'
+  },
+  {
+    slug: 'museo-bellas-artes-frankling-rawson',
+    title: 'Museo Bellas Artes Frankling Rawson',
+    year: 2018,
+    imageUrl: asset('/exhibitions/portada/frankkin rawson.png'),
+    intro: 'Museum views that bring the works into a broader conversation with territory and archive. The installation emphasizes quiet transitions between image, material and institutional space. Within the museum, the pieces hold a measured distance from the viewer while still carrying traces of landscape and body. The record focuses on that balance between containment and expansion.'
+  },
+  {
+    slug: 'oda-arte-art-fairs',
+    title: 'OdA Arte. Art FAirs',
+    year: 2021,
+    imageUrl: asset('/exhibitions/portada/odaarte.png'),
+    intro: 'A compact fair presentation focused on encounters between works, viewers and temporary architecture. The images preserve the intensity of a brief display without losing its material detail. In this context, each piece has to speak quickly while still holding its own silence. The documentation follows that compressed rhythm, where proximity and circulation shape the reading of the work.'
+  },
+  {
+    slug: 'mundo-nuevo-gallery-art',
+    title: 'Mundo Nuevo Gallery Art',
+    year: 2019,
+    imageUrl: asset('/exhibitions/portada/mundo nuevo.png'),
+    intro: 'Gallery documentation shaped by proximity and sequence. The installation frames the works as a visual conversation, where surface, gesture and scale move from one piece to the next. The space allows details to unfold gradually, creating a close relation between image and material presence. Each photograph keeps a trace of that dialogue and the atmosphere around it.'
+  },
+  {
+    slug: 'centro-cultural-mapocho-chile',
+    title: 'Centro Cultural Mapocho CHILE',
+    year: 2018,
+    imageUrl: asset('/exhibitions/portada/chile.png'),
+    intro: 'A cultural center presentation where the works occupy a large architectural setting. The record follows the tension between fragile images and the strong presence of the surrounding space. Scale becomes central: the pieces appear both delicate and insistent within the architecture. The documentation captures how the work changes when viewed across distance and through movement.'
+  },
+  {
+    slug: 'mundo-nuevo-kutho-group-show',
+    title: 'Mundo Nuevo/ Kutho/Group show',
+    year: 2020,
+    imageUrl: asset('/exhibitions/portada/kutho.png'),
+    intro: 'A group-show context for Kutho, bringing its material language into dialogue with other practices. The installation highlights how each work carries its own terrain into a shared space. In relation to the surrounding pieces, Kutho keeps its attention on texture, memory and place. The documentation shows that exchange without dissolving the project’s quiet internal rhythm.'
+  }
 ];
 
 export const getExhibitionSlides = slug => {

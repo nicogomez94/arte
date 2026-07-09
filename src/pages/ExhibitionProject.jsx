@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
+import EditorialIntroCopy from '../components/EditorialIntroCopy';
 import FullscreenSlideshow from '../components/FullscreenSlideshow';
 import { Footer, Header } from '../components/SiteChrome';
 import { exhibitionProjects, getExhibitionSlides } from '../projectAssets';
@@ -28,13 +29,11 @@ export default function ExhibitionProject() {
           >
             <img src={project.imageUrl || coverSlide?.imageUrl} alt={coverSlide?.alt || project.title} />
           </button>
-          <div className="editorial-intro-copy">
-            <h3>{project.title}</h3>
-            <p>{project.year}</p>
+          <EditorialIntroCopy title={project.title} text={`${project.year}. ${project.intro || 'Selected exhibition documentation from the archive.'}`}>
             <button className="tour-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }} disabled={!slides.length}>
               <span>Start viewing</span><b>→</b>
             </button>
-          </div>
+          </EditorialIntroCopy>
         </section>
 
         <section className="gallery-archive" id="selected">
