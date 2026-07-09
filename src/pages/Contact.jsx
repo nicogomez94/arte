@@ -11,7 +11,7 @@ export default function Contact() {
           </figure>
           <div className="contact-content reveal-delay">
             <div className="contact-heading">
-              <span className="eyebrow">Contact</span>
+              {/* <span className="eyebrow">Contact</span> */}
               <h4>Let’s connect.</h4>
               <p>Exhibitions, collaborations and press.</p>
             </div>
