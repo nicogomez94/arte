@@ -26,7 +26,7 @@ export default function ExhibitionProject() {
             disabled={!slides.length}
             aria-label={`Open ${project.title} slideshow`}
           >
-            <img src={coverSlide?.imageUrl || project.imageUrl} alt={coverSlide?.alt || project.title} />
+            <img src={project.imageUrl || coverSlide?.imageUrl} alt={coverSlide?.alt || project.title} />
           </button>
           <div className="editorial-intro-copy">
             <h3>{project.title}</h3>

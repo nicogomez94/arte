@@ -181,14 +181,14 @@ export const workIndexItems = [
 ];
 
 export const exhibitionProjects = [
-  { slug: 'recoleta-cultural-center', title: 'Recoleta Cultural Center', year: 2023, imageUrl: '/andrealkalay-site-exhibition-first-images/02-recoleta-cultural-center.jpg' },
-  { slug: 'espacio-dar-tucuman', title: 'Espacio DAR / Tucuman', year: 2025, imageUrl: '/andrealkalay-site-exhibition-first-images/03-espacio-dar-tucuman.jpg' },
-  { slug: 'park-pecno-slovenia', title: 'Park Pecno Slovenia', year: 2024, imageUrl: '/andrealkalay-site-exhibition-first-images/06-park-pecno-slovenia.jpg' },
-  { slug: 'museo-bellas-artes-frankling-rawson', title: 'Museo Bellas Artes Frankling Rawson', year: 2018, imageUrl: '/andrealkalay-site-exhibition-first-images/05-museo-bellas-artes-frankling-rawson.jpg' },
-  { slug: 'oda-arte-art-fairs', title: 'OdA Arte. Art FAirs', year: 2021, imageUrl: '/andrealkalay-site-exhibition-first-images/04-oda-arte-art-fairs.jpg' },
-  { slug: 'mundo-nuevo-gallery-art', title: 'Mundo Nuevo Gallery Art', year: 2019, imageUrl: '/andrealkalay-site-exhibition-first-images/07-mundo-nuevo-gallery-art.jpg' },
-  { slug: 'centro-cultural-mapocho-chile', title: 'Centro Cultural Mapocho CHILE', year: 2018, imageUrl: '/andrealkalay-site-exhibition-first-images/08-centro-cultural-mapocho-chile.jpg' },
-  { slug: 'mundo-nuevo-kutho-group-show', title: 'Mundo Nuevo/ Kutho/Group show', year: 2020, imageUrl: '/andrealkalay-site-exhibition-first-images/09-mundo-nuevo-kutho-group-show.jpg' }
+  { slug: 'recoleta-cultural-center', title: 'Recoleta Cultural Center', year: 2023, imageUrl: asset('/exhibitions/portada/recoleta.png') },
+  { slug: 'espacio-dar-tucuman', title: 'Espacio DAR / Tucuman', year: 2025, imageUrl: asset('/exhibitions/portada/dar.png') },
+  { slug: 'park-pecno-slovenia', title: 'Park Pecno Slovenia', year: 2024, imageUrl: asset('/exhibitions/portada/park.png') },
+  { slug: 'museo-bellas-artes-frankling-rawson', title: 'Museo Bellas Artes Frankling Rawson', year: 2018, imageUrl: asset('/exhibitions/portada/frankkin rawson.png') },
+  { slug: 'oda-arte-art-fairs', title: 'OdA Arte. Art FAirs', year: 2021, imageUrl: asset('/exhibitions/portada/odaarte.png') },
+  { slug: 'mundo-nuevo-gallery-art', title: 'Mundo Nuevo Gallery Art', year: 2019, imageUrl: asset('/exhibitions/portada/mundo nuevo.png') },
+  { slug: 'centro-cultural-mapocho-chile', title: 'Centro Cultural Mapocho CHILE', year: 2018, imageUrl: asset('/exhibitions/portada/chile.png') },
+  { slug: 'mundo-nuevo-kutho-group-show', title: 'Mundo Nuevo/ Kutho/Group show', year: 2020, imageUrl: asset('/exhibitions/portada/kutho.png') }
 ];
 
 export const getExhibitionSlides = slug => {
