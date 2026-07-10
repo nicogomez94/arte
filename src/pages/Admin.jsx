@@ -4,14 +4,12 @@ import { api } from '../api';
 import { defaultSiteContent } from '../siteContent';
 
 const sections = [
-  { key: 'home', label: 'Home', icon: '⌂', route: '/' },
-  { key: 'work', label: 'Work', icon: '□', route: '/work' },
-  { key: 'exhibitions', label: 'Exhibitions', icon: '◇', route: '/exhibitions' },
-  { key: 'statement', label: 'Statement', icon: '¶', route: '/statement' },
-  { key: 'about', label: 'About', icon: '○', route: '/acerca-de-mi' },
-  { key: 'contact', label: 'Contact', icon: '@', route: '/contacto' },
-  { key: 'cv', label: 'CV', icon: '≡', route: '/cv' },
-  { key: 'global', label: 'General', icon: '⚙', route: '/' }
+  { key: 'home', label: 'Home', route: '/' },
+  { key: 'work', label: 'Work', route: '/work' },
+  { key: 'exhibitions', label: 'Exhibitions', route: '/exhibitions' },
+  { key: 'statement', label: 'Statement', route: '/statement' },
+  { key: 'contact', label: 'Contact', route: '/contacto' },
+  { key: 'cv', label: 'CV', route: '/cv' }
 ];
 
 const labels = {
@@ -76,8 +74,8 @@ function Login({ onSuccess }) {
     <main className="admin-login">
       <section>
         <Link to="/" className="admin-login-brand">andrea alkalay</Link>
-        <span className="eyebrow">Panel de contenido</span>
-        <h1>Editar el<br /><em>sitio.</em></h1>
+        {/* <span className="eyebrow">Panel de contenido</span> */}
+        <h2>Panel Autoadministrable</h2>
         <p>Ingresá tu contraseña para actualizar los textos y las imágenes de cada página.</p>
         <form onSubmit={submit}>
           <label htmlFor="admin-password">Contraseña</label>
@@ -87,7 +85,6 @@ function Login({ onSuccess }) {
         <small>Acceso privado · sesión protegida</small>
       </section>
       <figure><img src="/exhibicion-02.png" alt="Detalle de obra en exhibición" /><figcaption>Gestión de contenido · AA</figcaption></figure>
-      <p className="admin-credit">Hecho por <a href="https://zigodev.com.ar" target="_blank" rel="noopener noreferrer">zigodev</a></p>
     </main>
   );
 }
@@ -117,22 +114,37 @@ function ImageField({ label, value, onChange }) {
 
 function ContentFields({ value, path = [], onChange }) {
   if (Array.isArray(value)) {
+    const objectItems = value.some(item => item && typeof item === 'object');
+    if (!objectItems) {
+      const fieldName = path.at(-1);
+      const paragraphs = ['paragraphs', 'bioParagraphs', 'practiceParagraphs'].includes(fieldName);
+      const separator = paragraphs ? '\n\n' : '\n';
+      return (
+        <label className="admin-content-field field-wide admin-combined-text">
+          <span>Contenido</span>
+          <textarea
+            value={value.join(separator)}
+            rows={Math.min(22, Math.max(8, value.length + 4))}
+            onChange={event => onChange(path, event.target.value.split(paragraphs ? /\n\s*\n/ : /\n/).map(item => item.trim()).filter(Boolean))}
+          />
+        </label>
+      );
+    }
     return (
       <div className="admin-content-list">
         {value.map((item, index) => {
           const itemPath = [...path, index];
           if (item && typeof item === 'object') return (
-            <details className="admin-content-card" key={item.id || item.slug || index} open={path.length < 2 && index === 0}>
-              <summary><span>{String(index + 1).padStart(2, '0')}</span><strong>{titleForItem(item, index)}</strong><b>＋</b></summary>
+            <details className="admin-content-card" key={item.id || item.slug || index}>
+              <summary className={item.imageUrl ? 'has-thumbnail' : ''}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                {item.imageUrl && <img src={item.imageUrl} alt="" />}
+                <strong>{titleForItem(item, index)}</strong><b>＋</b>
+              </summary>
               <div className="admin-content-card-body"><ContentFields value={item} path={itemPath} onChange={onChange} /></div>
             </details>
           );
-          return (
-            <label className="admin-content-field field-wide" key={index}>
-              <span>Texto {index + 1}</span>
-              <textarea value={item ?? ''} rows="3" onChange={event => onChange(itemPath, event.target.value)} />
-            </label>
-          );
+          return null;
         })}
       </div>
     );
@@ -212,6 +224,11 @@ export default function Admin() {
 
   const logout = async () => { await api.logout(); setAuth(false); };
   const current = sections.find(section => section.key === active);
+  const visibleDraft = active === 'home' ? {
+    heroImageUrl: draft.heroImageUrl,
+    heroImageAlt: draft.heroImageAlt,
+    heroCaption: draft.heroCaption
+  } : draft;
 
   if (auth === null) return <div className="admin-boot">abriendo editor…</div>;
   if (!auth) return <Login onSuccess={async () => { setAuth(true); await loadContent(); }} />;
@@ -223,11 +240,11 @@ export default function Admin() {
         <nav>
           {sections.map(section => (
             <button className={active === section.key ? 'is-active' : ''} type="button" key={section.key} onClick={() => selectSection(section.key)}>
-              <i>{section.icon}</i>{section.label}
+              {section.label}
             </button>
           ))}
         </nav>
-        <div className="admin-sidebar-foot"><button type="button" onClick={logout}>Cerrar sesión</button><p>Hecho por <a href="https://zigodev.com.ar" target="_blank" rel="noopener noreferrer">zigodev</a></p></div>
+        <div className="admin-sidebar-foot"><button type="button" onClick={logout}>Cerrar sesión</button></div>
       </aside>
 
       <main className="admin-main">
@@ -235,12 +252,8 @@ export default function Admin() {
           <div><span className="eyebrow">Contenido del sitio</span><h1>{current.label}</h1></div>
           <Link className="admin-preview-link" to={current.route} target="_blank">Ver página ↗</Link>
         </header>
-        <section className="admin-content-note">
-          <strong>Editá solamente el contenido.</strong>
-          <p>Podés cambiar textos e imágenes. El diseño, el orden de las secciones y el formato del sitio se mantienen protegidos.</p>
-        </section>
         <form className="admin-content-editor" onSubmit={save}>
-          <ContentFields value={draft} onChange={updateAtPath} />
+          <ContentFields value={visibleDraft} onChange={updateAtPath} />
           <div className="admin-content-savebar"><p role="status">{status}</p><button type="submit" disabled={busy || !dirty}>{busy ? 'Guardando…' : 'Guardar cambios →'}</button></div>
         </form>
       </main>

@@ -85,8 +85,9 @@ export function Footer() {
   const global = useSiteContent('global');
   return (
     <footer className="site-footer">
-      <span>
-        {global.footerText} · Hecho por{' '}
+      <span>{global.footerText}</span>
+      <span className="site-footer-credit">
+        Hecho por{' '}
         <a href="https://zigodev.com.ar" target="_blank" rel="noopener noreferrer">zigodev</a>
       </span>
     </footer>

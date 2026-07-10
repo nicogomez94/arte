@@ -1,6 +1,6 @@
 # Andrea Alkalay — archivo de obra
 
-Sitio React + Vite con galerías inmersivas y un panel privado de contenido. Desde `/admin` se pueden editar los textos y las imágenes de Home, Work, Exhibitions, Statement, About, Contact, CV y los datos generales del sitio, sin modificar el diseño. Express sirve la API y el frontend desde un único proceso; PostgreSQL se gestiona con Prisma.
+Sitio React + Vite con galerías inmersivas y un panel privado de contenido. Desde `/admin` se pueden editar los contenidos habilitados de Home, Work, Exhibitions, Statement, Contact y CV, sin modificar el diseño. Express sirve la API y el frontend desde un único proceso; PostgreSQL se gestiona con Prisma.
 
 ## Desarrollo
 
