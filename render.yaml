@@ -5,7 +5,7 @@ services:
     plan: free
     repo: https://github.com/nicogomez94/arte
     branch: main
-    buildCommand: npm ci --include=dev && npx prisma migrate deploy && npm run build
+    buildCommand: npm ci --include=dev && npx prisma generate && npx prisma migrate deploy && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
     autoDeployTrigger: commit

@@ -3,12 +3,14 @@ import { Navigate, useParams } from 'react-router-dom';
 import EditorialIntroCopy from '../components/EditorialIntroCopy';
 import FullscreenSlideshow from '../components/FullscreenSlideshow';
 import { Footer, Header } from '../components/SiteChrome';
-import { exhibitionProjects, getExhibitionSlides } from '../projectAssets';
+import { useSiteContent } from '../siteContent';
 
 export default function ExhibitionProject() {
   const { slug } = useParams();
+  const { projects: exhibitionProjects } = useSiteContent('exhibitions');
+  const global = useSiteContent('global');
   const project = exhibitionProjects.find(item => item.slug === slug);
-  const slides = getExhibitionSlides(slug);
+  const slides = project?.images || [];
   const [open, setOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
 
@@ -31,7 +33,7 @@ export default function ExhibitionProject() {
           </button>
           <EditorialIntroCopy title={project.title} text={`${project.year}. ${project.intro || 'Selected exhibition documentation from the archive.'}`}>
             <button className="tour-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }} disabled={!slides.length}>
-              <span>Start viewing</span><b>→</b>
+              <span>{global.startViewingLabel}</span><b>→</b>
             </button>
           </EditorialIntroCopy>
         </section>

@@ -23,3 +23,16 @@ model Artwork {
 
   @@index([published, position])
 }
+
+model SiteContent {
+  section   String   @id
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
+model SiteMedia {
+  id        String   @id @default(uuid())
+  mime      String
+  data      Bytes
+  createdAt DateTime @default(now())
+}

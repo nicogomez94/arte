@@ -3,6 +3,8 @@ import express from 'express';
 import { createStore } from './store.js';
 
 const SESSION_DURATION = 12 * 60 * 60 * 1000;
+const CONTENT_SECTIONS = new Set(['global', 'home', 'work', 'exhibitions', 'statement', 'about', 'contact', 'cv']);
+const MEDIA_ID = /^[a-f0-9-]{36}$/;
 
 const safeEqual = (left = '', right = '') => {
   const a = Buffer.from(String(left));
@@ -60,14 +62,44 @@ export const createApi = ({ production = false } = {}) => {
     next();
   };
   const validationError = error => error.message?.startsWith('Ingresá') || error.message?.includes('imagen') || error.message?.includes('año');
+  const materializeImages = async value => {
+    if (typeof value === 'string' && value.startsWith('data:image/')) {
+      const match = value.match(/^data:(image\/(?:webp|jpeg|png|avif));base64,([A-Za-z0-9+/=]+)$/);
+      if (!match) throw new Error('El formato de una imagen no es válido.');
+      const data = Buffer.from(match[2], 'base64');
+      if (!data.length || data.length > 8_000_000) throw new Error('Una imagen supera el límite permitido.');
+      const id = crypto.randomUUID();
+      await store.saveMedia(id, match[1], data);
+      return `/api/media/${id}`;
+    }
+    if (Array.isArray(value)) return Promise.all(value.map(materializeImages));
+    if (value && typeof value === 'object') {
+      const entries = await Promise.all(Object.entries(value).map(async ([key, item]) => [key, await materializeImages(item)]));
+      return Object.fromEntries(entries);
+    }
+    return value;
+  };
 
-  router.use(express.json({ limit: '9mb' }));
+  router.use(express.json({ limit: '45mb' }));
   router.get('/api/health', async (_req, res) => {
     try { await store.health(); res.json({ ok: true, storage: store.mode }); }
     catch { res.status(503).json({ ok: false }); }
   });
   router.get('/api/artworks', async (_req, res, next) => {
     try { res.json(await store.publicArtworks()); } catch (error) { next(error); }
+  });
+  router.get('/api/content', async (_req, res, next) => {
+    try { res.json(await store.publicContent()); } catch (error) { next(error); }
+  });
+  router.get('/api/media/:id', async (req, res, next) => {
+    try {
+      if (!MEDIA_ID.test(req.params.id)) return res.status(404).end();
+      const media = await store.readMedia(req.params.id);
+      if (!media) return res.status(404).end();
+      res.set('Content-Type', media.mime);
+      res.set('Cache-Control', 'public, max-age=31536000, immutable');
+      res.send(media.data);
+    } catch (error) { next(error); }
   });
   router.post('/api/admin/login', (req, res) => {
     const key = req.ip || req.socket.remoteAddress;
@@ -87,6 +119,22 @@ export const createApi = ({ production = false } = {}) => {
   router.get('/api/admin/session', requireAdmin, (_req, res) => res.json({ authenticated: true }));
   router.get('/api/admin/artworks', requireAdmin, async (_req, res, next) => {
     try { res.json(await store.allArtworks()); } catch (error) { next(error); }
+  });
+  router.get('/api/admin/content', requireAdmin, async (_req, res, next) => {
+    try { res.json(await store.publicContent()); } catch (error) { next(error); }
+  });
+  router.put('/api/admin/content/:section', requireAdmin, async (req, res, next) => {
+    try {
+      const { section } = req.params;
+      if (!CONTENT_SECTIONS.has(section)) return res.status(404).json({ error: 'La sección no existe.' });
+      if (!req.body || Array.isArray(req.body) || typeof req.body !== 'object') return res.status(400).json({ error: 'El contenido no es válido.' });
+      if (JSON.stringify(req.body).length > 40_000_000) return res.status(413).json({ error: 'La sección supera el límite permitido.' });
+      const content = await materializeImages(req.body);
+      res.json(await store.updateContent(section, content));
+    } catch (error) {
+      if (error.message?.includes('imagen')) return res.status(400).json({ error: error.message });
+      next(error);
+    }
   });
   router.post('/api/admin/artworks', requireAdmin, async (req, res, next) => {
     try { res.status(201).json(await store.create(normalizeArtwork(req.body))); }

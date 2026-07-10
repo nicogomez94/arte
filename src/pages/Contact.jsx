@@ -1,24 +1,28 @@
 import { Footer, Header } from '../components/SiteChrome';
+import { useSiteContent } from '../siteContent';
 
 export default function Contact() {
+  const content = useSiteContent('contact');
   return (
     <div className="site-page contact-page">
       <Header />
       <main className="contact-main">
         <section className="contact-hero">
           <figure className="contact-portrait reveal">
-            <img src="/exhibicion-03.png" alt="Andrea Alkalay exhibition detail" />
+            <img src={content.imageUrl} alt={content.imageAlt} />
           </figure>
           <div className="contact-content reveal-delay">
             <div className="contact-heading">
               {/* <span className="eyebrow">Contact</span> */}
-              <h4>Let’s connect.</h4>
-              <p>Exhibitions, collaborations and press.</p>
+              <h4>{content.title}</h4>
+              <p>{content.subtitle}</p>
             </div>
             <div className="contact-directory">
-              <a href="mailto:info@andrealkalay.com"><span>Email</span><strong>info@andrealkalay.com</strong><b>↗</b></a>
-              <a href="https://instagram.com/andrealkalay" target="_blank" rel="noopener noreferrer"><span>Instagram</span><strong>@andrealkalay</strong><b>↗</b></a>
-              <a href="https://www.andrealkalay.com/" target="_blank" rel="noopener noreferrer"><span>Website</span><strong>andrealkalay.com</strong><b>↗</b></a>
+              {content.links.map((link, index) => (
+                <a href={link.url} key={index} target={link.url.startsWith('http') ? '_blank' : undefined} rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}>
+                  <span>{link.label}</span><strong>{link.value}</strong><b>↗</b>
+                </a>
+              ))}
             </div>
           </div>
         </section>

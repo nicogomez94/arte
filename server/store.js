@@ -6,9 +6,19 @@ import { defaultArtworks } from './defaultArtworks.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const localFile = path.resolve(__dirname, '../.local/artworks.json');
+const localContentFile = path.resolve(__dirname, '../.local/site-content.json');
+const localMediaDirectory = path.resolve(__dirname, '../.local/media');
 const byPosition = (a, b) => a.position - b.position || a.id - b.id;
 
 const createLocalStore = () => {
+  const readContent = async () => {
+    try { return JSON.parse(await fs.readFile(localContentFile, 'utf8')); }
+    catch (error) { if (error.code !== 'ENOENT') throw error; return {}; }
+  };
+  const writeContent = async content => {
+    await fs.mkdir(path.dirname(localContentFile), { recursive: true });
+    await fs.writeFile(localContentFile, JSON.stringify(content, null, 2));
+  };
   const read = async () => {
     try {
       return JSON.parse(await fs.readFile(localFile, 'utf8'));
@@ -28,6 +38,29 @@ const createLocalStore = () => {
   return {
     mode: 'local-json',
     async health() { return true; },
+    async publicContent() { return readContent(); },
+    async updateContent(section, data) {
+      const content = await readContent();
+      content[section] = data;
+      await writeContent(content);
+      return data;
+    },
+    async saveMedia(id, mime, data) {
+      await fs.mkdir(localMediaDirectory, { recursive: true });
+      await Promise.all([
+        fs.writeFile(path.join(localMediaDirectory, id), data),
+        fs.writeFile(path.join(localMediaDirectory, `${id}.json`), JSON.stringify({ mime }))
+      ]);
+    },
+    async readMedia(id) {
+      try {
+        const [data, metadata] = await Promise.all([
+          fs.readFile(path.join(localMediaDirectory, id)),
+          fs.readFile(path.join(localMediaDirectory, `${id}.json`), 'utf8')
+        ]);
+        return { data, mime: JSON.parse(metadata).mime };
+      } catch (error) { if (error.code === 'ENOENT') return null; throw error; }
+    },
     async publicArtworks() { return (await read()).filter(item => item.published).sort(byPosition); },
     async allArtworks() { return (await read()).sort(byPosition); },
     async find(id) { return (await read()).find(item => item.id === id) || null; },
@@ -63,6 +96,18 @@ const createPrismaStore = () => {
   return {
     mode: 'postgresql',
     async health() { await prisma.$queryRaw`SELECT 1`; return true; },
+    async publicContent() {
+      const sections = await prisma.siteContent.findMany();
+      return Object.fromEntries(sections.map(item => [item.section, item.data]));
+    },
+    async updateContent(section, data) {
+      const saved = await prisma.siteContent.upsert({
+        where: { section }, update: { data }, create: { section, data }
+      });
+      return saved.data;
+    },
+    async saveMedia(id, mime, data) { await prisma.siteMedia.create({ data: { id, mime, data } }); },
+    async readMedia(id) { return prisma.siteMedia.findUnique({ where: { id }, select: { mime: true, data: true } }); },
     publicArtworks: () => prisma.artwork.findMany({ where: { published: true }, orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }),
     allArtworks: () => prisma.artwork.findMany({ orderBy: [{ position: 'asc' }, { createdAt: 'asc' }] }),
     find: id => prisma.artwork.findUnique({ where: { id } }),

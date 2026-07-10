@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSiteContent } from '../siteContent';
 
 export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, onClose, label = 'Artwork slideshow' }) {
+  const global = useSiteContent('global');
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(true);
   const pointerStart = useRef(null);
@@ -56,10 +58,10 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
       }}
     >
       <header className="slideshow-header">
-        <span className="slideshow-brand">andrea alkalay</span>
+        <span className="slideshow-brand">{global.artistName}</span>
         <div>
-          <button type="button" onClick={() => setPlaying(value => !value)}>{playing ? 'pause' : 'play'}</button>
-          <button ref={closeButton} type="button" onClick={onClose}>close x</button>
+          <button type="button" onClick={() => setPlaying(value => !value)}>{playing ? global.pauseLabel : global.playLabel}</button>
+          <button ref={closeButton} type="button" onClick={onClose}>{global.closeLabel}</button>
         </div>
       </header>
       <div className="slideshow-stage">

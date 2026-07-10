@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSiteContent } from '../siteContent';
 
 export default function EditorialIntroCopy({ title, children, text }) {
+  const global = useSiteContent('global');
   const textRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
   const [canExpand, setCanExpand] = useState(false);
@@ -41,7 +43,7 @@ export default function EditorialIntroCopy({ title, children, text }) {
           onClick={() => setExpanded(value => !value)}
           aria-expanded={expanded}
         >
-          {expanded ? 'Show less' : 'Expand'}
+          {expanded ? global.showLessLabel : global.expandLabel}
         </button>
       )}
       {children}

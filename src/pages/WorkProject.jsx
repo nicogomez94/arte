@@ -1,33 +1,19 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Navigate, Link, useParams } from 'react-router-dom';
-import { api } from '../api';
+import { useState } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 import EditorialIntroCopy from '../components/EditorialIntroCopy';
 import FullscreenSlideshow from '../components/FullscreenSlideshow';
-import { Footer, Header, Loading } from '../components/SiteChrome';
-import { projectAssets, projectGridAssets } from '../projectAssets';
-import { findProject, projects } from '../projects';
+import { Footer, Header } from '../components/SiteChrome';
+import { useSiteContent } from '../siteContent';
 
 export default function WorkProject() {
   const { slug } = useParams();
-  const project = findProject(slug);
-  const [artworks, setArtworks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { projects } = useSiteContent('work');
+  const global = useSiteContent('global');
+  const project = projects.find(item => item.slug === slug);
   const [open, setOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
-  const hasProjectAssets = Boolean(projectAssets[slug]?.length);
-
-  useEffect(() => {
-    api.artworks().then(setArtworks).catch(() => setArtworks([])).finally(() => setLoading(false));
-  }, []);
-
-  const projectIndex = Math.max(0, projects.findIndex(item => item.slug === slug));
-  const slides = useMemo(() => {
-    if (projectAssets[slug]?.length) return projectAssets[slug];
-    if (!artworks.length) return [];
-    const offset = projectIndex % artworks.length;
-    return [...artworks.slice(offset), ...artworks.slice(0, offset)];
-  }, [artworks, projectIndex, slug]);
-  const gridSlides = projectGridAssets[slug] || slides.map((slide, index) => ({ ...slide, slideIndex: index }));
+  const slides = project?.images || [];
+  const gridSlides = (project?.gridImages || slides).map((slide, index) => ({ ...slide, slideIndex: slide.slideIndex ?? index }));
 
   if (!project) return <Navigate to="/work/unfixed-landscapes" replace />;
   const coverSlide = slides[0];
@@ -36,7 +22,7 @@ export default function WorkProject() {
     <div className="site-page project-page">
       <Header />
       <main className="project-main">
-        {loading && !hasProjectAssets ? <Loading /> : !coverSlide ? <p className="empty-state">No images available.</p> : (
+        {!coverSlide ? <p className="empty-state">{global.noImagesLabel}</p> : (
           <>
           <section className="editorial-intro project-preview" aria-label={project.title}>
             <button
@@ -52,7 +38,7 @@ export default function WorkProject() {
               text={project.intro || 'A focused selection from the project archive, arranged for browsing before entering the full slideshow.'}
             >
               <button className="tour-button project-start-button" type="button" onClick={() => { setStartIndex(0); setOpen(true); }}>
-                <span>Start viewing</span><b>→</b>
+                <span>{global.startViewingLabel}</span><b>→</b>
               </button>
             </EditorialIntroCopy>
           </section>

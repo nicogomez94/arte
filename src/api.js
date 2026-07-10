@@ -27,6 +27,7 @@ const toEnglishArtwork = artwork => Object.fromEntries(
 );
 
 export const api = {
+  content: () => request('/api/content'),
   artworks: () => request('/api/artworks').then(items => items.map(toEnglishArtwork)),
   session: () => request('/api/admin/session'),
   adminArtworks: () => request('/api/admin/artworks'),
@@ -34,5 +35,7 @@ export const api = {
   logout: () => request('/api/admin/logout', { method: 'POST', body: '{}' }),
   createArtwork: artwork => request('/api/admin/artworks', { method: 'POST', body: JSON.stringify(artwork) }),
   updateArtwork: artwork => request(`/api/admin/artworks/${artwork.id}`, { method: 'PUT', body: JSON.stringify(artwork) }),
-  deleteArtwork: id => request(`/api/admin/artworks/${id}`, { method: 'DELETE' })
+  deleteArtwork: id => request(`/api/admin/artworks/${id}`, { method: 'DELETE' }),
+  adminContent: () => request('/api/admin/content'),
+  updateContent: (section, content) => request(`/api/admin/content/${section}`, { method: 'PUT', body: JSON.stringify(content) })
 };

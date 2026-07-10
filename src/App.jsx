@@ -10,6 +10,7 @@ import ExhibitionsIndex from './pages/ExhibitionsIndex';
 import WorkIndex from './pages/WorkIndex';
 import WorkProject from './pages/WorkProject';
 import Statement from './pages/Statement';
+import { SiteContentProvider } from './siteContent';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -19,7 +20,7 @@ function ScrollToTop() {
 
 export default function App() {
   return (
-    <>
+    <SiteContentProvider>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -35,6 +36,6 @@ export default function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </>
+    </SiteContentProvider>
   );
 }

@@ -1,47 +1,46 @@
 import { Link } from 'react-router-dom';
 import { Footer, Header } from '../components/SiteChrome';
+import { useSiteContent } from '../siteContent';
 
 export default function About() {
+  const content = useSiteContent('about');
   return (
     <div className="site-page about-page">
       <Header />
       <main>
         <section className="about-hero">
           <div className="about-heading reveal">
-            <span className="eyebrow">About</span>
-            <h1>Andrea<br /><em>Alkalay</em></h1>
-            <p>Visual artist · Buenos Aires, Argentina</p>
+            <span className="eyebrow">{content.eyebrow}</span>
+            <h1>{content.nameFirstLine}<br /><em>{content.nameSecondLine}</em></h1>
+            <p>{content.role}</p>
           </div>
           <figure className="about-portrait reveal-delay">
-            <img src="/exhibicion-03.png" alt="Andrea Alkalay artwork in an exhibition space" />
+            <img src={content.portraitImageUrl} alt={content.portraitImageAlt} />
           </figure>
         </section>
 
         <section className="about-statement">
-          <div className="about-statement-label"><span className="eyebrow">Practice</span></div>
+          <div className="about-statement-label"><span className="eyebrow">{content.practiceLabel}</span></div>
           <div className="about-copy">
-            <h2>Landscape as<br /><em>a living archive.</em></h2>
+            <h2>{content.practiceTitle}</h2>
             <div className="about-columns">
-              <p>Her practice moves between photography, material research and installation.</p>
-              <p>Images become objects, spaces and traces of memory.</p>
+              {content.practiceParagraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
             </div>
           </div>
         </section>
 
         <section className="about-detail">
           <figure>
-            <img src="/exhibicion-01.png" alt="Andrea Alkalay installation at Soulangh Cultural Park" />
-            <figcaption>Soulangh Cultural Park · Taiwan · 2026</figcaption>
+            <img src={content.detailImageUrl} alt={content.detailImageAlt} />
+            <figcaption>{content.detailCaption}</figcaption>
           </figure>
           <div className="about-detail-copy">
-            <span className="eyebrow">Matter &amp; territory</span>
-            <h2>Photography<br />beyond the frame.</h2>
+            <span className="eyebrow">{content.detailLabel}</span>
+            <h2>{content.detailTitle}</h2>
             <dl className="about-facts">
-              <div><dt>Based</dt><dd>Buenos Aires, Argentina</dd></div>
-              <div><dt>Education</dt><dd>Industrial Design · UBA</dd></div>
-              <div><dt>Media</dt><dd>Photography · installation · collage</dd></div>
+              {content.facts.map((fact, index) => <div key={index}><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}
             </dl>
-            <Link className="text-link" to="/work/unfixed-landscapes">View work <span>→</span></Link>
+            <Link className="text-link" to="/work/unfixed-landscapes">{content.linkLabel} <span>→</span></Link>
           </div>
         </section>
       </main>

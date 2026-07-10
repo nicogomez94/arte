@@ -1,13 +1,44 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
-import { DEBUG, debugArtwork } from '../debugDefaults';
+import { defaultSiteContent } from '../siteContent';
 
-const blankArtwork = () => ({
-  ...(DEBUG ? debugArtwork : {
-    title: '', series: '', year: new Date().getFullYear(), technique: '', description: '', alt: '', published: true, position: 0, imageUrl: ''
-  })
-});
+const sections = [
+  { key: 'home', label: 'Home', icon: '⌂', route: '/' },
+  { key: 'work', label: 'Work', icon: '□', route: '/work' },
+  { key: 'exhibitions', label: 'Exhibitions', icon: '◇', route: '/exhibitions' },
+  { key: 'statement', label: 'Statement', icon: '¶', route: '/statement' },
+  { key: 'about', label: 'About', icon: '○', route: '/acerca-de-mi' },
+  { key: 'contact', label: 'Contact', icon: '@', route: '/contacto' },
+  { key: 'cv', label: 'CV', icon: '≡', route: '/cv' },
+  { key: 'global', label: 'General', icon: '⚙', route: '/' }
+];
+
+const labels = {
+  artistName: 'Nombre de la artista', artistDiscipline: 'Disciplina', workMenuLabel: 'Texto del menú Work',
+  exhibitionsMenuLabel: 'Texto del menú Exhibitions', statementMenuLabel: 'Texto del menú Statement',
+  contactMenuLabel: 'Texto del menú Contact', cvMenuLabel: 'Texto del menú CV', instagramUrl: 'Enlace de Instagram',
+  footerText: 'Texto del pie', heroImageUrl: 'Imagen principal', heroImageAlt: 'Descripción de la imagen principal',
+  startViewingLabel: 'Texto de iniciar recorrido', expandLabel: 'Texto de expandir', showLessLabel: 'Texto de contraer',
+  pauseLabel: 'Texto de pausa', playLabel: 'Texto de reproducción', closeLabel: 'Texto de cerrar', noImagesLabel: 'Mensaje sin imágenes',
+  heroCaption: 'Epígrafe', selectedWorkLabel: 'Título de la sección', viewWorkLabel: 'Texto del botón',
+  viewMoreLabel: 'Texto de ver más', projects: 'Proyectos', title: 'Título', year: 'Año', imageUrl: 'Imagen',
+  alt: 'Descripción de imagen', intro: 'Introducción', images: 'Galería de imágenes', series: 'Serie',
+  technique: 'Técnica', description: 'Descripción', gridImages: 'Imágenes de la grilla', paragraphs: 'Párrafos', bioTitle: 'Título de biografía',
+  bioParagraphs: 'Párrafos de biografía', eyebrow: 'Etiqueta superior', nameFirstLine: 'Primera línea del nombre',
+  nameSecondLine: 'Segunda línea del nombre', role: 'Descripción profesional', portraitImageUrl: 'Retrato',
+  portraitImageAlt: 'Descripción del retrato', practiceLabel: 'Etiqueta de práctica', practiceTitle: 'Título de práctica',
+  practiceParagraphs: 'Textos de práctica', detailImageUrl: 'Imagen de detalle', detailImageAlt: 'Descripción de imagen de detalle',
+  detailCaption: 'Epígrafe de detalle', detailLabel: 'Etiqueta de detalle', detailTitle: 'Título de detalle',
+  facts: 'Datos', label: 'Etiqueta', value: 'Texto visible', linkLabel: 'Texto del enlace', imageAlt: 'Descripción de imagen',
+  subtitle: 'Bajada', links: 'Enlaces', url: 'Destino del enlace', introLabel: 'Título de introducción',
+  sections: 'Secciones del CV', items: 'Entradas'
+};
+
+const hiddenKeys = new Set(['slug', 'id', 'slideIndex', 'published', 'position', 'createdAt', 'updatedAt']);
+const imageKeys = new Set(['imageUrl', 'heroImageUrl', 'portraitImageUrl', 'detailImageUrl']);
+const clone = value => JSON.parse(JSON.stringify(value));
+const titleForItem = (item, index) => item.title || item.label || item.value || `Elemento ${index + 1}`;
 
 const imageFromFile = file => new Promise((resolve, reject) => {
   if (!file.type.startsWith('image/')) return reject(new Error('Elegí un archivo de imagen.'));
@@ -18,13 +49,13 @@ const imageFromFile = file => new Promise((resolve, reject) => {
     const image = new Image();
     image.onerror = () => reject(new Error('El archivo no parece ser una imagen válida.'));
     image.onload = () => {
-      const max = 2200;
+      const max = 1800;
       const scale = Math.min(1, max / Math.max(image.width, image.height));
       const canvas = document.createElement('canvas');
       canvas.width = Math.round(image.width * scale);
       canvas.height = Math.round(image.height * scale);
       canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
-      resolve(canvas.toDataURL('image/webp', 0.88));
+      resolve(canvas.toDataURL('image/webp', 0.84));
     };
     image.src = reader.result;
   };
@@ -35,26 +66,19 @@ function Login({ onSuccess }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-
   const submit = async event => {
-    event.preventDefault();
-    setBusy(true);
-    setError('');
-    try {
-      await api.login(password);
-      onSuccess();
-    } catch (loginError) {
-      setError(loginError.message);
-    } finally { setBusy(false); }
+    event.preventDefault(); setBusy(true); setError('');
+    try { await api.login(password); await onSuccess(); }
+    catch (loginError) { setError(loginError.message); }
+    finally { setBusy(false); }
   };
-
   return (
     <main className="admin-login">
       <section>
         <Link to="/" className="admin-login-brand">andrea alkalay</Link>
-        <span className="eyebrow">Panel de artista</span>
-        <h1>Volver al<br /><em>archivo.</em></h1>
-        <p>Ingresá tu contraseña para editar las obras que aparecen en el sitio y en el recorrido.</p>
+        <span className="eyebrow">Panel de contenido</span>
+        <h1>Editar el<br /><em>sitio.</em></h1>
+        <p>Ingresá tu contraseña para actualizar los textos y las imágenes de cada página.</p>
         <form onSubmit={submit}>
           <label htmlFor="admin-password">Contraseña</label>
           <div><input id="admin-password" type="password" value={password} onChange={event => setPassword(event.target.value)} autoComplete="current-password" required autoFocus /><button disabled={busy}>{busy ? 'Entrando…' : 'Entrar →'}</button></div>
@@ -62,154 +86,163 @@ function Login({ onSuccess }) {
         </form>
         <small>Acceso privado · sesión protegida</small>
       </section>
-      <figure><img src="/exhibicion-02.png" alt="Detalle de obra en exhibición" /><figcaption>Archivo de obra · AA</figcaption></figure>
+      <figure><img src="/exhibicion-02.png" alt="Detalle de obra en exhibición" /><figcaption>Gestión de contenido · AA</figcaption></figure>
       <p className="admin-credit">Hecho por <a href="https://zigodev.com.ar" target="_blank" rel="noopener noreferrer">zigodev</a></p>
     </main>
   );
 }
 
+function ImageField({ label, value, onChange }) {
+  const input = useRef(null);
+  const [busy, setBusy] = useState(false);
+  const choose = async event => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setBusy(true);
+    try { onChange(await imageFromFile(file)); }
+    catch (error) { window.alert(error.message); }
+    finally { setBusy(false); event.target.value = ''; }
+  };
+  return (
+    <div className="admin-content-image-field">
+      <span>{label}</span>
+      <button type="button" onClick={() => input.current?.click()} disabled={busy}>
+        <img src={value} alt="" />
+        <em>{busy ? 'Preparando…' : 'Cambiar imagen'}</em>
+      </button>
+      <input ref={input} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={choose} />
+    </div>
+  );
+}
+
+function ContentFields({ value, path = [], onChange }) {
+  if (Array.isArray(value)) {
+    return (
+      <div className="admin-content-list">
+        {value.map((item, index) => {
+          const itemPath = [...path, index];
+          if (item && typeof item === 'object') return (
+            <details className="admin-content-card" key={item.id || item.slug || index} open={path.length < 2 && index === 0}>
+              <summary><span>{String(index + 1).padStart(2, '0')}</span><strong>{titleForItem(item, index)}</strong><b>＋</b></summary>
+              <div className="admin-content-card-body"><ContentFields value={item} path={itemPath} onChange={onChange} /></div>
+            </details>
+          );
+          return (
+            <label className="admin-content-field field-wide" key={index}>
+              <span>Texto {index + 1}</span>
+              <textarea value={item ?? ''} rows="3" onChange={event => onChange(itemPath, event.target.value)} />
+            </label>
+          );
+        })}
+      </div>
+    );
+  }
+
+  return (
+    <div className="admin-content-fields">
+      {Object.entries(value || {}).filter(([key]) => !hiddenKeys.has(key)).map(([key, fieldValue]) => {
+        const fieldPath = [...path, key];
+        const label = labels[key] || key;
+        if (imageKeys.has(key)) return <ImageField key={key} label={label} value={fieldValue} onChange={next => onChange(fieldPath, next)} />;
+        if (Array.isArray(fieldValue) || (fieldValue && typeof fieldValue === 'object')) return (
+          <section className="admin-content-group" key={key}>
+            <h3>{label}</h3>
+            <ContentFields value={fieldValue} path={fieldPath} onChange={onChange} />
+          </section>
+        );
+        const long = String(fieldValue ?? '').length > 90 || ['intro', 'description', 'subtitle'].includes(key);
+        return (
+          <label className={`admin-content-field ${long ? 'field-wide' : ''}`} key={key}>
+            <span>{label}</span>
+            {long ? <textarea value={fieldValue ?? ''} rows="4" onChange={event => onChange(fieldPath, event.target.value)} /> : (
+              <input type={typeof fieldValue === 'number' ? 'number' : 'text'} value={fieldValue ?? ''} onChange={event => onChange(fieldPath, typeof fieldValue === 'number' ? Number(event.target.value) : event.target.value)} />
+            )}
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Admin() {
   const [auth, setAuth] = useState(null);
-  const [artworks, setArtworks] = useState([]);
-  const [draft, setDraft] = useState(blankArtwork());
+  const [content, setContent] = useState(() => clone(defaultSiteContent));
+  const [active, setActive] = useState('home');
+  const [draft, setDraft] = useState(() => clone(defaultSiteContent.home));
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
-  const fileInput = useRef(null);
+  const [dirty, setDirty] = useState(false);
 
-  const publishedCount = useMemo(() => artworks.filter(item => item.published).length, [artworks]);
-  const seriesCount = useMemo(() => new Set(artworks.map(item => item.series)).size, [artworks]);
-
-  const loadArtworks = async () => {
-    const items = await api.adminArtworks();
-    setArtworks(items);
-    return items;
+  const loadContent = async () => {
+    const stored = await api.adminContent();
+    const merged = Object.fromEntries(Object.entries(defaultSiteContent).map(([key, value]) => [key, { ...clone(value), ...(stored[key] || {}) }]));
+    setContent(merged);
+    setDraft(clone(merged[active]));
   };
 
-  useEffect(() => {
-    api.session().then(() => Promise.all([setAuth(true), loadArtworks()])).catch(() => setAuth(false));
-  }, []);
+  useEffect(() => { api.session().then(async () => { setAuth(true); await loadContent(); }).catch(() => setAuth(false)); }, []);
 
-  const loginSuccess = async () => {
-    setAuth(true);
-    await loadArtworks();
-  };
-
-  const selectArtwork = artwork => {
-    setDraft({ ...artwork, year: artwork.year ?? '' });
-    setStatus('');
+  const selectSection = key => {
+    if (key === active) return;
+    if (dirty && !window.confirm('Hay cambios sin guardar. ¿Querés salir de esta sección?')) return;
+    setActive(key); setDraft(clone(content[key])); setDirty(false); setStatus('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const newArtwork = () => {
-    setDraft({ ...blankArtwork(), position: artworks.length + 1 });
-    setStatus('');
-  };
-
-  const updateField = event => {
-    const { name, value, type, checked } = event.target;
-    setDraft(current => ({ ...current, [name]: type === 'checkbox' ? checked : value }));
-  };
-
-  const chooseImage = async event => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    setStatus('Preparando imagen…');
-    try {
-      const imageUrl = await imageFromFile(file);
-      setDraft(current => ({ ...current, imageUrl }));
-      setStatus('Imagen lista para guardar.');
-    } catch (error) { setStatus(error.message); }
+  const updateAtPath = (path, value) => {
+    setDraft(current => {
+      const next = clone(current);
+      let target = next;
+      path.slice(0, -1).forEach(part => { target = target[part]; });
+      target[path.at(-1)] = value;
+      return next;
+    });
+    setDirty(true); setStatus('Cambios sin guardar.');
   };
 
   const save = async event => {
-    event.preventDefault();
-    if (!draft.imageUrl) { setStatus('Elegí una imagen para la obra.'); return; }
-    setBusy(true);
-    setStatus('Guardando…');
+    event.preventDefault(); setBusy(true); setStatus('Guardando…');
     try {
-      const saved = draft.id ? await api.updateArtwork(draft) : await api.createArtwork(draft);
-      await loadArtworks();
-      setDraft(saved);
-      setStatus('Cambios publicados correctamente.');
+      const saved = await api.updateContent(active, draft);
+      setContent(current => ({ ...current, [active]: saved }));
+      setDraft(clone(saved)); setDirty(false); setStatus('Cambios publicados correctamente.');
     } catch (error) { setStatus(error.message); }
     finally { setBusy(false); }
   };
 
-  const remove = async () => {
-    if (!draft.id || !window.confirm(`¿Eliminar “${draft.title}”? Esta acción no se puede deshacer.`)) return;
-    setBusy(true);
-    try {
-      await api.deleteArtwork(draft.id);
-      await loadArtworks();
-      newArtwork();
-      setStatus('La obra fue eliminada.');
-    } catch (error) { setStatus(error.message); }
-    finally { setBusy(false); }
-  };
+  const logout = async () => { await api.logout(); setAuth(false); };
+  const current = sections.find(section => section.key === active);
 
-  const logout = async () => {
-    await api.logout();
-    setAuth(false);
-  };
-
-  if (auth === null) return <div className="admin-boot">abriendo archivo…</div>;
-  if (!auth) return <Login onSuccess={loginSuccess} />;
+  if (auth === null) return <div className="admin-boot">abriendo editor…</div>;
+  if (!auth) return <Login onSuccess={async () => { setAuth(true); await loadContent(); }} />;
 
   return (
-    <div className="admin-app">
+    <div className="admin-app admin-content-app">
       <aside className="admin-sidebar">
-        <div><Link to="/" className="admin-brand">andrea alkalay</Link><span>panel de artista</span></div>
+        <div><Link to="/" className="admin-brand">andrea alkalay</Link><span>panel de contenido</span></div>
         <nav>
-          <button className="is-active" type="button"><i>□</i> Obras <b>{artworks.length}</b></button>
-          <button type="button" onClick={newArtwork}><i>＋</i> Nueva obra</button>
-          <Link to="/galeria" target="_blank"><i>↗</i> Ver galería</Link>
+          {sections.map(section => (
+            <button className={active === section.key ? 'is-active' : ''} type="button" key={section.key} onClick={() => selectSection(section.key)}>
+              <i>{section.icon}</i>{section.label}
+            </button>
+          ))}
         </nav>
         <div className="admin-sidebar-foot"><button type="button" onClick={logout}>Cerrar sesión</button><p>Hecho por <a href="https://zigodev.com.ar" target="_blank" rel="noopener noreferrer">zigodev</a></p></div>
       </aside>
 
       <main className="admin-main">
-        <header className="admin-topbar"><div><span className="eyebrow">Archivo en línea</span><h1>Obras</h1></div><button className="admin-new" type="button" onClick={newArtwork}>＋ Nueva obra</button></header>
-        <section className="admin-stats">
-          <article><span>Publicadas</span><strong>{publishedCount}</strong></article>
-          <article><span>En borrador</span><strong>{artworks.length - publishedCount}</strong></article>
-          <article><span>Series</span><strong>{seriesCount}</strong></article>
-          <p>Los cambios guardados se reflejan de inmediato en la galería y en el recorrido.</p>
+        <header className="admin-topbar">
+          <div><span className="eyebrow">Contenido del sitio</span><h1>{current.label}</h1></div>
+          <Link className="admin-preview-link" to={current.route} target="_blank">Ver página ↗</Link>
+        </header>
+        <section className="admin-content-note">
+          <strong>Editá solamente el contenido.</strong>
+          <p>Podés cambiar textos e imágenes. El diseño, el orden de las secciones y el formato del sitio se mantienen protegidos.</p>
         </section>
-
-        <div className="admin-workspace">
-          <section className="admin-archive-panel">
-            <header><span>Archivo</span><b>{artworks.length} obras</b></header>
-            <div className="admin-artworks">
-              {artworks.map((artwork, index) => (
-                <button className={draft.id === artwork.id ? 'is-selected' : ''} type="button" key={artwork.id} onClick={() => selectArtwork(artwork)}>
-                  <span>{String(index + 1).padStart(2, '0')}</span><img src={artwork.imageUrl} alt="" /><div><strong>{artwork.title}</strong><small>{artwork.series} · {artwork.year || 's/a'}</small></div><em className={artwork.published ? 'published' : ''}>{artwork.published ? 'Visible' : 'Oculta'}</em>
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <section className="admin-editor">
-            <header><div><span className="eyebrow">{draft.id ? 'Editar obra' : 'Nueva obra'}</span><h2>{draft.id ? draft.title : 'Sumar al archivo'}</h2></div>{draft.id && <button type="button" className="delete-button" onClick={remove} disabled={busy}>Eliminar</button>}</header>
-            <form onSubmit={save}>
-              <button className={`image-uploader ${draft.imageUrl ? 'has-image' : ''}`} type="button" onClick={() => fileInput.current?.click()}>
-                {draft.imageUrl ? <img src={draft.imageUrl} alt="Vista previa" /> : <span><b>＋</b> Elegir imagen<small>JPG, PNG o WEBP · máx. 12 MB</small></span>}
-                {draft.imageUrl && <em>Cambiar imagen</em>}
-              </button>
-              <input ref={fileInput} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" onChange={chooseImage} />
-              <div className="editor-fields">
-                <label className="field-wide"><span>Título</span><input name="title" value={draft.title} onChange={updateField} maxLength="140" required /></label>
-                <label><span>Serie</span><input name="series" value={draft.series} onChange={updateField} maxLength="100" required /></label>
-                <label><span>Año</span><input name="year" value={draft.year} onChange={updateField} type="number" min="1900" max="2100" /></label>
-                <label><span>Técnica</span><input name="technique" value={draft.technique || ''} onChange={updateField} maxLength="140" /></label>
-                <label><span>Orden</span><input name="position" value={draft.position} onChange={updateField} type="number" min="0" /></label>
-                <label className="field-wide"><span>Descripción</span><textarea name="description" value={draft.description || ''} onChange={updateField} rows="4" maxLength="1200" /></label>
-                <label className="field-wide"><span>Texto alternativo de la imagen</span><input name="alt" value={draft.alt || ''} onChange={updateField} maxLength="220" placeholder="Describí brevemente lo que se ve" /></label>
-              </div>
-              <label className="publish-toggle"><input name="published" type="checkbox" checked={draft.published} onChange={updateField} /><span /><div><strong>Visible en la galería</strong><small>Si lo desactivás, la obra queda guardada como borrador.</small></div></label>
-              <div className="editor-actions"><p role="status">{status}</p><button type="submit" disabled={busy}>{busy ? 'Guardando…' : 'Guardar cambios →'}</button></div>
-            </form>
-          </section>
-        </div>
+        <form className="admin-content-editor" onSubmit={save}>
+          <ContentFields value={draft} onChange={updateAtPath} />
+          <div className="admin-content-savebar"><p role="status">{status}</p><button type="submit" disabled={busy || !dirty}>{busy ? 'Guardando…' : 'Guardar cambios →'}</button></div>
+        </form>
       </main>
     </div>
   );

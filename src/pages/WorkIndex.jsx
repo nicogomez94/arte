@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Footer, Header } from '../components/SiteChrome';
-import { workIndexItems } from '../projectAssets';
+import { useSiteContent } from '../siteContent';
 
 const toColumns = items => items.reduce((columns, item, index) => {
   columns[index % 4].push(item);
@@ -8,7 +8,8 @@ const toColumns = items => items.reduce((columns, item, index) => {
 }, [[], [], [], []]);
 
 export default function WorkIndex() {
-  const columns = toColumns(workIndexItems);
+  const { projects } = useSiteContent('work');
+  const columns = toColumns(projects);
 
   return (
     <div className="site-page index-page">

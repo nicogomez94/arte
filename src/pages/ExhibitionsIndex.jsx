@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Footer, Header } from '../components/SiteChrome';
-import { exhibitionProjects } from '../projectAssets';
+import { useSiteContent } from '../siteContent';
 
 const toColumns = items => items.reduce((columns, item, index) => {
   columns[index % 4].push(item);
@@ -8,6 +8,7 @@ const toColumns = items => items.reduce((columns, item, index) => {
 }, [[], [], [], []]);
 
 export default function ExhibitionsIndex() {
+  const { projects: exhibitionProjects } = useSiteContent('exhibitions');
   const columns = toColumns(exhibitionProjects);
 
   return (
