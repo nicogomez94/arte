@@ -57,6 +57,7 @@ export function Header() {
               </div>
             </div>
           </div>
+          <NavLink to="/statement" onClick={() => setOpen(false)}>Statement</NavLink>
           <NavLink to="/contacto" onClick={() => setOpen(false)}>Contact</NavLink>
           <NavLink to="/cv" onClick={() => setOpen(false)}>CV</NavLink>
         </nav>
@@ -81,7 +82,10 @@ export function Header() {
 export function Footer() {
   return (
     <footer className="site-footer">
-      <span>andrea alkalay | 2026</span>
+      <span>
+        andrea alkalay | 2026 · Hecho por{' '}
+        <a href="https://zigodev.com.ar" target="_blank" rel="noopener noreferrer">zigodev</a>
+      </span>
     </footer>
   );
 }

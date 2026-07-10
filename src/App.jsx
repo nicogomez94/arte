@@ -9,6 +9,7 @@ import ExhibitionProject from './pages/ExhibitionProject';
 import ExhibitionsIndex from './pages/ExhibitionsIndex';
 import WorkIndex from './pages/WorkIndex';
 import WorkProject from './pages/WorkProject';
+import Statement from './pages/Statement';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/exhibitions/:slug" element={<ExhibitionProject />} />
         <Route path="/work" element={<WorkIndex />} />
         <Route path="/work/:slug" element={<WorkProject />} />
+        <Route path="/statement" element={<Statement />} />
         <Route path="/acerca-de-mi" element={<About />} />
         <Route path="/contacto" element={<Contact />} />
         <Route path="/cv" element={<Cv />} />
