@@ -29,11 +29,10 @@ export function Header() {
             <NavLink className={pathname.startsWith('/work') ? 'active' : ''} to="/work" aria-haspopup="true">{global.workMenuLabel}</NavLink>
             <div className="work-dropdown">
               <div className="work-dropdown-inner">
-                {projects.map((project, index) => (
+                {projects.map(project => (
                   <Link
-                    className={index > 1 ? 'is-muted-link' : undefined}
                     key={project.slug}
-                    to={index > 1 ? '/work/unfixed-landscapes' : `/work/${project.slug}`}
+                    to={`/work/${project.slug}`}
                     onClick={() => setOpen(false)}
                   >
                     {project.title}
@@ -46,11 +45,10 @@ export function Header() {
             <NavLink className={pathname.startsWith('/exhibitions') ? 'active' : ''} to="/exhibitions" aria-haspopup="true">{global.exhibitionsMenuLabel}</NavLink>
             <div className="work-dropdown">
               <div className="work-dropdown-inner">
-                {exhibitionProjects.map((project, index) => (
+                {exhibitionProjects.map(project => (
                   <Link
-                    className={index > 1 ? 'is-muted-link' : undefined}
                     key={project.slug}
-                    to={index > 1 ? '/exhibitions/recoleta-cultural-center' : `/exhibitions/${project.slug}`}
+                    to={`/exhibitions/${project.slug}`}
                     onClick={() => setOpen(false)}
                   >
                     {project.title}

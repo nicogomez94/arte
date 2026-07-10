@@ -112,8 +112,7 @@ export const defaultSiteContent = {
     title: 'Let’s connect.', subtitle: 'Exhibitions, collaborations and press.',
     links: [
       { label: 'Email', value: 'info@andrealkalay.com', url: 'mailto:info@andrealkalay.com' },
-      { label: 'Instagram', value: '@andrealkalay', url: 'https://instagram.com/andrealkalay' },
-      { label: 'Website', value: 'andrealkalay.com', url: 'https://www.andrealkalay.com/' }
+      { label: 'Instagram', value: '@andrealkalay', url: 'https://instagram.com/andrealkalay' }
     ]
   },
   cv: {
@@ -122,19 +121,23 @@ export const defaultSiteContent = {
   }
 };
 
-const mergeContent = (defaults, stored) => Object.fromEntries(Object.entries(defaults).map(([key, value]) => [
-  key,
-  value && typeof value === 'object' && !Array.isArray(value)
-    ? { ...value, ...(stored?.[key] || {}) }
-    : (stored?.[key] ?? value)
-]));
+export const mergeSiteContent = (stored = {}) => {
+  const merged = Object.fromEntries(Object.entries(defaultSiteContent).map(([key, value]) => [
+    key,
+    value && typeof value === 'object' && !Array.isArray(value)
+      ? { ...value, ...(stored?.[key] || {}) }
+      : (stored?.[key] ?? value)
+  ]));
+  merged.contact.links = (merged.contact.links || []).filter(link => link.url !== 'https://www.andrealkalay.com/');
+  return merged;
+};
 
 const SiteContentContext = createContext(defaultSiteContent);
 
 export function SiteContentProvider({ children }) {
   const [stored, setStored] = useState({});
   useEffect(() => { api.content().then(setStored).catch(() => {}); }, []);
-  const value = useMemo(() => mergeContent(defaultSiteContent, stored), [stored]);
+  const value = useMemo(() => mergeSiteContent(stored), [stored]);
   return createElement(SiteContentContext.Provider, { value }, children);
 }
 

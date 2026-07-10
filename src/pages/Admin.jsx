@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
-import { defaultSiteContent } from '../siteContent';
+import { defaultSiteContent, mergeSiteContent } from '../siteContent';
 
 const sections = [
   { key: 'home', label: 'Home', route: '/' },
@@ -37,6 +37,7 @@ const hiddenKeys = new Set(['slug', 'id', 'slideIndex', 'published', 'position',
 const imageKeys = new Set(['imageUrl', 'heroImageUrl', 'portraitImageUrl', 'detailImageUrl']);
 const clone = value => JSON.parse(JSON.stringify(value));
 const titleForItem = (item, index) => item.title || item.label || item.value || `Elemento ${index + 1}`;
+const uniqueId = prefix => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
 const imageFromFile = file => new Promise((resolve, reject) => {
   if (!file.type.startsWith('image/')) return reject(new Error('Elegí un archivo de imagen.'));
@@ -112,7 +113,23 @@ function ImageField({ label, value, onChange }) {
   );
 }
 
-function ContentFields({ value, path = [], onChange }) {
+function ProjectCovers({ projects, onChange }) {
+  return (
+    <section className="admin-project-covers">
+      <header><h3>Portadas de la grilla</h3><p>Estas imágenes aparecen en el índice masonry de la sección.</p></header>
+      <div>
+        {projects.map((project, index) => (
+          <article key={project.slug || index}>
+            <ImageField label={project.title} value={project.imageUrl} onChange={value => onChange(['projects', index, 'imageUrl'], value)} />
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove }) {
+  const [dragIndex, setDragIndex] = useState(null);
   if (Array.isArray(value)) {
     const objectItems = value.some(item => item && typeof item === 'object');
     if (!objectItems) {
@@ -130,36 +147,59 @@ function ContentFields({ value, path = [], onChange }) {
         </label>
       );
     }
+    const kind = path.at(-1);
+    const reorderable = ['projects', 'images', 'gridImages'].includes(kind);
+    const editableList = ['projects', 'images', 'gridImages', 'links'].includes(kind);
+    const addLabel = kind === 'projects' ? 'Agregar proyecto' : kind === 'links' ? 'Agregar enlace' : 'Agregar imagen';
     return (
       <div className="admin-content-list">
         {value.map((item, index) => {
           const itemPath = [...path, index];
           if (item && typeof item === 'object') return (
-            <details className="admin-content-card" key={item.id || item.slug || index}>
-              <summary className={item.imageUrl ? 'has-thumbnail' : ''}>
+            <details
+              className={`admin-content-card ${dragIndex === index ? 'is-dragging' : ''}`}
+              key={item.id || item.slug || index}
+              onDragOver={event => { if (reorderable) event.preventDefault(); }}
+              onDrop={event => {
+                event.preventDefault();
+                if (reorderable && dragIndex !== null && dragIndex !== index) onMove(path, dragIndex, index);
+                setDragIndex(null);
+              }}
+            >
+              <summary
+                className={item.imageUrl ? 'has-thumbnail' : ''}
+                draggable={reorderable}
+                onDragStart={event => { setDragIndex(index); event.dataTransfer.effectAllowed = 'move'; }}
+                onDragEnd={() => setDragIndex(null)}
+              >
                 <span>{String(index + 1).padStart(2, '0')}</span>
                 {item.imageUrl && <img src={item.imageUrl} alt="" />}
-                <strong>{titleForItem(item, index)}</strong><b>＋</b>
+                <strong>{titleForItem(item, index)}</strong>
+                <span className="admin-card-actions">{reorderable && <em title="Arrastrar para reordenar">↕</em>}<b>＋</b></span>
               </summary>
-              <div className="admin-content-card-body"><ContentFields value={item} path={itemPath} onChange={onChange} /></div>
+              <div className="admin-content-card-body">
+                {editableList && <button className="admin-remove-item" type="button" onClick={() => onRemove(path, index)}>Eliminar</button>}
+                <ContentFields value={item} path={itemPath} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+              </div>
             </details>
           );
           return null;
         })}
+        {editableList && <button className="admin-add-item" type="button" onClick={() => onAdd(path)}>＋ {addLabel}</button>}
       </div>
     );
   }
 
   return (
     <div className="admin-content-fields">
-      {Object.entries(value || {}).filter(([key]) => !hiddenKeys.has(key)).map(([key, fieldValue]) => {
+      {Object.entries(value || {}).filter(([key]) => !hiddenKeys.has(key) && !(key === 'imageUrl' && path[0] === 'projects' && path.length === 2)).map(([key, fieldValue]) => {
         const fieldPath = [...path, key];
         const label = labels[key] || key;
         if (imageKeys.has(key)) return <ImageField key={key} label={label} value={fieldValue} onChange={next => onChange(fieldPath, next)} />;
         if (Array.isArray(fieldValue) || (fieldValue && typeof fieldValue === 'object')) return (
           <section className="admin-content-group" key={key}>
             <h3>{label}</h3>
-            <ContentFields value={fieldValue} path={fieldPath} onChange={onChange} />
+            <ContentFields value={fieldValue} path={fieldPath} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
           </section>
         );
         const long = String(fieldValue ?? '').length > 90 || ['intro', 'description', 'subtitle'].includes(key);
@@ -187,7 +227,7 @@ export default function Admin() {
 
   const loadContent = async () => {
     const stored = await api.adminContent();
-    const merged = Object.fromEntries(Object.entries(defaultSiteContent).map(([key, value]) => [key, { ...clone(value), ...(stored[key] || {}) }]));
+    const merged = mergeSiteContent(stored);
     setContent(merged);
     setDraft(clone(merged[active]));
   };
@@ -210,6 +250,66 @@ export default function Admin() {
       return next;
     });
     setDirty(true); setStatus('Cambios sin guardar.');
+  };
+
+  const moveAtPath = (path, from, to) => {
+    setDraft(current => {
+      const next = clone(current);
+      let list = next;
+      path.forEach(part => { list = list[part]; });
+      const [moved] = list.splice(from, 1);
+      list.splice(to, 0, moved);
+      return next;
+    });
+    setDirty(true); setStatus('Orden actualizado. Guardá los cambios para publicarlo.');
+  };
+
+  const addAtPath = path => {
+    setDraft(current => {
+      const next = clone(current);
+      let list = next;
+      path.forEach(part => { list = list[part]; });
+      const kind = path.at(-1);
+      const project = path[0] === 'projects' && Number.isInteger(path[1]) ? next.projects[path[1]] : null;
+      if (kind === 'projects') {
+        const slug = uniqueId(active === 'work' ? 'nuevo-work' : 'nueva-exhibition');
+        const title = active === 'work' ? 'Nuevo work' : 'Nueva exhibition';
+        const image = { id: uniqueId('imagen'), title: 'Nueva imagen', series: title, year: new Date().getFullYear(), technique: '', description: '', imageUrl: '/exhibicion-01.png', alt: 'Nueva imagen' };
+        list.push({
+          slug, title, year: new Date().getFullYear(), imageUrl: '/exhibicion-01.png', intro: '',
+          images: [image], ...(active === 'work' ? { gridImages: [{ ...image, id: uniqueId('grilla'), slideIndex: 0 }] } : {})
+        });
+      } else if (kind === 'links') {
+        list.push({ label: 'Nuevo enlace', value: '', url: '' });
+      } else {
+        list.push({
+          id: uniqueId(kind === 'gridImages' ? 'grilla' : 'imagen'),
+          title: 'Nueva imagen', series: project?.title || '', year: project?.year || new Date().getFullYear(),
+          technique: '', description: '', imageUrl: project?.imageUrl || '/exhibicion-01.png', alt: 'Nueva imagen',
+          ...(kind === 'gridImages' ? { slideIndex: project?.images?.length ? project.images.length - 1 : 0 } : {})
+        });
+      }
+      return next;
+    });
+    setDirty(true); setStatus('Nuevo elemento agregado. Completá sus datos y guardá los cambios.');
+  };
+
+  const removeAtPath = (path, index) => {
+    const kind = path.at(-1);
+    if (kind === 'projects' && active === 'work' && draft.projects.length <= 1) {
+      window.alert('Work debe conservar al menos un proyecto porque Home utiliza ese contenido.');
+      return;
+    }
+    const message = kind === 'projects' ? '¿Eliminar este proyecto y todo su contenido?' : kind === 'links' ? '¿Eliminar este enlace?' : '¿Eliminar esta imagen?';
+    if (!window.confirm(message)) return;
+    setDraft(current => {
+      const next = clone(current);
+      let list = next;
+      path.forEach(part => { list = list[part]; });
+      list.splice(index, 1);
+      return next;
+    });
+    setDirty(true); setStatus('Elemento eliminado. Guardá los cambios para confirmar.');
   };
 
   const save = async event => {
@@ -253,7 +353,8 @@ export default function Admin() {
           <Link className="admin-preview-link" to={current.route} target="_blank">Ver página ↗</Link>
         </header>
         <form className="admin-content-editor" onSubmit={save}>
-          <ContentFields value={visibleDraft} onChange={updateAtPath} />
+          {(active === 'work' || active === 'exhibitions') && <ProjectCovers projects={draft.projects} onChange={updateAtPath} />}
+          <ContentFields value={visibleDraft} onChange={updateAtPath} onMove={moveAtPath} onAdd={addAtPath} onRemove={removeAtPath} />
           <div className="admin-content-savebar"><p role="status">{status}</p><button type="submit" disabled={busy || !dirty}>{busy ? 'Guardando…' : 'Guardar cambios →'}</button></div>
         </form>
       </main>

@@ -10,6 +10,7 @@ export default function Home() {
   const selectedSlides = selectedProject?.images || [];
   const selectedGrid = (selectedProject?.gridImages || selectedSlides).slice(0, 3);
   const coverSlide = selectedSlides[0];
+  const selectedPath = `/work/${selectedProject.slug}`;
 
   return (
     <div className="site-page home-page">
@@ -17,7 +18,7 @@ export default function Home() {
       <main>
         <section className="home-hero" aria-label="Andrea Alkalay exhibition">
           <figure className="hero-image reveal">
-            <Link className="hero-image-button" to="/work/unfixed-landscapes" aria-label="View Unfixed Landscapes">
+            <Link className="hero-image-button" to={selectedPath} aria-label={`View ${selectedProject.title}`}>
               <img src={content.heroImageUrl} alt={content.heroImageAlt} />
             </Link>
             <figcaption>{content.heroCaption}</figcaption>
@@ -28,11 +29,11 @@ export default function Home() {
         <section className="home-selected-work" aria-label="Selected work">
           <h3>{content.selectedWorkLabel}</h3>
           <section className="editorial-intro home-work-preview" aria-label={selectedProject.title}>
-            <Link className="editorial-intro-image home-work-image" to="/work/unfixed-landscapes" aria-label="View Unfixed Landscapes">
+            <Link className="editorial-intro-image home-work-image" to={selectedPath} aria-label={`View ${selectedProject.title}`}>
               <img src={coverSlide?.imageUrl || '/exhibicion-01.png'} alt={coverSlide?.alt || 'Unfixed Landscapes'} />
             </Link>
             <EditorialIntroCopy title={selectedProject.title} text={selectedProject.intro}>
-              <Link className="tour-button home-work-link" to="/work/unfixed-landscapes">
+              <Link className="tour-button home-work-link" to={selectedPath}>
                 <span>{content.viewWorkLabel}</span><b>→</b>
               </Link>
             </EditorialIntroCopy>
@@ -40,13 +41,13 @@ export default function Home() {
 
           <div className="artwork-thumb-grid home-work-grid">
             {selectedGrid.map(artwork => (
-              <Link key={`home-${artwork.id}`} to="/work/unfixed-landscapes" className="artwork-thumb">
+              <Link key={`home-${artwork.id}`} to={selectedPath} className="artwork-thumb">
                 <img src={artwork.imageUrl} alt={artwork.alt || artwork.title || 'Unfixed Landscapes'} />
               </Link>
             ))}
           </div>
           <h3 className="home-view-more">
-            <Link to="/work/unfixed-landscapes">{content.viewMoreLabel}</Link>
+            <Link to={selectedPath}>{content.viewMoreLabel}</Link>
           </h3>
         </section>
       </main>
