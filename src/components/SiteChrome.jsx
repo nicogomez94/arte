@@ -8,7 +8,6 @@ export function Header() {
   const { pathname } = useLocation();
   const global = useSiteContent('global');
   const { projects } = useSiteContent('work');
-  const { projects: exhibitionProjects } = useSiteContent('exhibitions');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 28);
@@ -45,15 +44,8 @@ export function Header() {
             <NavLink className={pathname.startsWith('/exhibitions') ? 'active' : ''} to="/exhibitions" aria-haspopup="true">{global.exhibitionsMenuLabel}</NavLink>
             <div className="work-dropdown">
               <div className="work-dropdown-inner">
-                {exhibitionProjects.map(project => (
-                  <Link
-                    key={project.slug}
-                    to={`/exhibitions/${project.slug}`}
-                    onClick={() => setOpen(false)}
-                  >
-                    {project.title}
-                  </Link>
-                ))}
+                <Link to="/exhibitions#group-show" onClick={() => setOpen(false)}>Group Show</Link>
+                <Link to="/exhibitions#solo-show" onClick={() => setOpen(false)}>Solo Show</Link>
               </div>
             </div>
           </div>

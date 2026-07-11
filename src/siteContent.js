@@ -1,6 +1,7 @@
 import { createContext, createElement, useContext, useEffect, useMemo, useState } from 'react';
 import cvText from '../texto.md?raw';
-import { exhibitionProjects, getExhibitionSlides, projectAssets, projectGridAssets, workIndexItems } from './projectAssets';
+import { projectAssets, projectGridAssets, workIndexItems } from './projectAssets';
+import { exhibitionProjects } from './exhibitionAssets';
 import { projects } from './projects';
 import { api } from './api';
 
@@ -43,10 +44,7 @@ const workProjects = workIndexItems.map(item => {
   return { ...item, intro: project.intro || '', images, gridImages: projectGridAssets[item.slug] || images.map((image, index) => ({ ...image, slideIndex: index })) };
 });
 
-const exhibitions = exhibitionProjects.map(project => ({
-  ...project,
-  images: getExhibitionSlides(project.slug)
-}));
+const exhibitions = exhibitionProjects;
 
 export const defaultSiteContent = {
   global: {
@@ -129,6 +127,12 @@ export const mergeSiteContent = (stored = {}) => {
       : (stored?.[key] ?? value)
   ]));
   merged.contact.links = (merged.contact.links || []).filter(link => link.url !== 'https://www.andrealkalay.com/');
+  // Content saved before exhibitions were split into Solo and Group shows is
+  // replaced once with the new folder-driven archive. Subsequent admin edits
+  // already include `category` and continue to take precedence.
+  if (stored.exhibitions?.projects?.length && !stored.exhibitions.projects.some(project => project.category)) {
+    merged.exhibitions = defaultSiteContent.exhibitions;
+  }
   return merged;
 };
 

@@ -30,10 +30,10 @@ const labels = {
   detailCaption: 'Epígrafe de detalle', detailLabel: 'Etiqueta de detalle', detailTitle: 'Título de detalle',
   facts: 'Datos', label: 'Etiqueta', value: 'Texto visible', linkLabel: 'Texto del enlace', imageAlt: 'Descripción de imagen',
   subtitle: 'Bajada', links: 'Enlaces', url: 'Destino del enlace', introLabel: 'Título de introducción',
-  sections: 'Secciones del CV', items: 'Entradas'
+  sections: 'Secciones del CV', items: 'Entradas', category: 'Categoría'
 };
 
-const hiddenKeys = new Set(['slug', 'id', 'slideIndex', 'published', 'position', 'createdAt', 'updatedAt']);
+const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'published', 'position', 'createdAt', 'updatedAt']);
 const imageKeys = new Set(['imageUrl', 'heroImageUrl', 'portraitImageUrl', 'detailImageUrl']);
 const clone = value => JSON.parse(JSON.stringify(value));
 const titleForItem = (item, index) => item.title || item.label || item.value || `Elemento ${index + 1}`;
@@ -113,22 +113,27 @@ function ImageField({ label, value, onChange }) {
   );
 }
 
-function ProjectCovers({ projects, onChange }) {
+function ProjectCovers({ projects, onChange, category = null }) {
+  const visibleProjects = projects
+    .map((project, index) => ({ project, index }))
+    .filter(({ project }) => !category || project.category === category);
   return (
     <section className="admin-project-covers">
       <header><h3>Portadas de la grilla</h3><p>Estas imágenes aparecen en el índice masonry de la sección.</p></header>
-      <div>
-        {projects.map((project, index) => (
-          <article key={project.slug || index}>
-            <ImageField label={project.title} value={project.imageUrl} onChange={value => onChange(['projects', index, 'imageUrl'], value)} />
-          </article>
-        ))}
+      <div className="admin-cover-group">
+        <div>
+          {visibleProjects.map(({ project, index }) => (
+            <article key={project.slug || index}>
+              <ImageField label={project.title} value={project.imageUrl} onChange={value => onChange(['projects', index, 'imageUrl'], value)} />
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
 
-function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove }) {
+function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, projectCategory = null }) {
   const [dragIndex, setDragIndex] = useState(null);
   if (Array.isArray(value)) {
     const objectItems = value.some(item => item && typeof item === 'object');
@@ -153,7 +158,7 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove }) 
     const addLabel = kind === 'projects' ? 'Agregar proyecto' : kind === 'links' ? 'Agregar enlace' : 'Agregar imagen';
     return (
       <div className="admin-content-list">
-        {value.map((item, index) => {
+        {value.map((item, index) => ({ item, index })).filter(({ item }) => kind !== 'projects' || !projectCategory || item.category === projectCategory).map(({ item, index }) => {
           const itemPath = [...path, index];
           if (item && typeof item === 'object') return (
             <details
@@ -179,7 +184,7 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove }) 
               </summary>
               <div className="admin-content-card-body">
                 {editableList && <button className="admin-remove-item" type="button" onClick={() => onRemove(path, index)}>Eliminar</button>}
-                <ContentFields value={item} path={itemPath} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+                <ContentFields value={item} path={itemPath} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />
               </div>
             </details>
           );
@@ -199,8 +204,17 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove }) 
         if (Array.isArray(fieldValue) || (fieldValue && typeof fieldValue === 'object')) return (
           <section className="admin-content-group" key={key}>
             <h3>{label}</h3>
-            <ContentFields value={fieldValue} path={fieldPath} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+            <ContentFields value={fieldValue} path={fieldPath} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />
           </section>
+        );
+        if (key === 'category') return (
+          <label className="admin-content-field" key={key}>
+            <span>{label}</span>
+            <select value={fieldValue} onChange={event => onChange(fieldPath, event.target.value)}>
+              <option value="group">Group Show</option>
+              <option value="solo">Solo Show</option>
+            </select>
+          </label>
         );
         const long = String(fieldValue ?? '').length > 90 || ['intro', 'description', 'subtitle'].includes(key);
         return (
@@ -220,6 +234,7 @@ export default function Admin() {
   const [auth, setAuth] = useState(null);
   const [content, setContent] = useState(() => clone(defaultSiteContent));
   const [active, setActive] = useState('home');
+  const [exhibitionCategory, setExhibitionCategory] = useState('group');
   const [draft, setDraft] = useState(() => clone(defaultSiteContent.home));
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
@@ -234,9 +249,10 @@ export default function Admin() {
 
   useEffect(() => { api.session().then(async () => { setAuth(true); await loadContent(); }).catch(() => setAuth(false)); }, []);
 
-  const selectSection = key => {
-    if (key === active) return;
+  const selectSection = (key, category = null) => {
+    if (key === active && (key !== 'exhibitions' || category === exhibitionCategory)) return;
     if (dirty && !window.confirm('Hay cambios sin guardar. ¿Querés salir de esta sección?')) return;
+    if (category) setExhibitionCategory(category);
     setActive(key); setDraft(clone(content[key])); setDirty(false); setStatus('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -277,7 +293,7 @@ export default function Admin() {
         const image = { id: uniqueId('imagen'), title: 'Nueva imagen', series: title, year: new Date().getFullYear(), technique: '', description: '', imageUrl: '/exhibicion-01.png', alt: 'Nueva imagen' };
         list.push({
           slug, title, year: new Date().getFullYear(), imageUrl: '/exhibicion-01.png', intro: '',
-          images: [image], ...(active === 'work' ? { gridImages: [{ ...image, id: uniqueId('grilla'), slideIndex: 0 }] } : {})
+          images: [image], ...(active === 'work' ? { gridImages: [{ ...image, id: uniqueId('grilla'), slideIndex: 0 }] } : { category: exhibitionCategory })
         });
       } else if (kind === 'links') {
         list.push({ label: 'Nuevo enlace', value: '', url: '' });
@@ -324,6 +340,8 @@ export default function Admin() {
 
   const logout = async () => { await api.logout(); setAuth(false); };
   const current = sections.find(section => section.key === active);
+  const currentLabel = active === 'exhibitions' ? (exhibitionCategory === 'group' ? 'Exhibitions · Group Show' : 'Exhibitions · Solo Show') : current.label;
+  const previewRoute = active === 'exhibitions' ? `/exhibitions#${exhibitionCategory}-show` : current.route;
   const visibleDraft = active === 'home' ? {
     heroImageUrl: draft.heroImageUrl,
     heroImageAlt: draft.heroImageAlt,
@@ -338,10 +356,14 @@ export default function Admin() {
       <aside className="admin-sidebar">
         <div><Link to="/" className="admin-brand">andrea alkalay</Link><span>panel de contenido</span></div>
         <nav>
-          {sections.map(section => (
-            <button className={active === section.key ? 'is-active' : ''} type="button" key={section.key} onClick={() => selectSection(section.key)}>
-              {section.label}
-            </button>
+          {sections.map(section => section.key === 'exhibitions' ? (
+            <div className={`admin-nav-group ${active === 'exhibitions' ? 'is-active' : ''}`} key={section.key}>
+              <span>Exhibitions</span>
+              <button className={active === 'exhibitions' && exhibitionCategory === 'group' ? 'is-active' : ''} type="button" onClick={() => selectSection('exhibitions', 'group')}>Group Show</button>
+              <button className={active === 'exhibitions' && exhibitionCategory === 'solo' ? 'is-active' : ''} type="button" onClick={() => selectSection('exhibitions', 'solo')}>Solo Show</button>
+            </div>
+          ) : (
+            <button className={active === section.key ? 'is-active' : ''} type="button" key={section.key} onClick={() => selectSection(section.key)}>{section.label}</button>
           ))}
         </nav>
         <div className="admin-sidebar-foot"><button type="button" onClick={logout}>Cerrar sesión</button></div>
@@ -349,12 +371,12 @@ export default function Admin() {
 
       <main className="admin-main">
         <header className="admin-topbar">
-          <div><span className="eyebrow">Contenido del sitio</span><h1>{current.label}</h1></div>
-          <Link className="admin-preview-link" to={current.route} target="_blank">Ver página ↗</Link>
+          <div><span className="eyebrow">Contenido del sitio</span><h1>{currentLabel}</h1></div>
+          <Link className="admin-preview-link" to={previewRoute} target="_blank">Ver página ↗</Link>
         </header>
         <form className="admin-content-editor" onSubmit={save}>
-          {(active === 'work' || active === 'exhibitions') && <ProjectCovers projects={draft.projects} onChange={updateAtPath} />}
-          <ContentFields value={visibleDraft} onChange={updateAtPath} onMove={moveAtPath} onAdd={addAtPath} onRemove={removeAtPath} />
+          {(active === 'work' || active === 'exhibitions') && <ProjectCovers projects={draft.projects} onChange={updateAtPath} category={active === 'exhibitions' ? exhibitionCategory : null} />}
+          <ContentFields value={visibleDraft} onChange={updateAtPath} onMove={moveAtPath} onAdd={addAtPath} onRemove={removeAtPath} projectCategory={active === 'exhibitions' ? exhibitionCategory : null} />
           <div className="admin-content-savebar"><p role="status">{status}</p><button type="submit" disabled={busy || !dirty}>{busy ? 'Guardando…' : 'Guardar cambios →'}</button></div>
         </form>
       </main>
