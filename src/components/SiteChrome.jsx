@@ -8,6 +8,11 @@ export function Header() {
   const { pathname } = useLocation();
   const global = useSiteContent('global');
   const { projects } = useSiteContent('work');
+  const { projects: exhibitionProjects } = useSiteContent('exhibitions');
+  const exhibitionGroups = [
+    { key: 'group', label: 'Group Show' },
+    { key: 'solo', label: 'Solo Show' }
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 28);
@@ -43,9 +48,21 @@ export function Header() {
           <div className="work-menu exhibitions-menu">
             <NavLink className={pathname.startsWith('/exhibitions') ? 'active' : ''} to="/exhibitions" aria-haspopup="true">{global.exhibitionsMenuLabel}</NavLink>
             <div className="work-dropdown">
-              <div className="work-dropdown-inner">
-                <Link to="/exhibitions#group-show" onClick={() => setOpen(false)}>Group Show</Link>
-                <Link to="/exhibitions#solo-show" onClick={() => setOpen(false)}>Solo Show</Link>
+              <div className="work-dropdown-inner exhibition-dropdown-inner">
+                {exhibitionGroups.map(group => (
+                  <details className="exhibition-dropdown-group" key={group.key}>
+                    <summary>
+                      <span>{group.label}</span>
+                      <svg viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" /></svg>
+                    </summary>
+                    <div>
+                      <Link className="exhibition-view-all" to={`/exhibitions#${group.key}-show`} onClick={() => setOpen(false)}>View all</Link>
+                      {exhibitionProjects.filter(project => project.category === group.key).map(project => (
+                        <Link key={project.slug} to={`/exhibitions/${project.slug}`} onClick={() => setOpen(false)}>{project.title}</Link>
+                      ))}
+                    </div>
+                  </details>
+                ))}
               </div>
             </div>
           </div>

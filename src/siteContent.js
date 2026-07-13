@@ -86,11 +86,6 @@ export const defaultSiteContent = {
       'My work moves between observation and construction. Fragments of stone, textile, paper and photographic matter form temporary constellations in which erosion and repair coexist. Each gesture asks how an image can carry the evidence of change without becoming a closed document.',
       'I am interested in the material histories embedded in surfaces, and the ways memory is sedimented across time and place. Recent projects examine patterns of human care and neglect, mapping traces of use and abandonment to reveal unexpected continuities and relations between body and landscape.',
       'Rather than offering a complete narrative, I create spaces for pause and attentive looking. The landscape emerges as both evidence and question: an open archive where body, matter and memory remain in continuous transformation.'
-    ],
-    bioTitle: 'Bio',
-    bioParagraphs: [
-      'Andrea Alkalay is an Argentine visual artist and industrial designer, graduated from the University of Buenos Aires. Based in Buenos Aires, her practice moves between photography, installation, collage and material research.',
-      'Her work has been developed through exhibitions, residencies and grants in Argentina and internationally, exploring landscape and territory as spaces where memory, matter and transformation converge.'
     ]
   },
   about: {
@@ -127,6 +122,12 @@ export const mergeSiteContent = (stored = {}) => {
       : (stored?.[key] ?? value)
   ]));
   merged.contact.links = (merged.contact.links || []).filter(link => link.url !== 'https://www.andrealkalay.com/');
+  // Bio used to live inside Statement. Strip legacy saved fields as well so it
+  // disappears from both the public page and the content editor.
+  if (merged.statement) {
+    const { bioTitle: _bioTitle, bioParagraphs: _bioParagraphs, ...statement } = merged.statement;
+    merged.statement = statement;
+  }
   // Content saved before exhibitions were split into Solo and Group shows is
   // replaced once with the new folder-driven archive. Subsequent admin edits
   // already include `category` and continue to take precedence.

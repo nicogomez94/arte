@@ -18,10 +18,6 @@ export default function Statement() {
               {content.paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
             </article>
 
-            <article className="statement-section statement-bio">
-              <h2>{content.bioTitle}</h2>
-              {content.bioParagraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}
-            </article>
           </div>
         </section>
       </main>

@@ -22,8 +22,8 @@ const labels = {
   heroCaption: 'Epígrafe', selectedWorkLabel: 'Título de la sección', viewWorkLabel: 'Texto del botón',
   viewMoreLabel: 'Texto de ver más', projects: 'Proyectos', title: 'Título', year: 'Año', imageUrl: 'Imagen',
   alt: 'Descripción de imagen', intro: 'Introducción', images: 'Galería de imágenes', series: 'Serie',
-  technique: 'Técnica', description: 'Descripción', gridImages: 'Imágenes de la grilla', paragraphs: 'Párrafos', bioTitle: 'Título de biografía',
-  bioParagraphs: 'Párrafos de biografía', eyebrow: 'Etiqueta superior', nameFirstLine: 'Primera línea del nombre',
+  technique: 'Técnica', description: 'Descripción', gridImages: 'Imágenes de la grilla', paragraphs: 'Párrafos',
+  eyebrow: 'Etiqueta superior', nameFirstLine: 'Primera línea del nombre',
   nameSecondLine: 'Segunda línea del nombre', role: 'Descripción profesional', portraitImageUrl: 'Retrato',
   portraitImageAlt: 'Descripción del retrato', practiceLabel: 'Etiqueta de práctica', practiceTitle: 'Título de práctica',
   practiceParagraphs: 'Textos de práctica', detailImageUrl: 'Imagen de detalle', detailImageAlt: 'Descripción de imagen de detalle',
@@ -139,7 +139,7 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
     const objectItems = value.some(item => item && typeof item === 'object');
     if (!objectItems) {
       const fieldName = path.at(-1);
-      const paragraphs = ['paragraphs', 'bioParagraphs', 'practiceParagraphs'].includes(fieldName);
+      const paragraphs = ['paragraphs', 'practiceParagraphs'].includes(fieldName);
       const separator = paragraphs ? '\n\n' : '\n';
       return (
         <label className="admin-content-field field-wide admin-combined-text">
@@ -162,6 +162,7 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
           const itemPath = [...path, index];
           if (item && typeof item === 'object') return (
             <details
+              id={kind === 'projects' ? `admin-project-${item.slug}` : undefined}
               className={`admin-content-card ${dragIndex === index ? 'is-dragging' : ''}`}
               key={item.id || item.slug || index}
               onDragOver={event => { if (reorderable) event.preventDefault(); }}
@@ -250,11 +251,22 @@ export default function Admin() {
   useEffect(() => { api.session().then(async () => { setAuth(true); await loadContent(); }).catch(() => setAuth(false)); }, []);
 
   const selectSection = (key, category = null) => {
-    if (key === active && (key !== 'exhibitions' || category === exhibitionCategory)) return;
-    if (dirty && !window.confirm('Hay cambios sin guardar. ¿Querés salir de esta sección?')) return;
+    if (key === active && (key !== 'exhibitions' || category === exhibitionCategory)) return true;
+    if (dirty && !window.confirm('Hay cambios sin guardar. ¿Querés salir de esta sección?')) return false;
     if (category) setExhibitionCategory(category);
     setActive(key); setDraft(clone(content[key])); setDirty(false); setStatus('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    return true;
+  };
+
+  const openExhibitionEditor = (category, slug) => {
+    if (!selectSection('exhibitions', category)) return;
+    window.setTimeout(() => {
+      const card = document.getElementById(`admin-project-${slug}`);
+      if (!card) return;
+      card.open = true;
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
   };
 
   const updateAtPath = (path, value) => {
@@ -359,8 +371,19 @@ export default function Admin() {
           {sections.map(section => section.key === 'exhibitions' ? (
             <div className={`admin-nav-group ${active === 'exhibitions' ? 'is-active' : ''}`} key={section.key}>
               <span>Exhibitions</span>
-              <button className={active === 'exhibitions' && exhibitionCategory === 'group' ? 'is-active' : ''} type="button" onClick={() => selectSection('exhibitions', 'group')}>Group Show</button>
-              <button className={active === 'exhibitions' && exhibitionCategory === 'solo' ? 'is-active' : ''} type="button" onClick={() => selectSection('exhibitions', 'solo')}>Solo Show</button>
+              {[{ key: 'group', label: 'Group Show' }, { key: 'solo', label: 'Solo Show' }].map(group => (
+                <details className="admin-nav-category" key={group.key} defaultOpen={active === 'exhibitions' && exhibitionCategory === group.key}>
+                  <summary onClick={() => selectSection('exhibitions', group.key)}>
+                    <span>{group.label}</span>
+                    <svg viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" /></svg>
+                  </summary>
+                  <div>
+                    {content.exhibitions.projects.filter(project => project.category === group.key).map(project => (
+                      <button type="button" key={project.slug} onClick={() => openExhibitionEditor(group.key, project.slug)}>{project.title}</button>
+                    ))}
+                  </div>
+                </details>
+              ))}
             </div>
           ) : (
             <button className={active === section.key ? 'is-active' : ''} type="button" key={section.key} onClick={() => selectSection(section.key)}>{section.label}</button>
