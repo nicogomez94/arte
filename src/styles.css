@@ -896,7 +896,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
   right: 0;
   bottom: 0;
   left: 0;
-  height: 42px;
+  height: 30px;
   pointer-events: none;
   background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 82%);
 }
@@ -912,11 +912,11 @@ h1, h2, h3, strong, b { font-weight: 100; }
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 5;
 }
 
 .intro-expand-button {
-  margin-top: 14px;
+  margin-top: 22px;
   padding: 0;
   border: 0;
   border-bottom: 1px solid lightgray;

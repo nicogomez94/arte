@@ -134,6 +134,14 @@ export const mergeSiteContent = (stored = {}) => {
   if (stored.exhibitions?.projects?.length && !stored.exhibitions.projects.some(project => project.category)) {
     merged.exhibitions = defaultSiteContent.exhibitions;
   }
+  // Older saved Work content pointed at the previous `/unfixed` and
+  // `/rockcycle` image sets. Prefer the new folder-driven archive once.
+  if (stored.work?.projects?.length && !stored.work.projects.some(project => (
+    project.imageUrl?.startsWith('/works/') ||
+    project.images?.some(image => image.imageUrl?.startsWith('/works/'))
+  ))) {
+    merged.work = defaultSiteContent.work;
+  }
   return merged;
 };
 

@@ -11,8 +11,8 @@ export function Header() {
   const { projects } = useSiteContent('work');
   const { projects: exhibitionProjects } = useSiteContent('exhibitions');
   const exhibitionGroups = [
-    { key: 'group', label: 'Group Show' },
-    { key: 'solo', label: 'Solo Show' }
+    { key: 'solo', label: 'Solo Show' },
+    { key: 'group', label: 'Group Show' }
   ];
 
   useEffect(() => {

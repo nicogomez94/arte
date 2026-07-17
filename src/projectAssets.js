@@ -13,40 +13,248 @@ const makeSlide = ({ slug, title, series, year, technique, file }, index) => ({
   position: index + 1
 });
 
-const unfixedFiles = [
-  'Unfixed Landscapes_wounded systems.jpg',
-  'Unfixed Landscapes_wounded systems-2.jpg',
-  'Unfixed Landscapes_wounded systems-3.jpg',
-  'Unfixed Landscapes_wounded systems-4.jpg',
-  'Unfixed Landscapes_wounded systems-5.jpg',
-  'Unfixed Landscapes_wounded systems-6.jpg',
-  'Unfixed Landscapes_wounded systems-7.jpg',
-  'Unfixed Landscapes_wounded systems-8.jpg',
-  'Unfixed Landscapes_wounded systems-9.jpg',
-  'Unfixed Landscapes_wounded systems-10.jpg',
-  'Unfixed Landscapes_wounded systems-11.jpg',
-  'Unfixed Landscapes_wounded systems-21.jpg',
-  'Unfixed Landscapes_wounded systems-22.jpg',
-  'split-frames/Unfixed Landscapes_wounded systems-15 - left.jpg',
-  'split-frames/Unfixed Landscapes_wounded systems-15 - right.jpg',
-  'split-frames/Unfixed Landscapes_wounded systems-16 - left.jpg',
-  'split-frames/Unfixed Landscapes_wounded systems-16 - right.jpg',
-  'split-frames/Unfixed Landscapes_wounded systems-18 - left.jpg',
-  'split-frames/Unfixed Landscapes_wounded systems-18 - right.jpg'
-];
+const workFiles = {
+  'unfixed-landscapes': {
+    slug: 'unfixed',
+    title: 'Unfixed Landscapes',
+    year: 2026,
+    technique: 'Installation view',
+    base: '/works/works2/wix unfixed',
+    files: [
+      'Unfixed Landscapes_wounded systems 1-Installation View.jpg',
+      'Unfixed Landscapes_wounded systems 2_SUSPENDED FOREST.jpg',
+      'Unfixed Landscapes_wounded systems 3 SUSPENDED FOREST.jpg',
+      'Unfixed Landscapes_wounded systems 4-SOLAR READINGS.jpg',
+      'Unfixed Landscapes_wounded systems 5 LIQUID READINGS.jpg',
+      'Unfixed Landscapes_wounded systems 6 SURFACE READINGS.JPG',
+      'Unfixed Landscapes_wounded systems 7 SURFACE READINGS.jpg',
+      'Unfixed Landscapes_wounded systems 8 OYSTER FARM.jpg',
+      'Unfixed Landscapes_wounded systems 9 ACTIVE PEELINGS.jpg',
+      'Unfixed Landscapes_wounded systems 10 MATERIAL RECORDS.jpg',
+      'Unfixed Landscapes_wounded systems 11 GHOST MONEY.jpg',
+      'Unfixed Landscapes_wounded systems-12 TYPHON TREE .jpg',
+      'Unfixed Landscapes_wounded systems-13 RIZOMA.jpg',
+      'Unfixed Landscapes_wounded systems-14 ASH RECORDS.jpg',
+      'Unfixed Landscapes_wounded systems-15 SHIFTING SOVEREIGNTIES.jpg',
+      'Unfixed Landscapes_wounded systems-16 THE RESIDUAL.jpg'
+    ]
+  },
+  'the-rock-cycle': {
+    slug: 'rockcycle',
+    title: 'The Rock Cycle',
+    year: 2024,
+    technique: 'Photography and materiality',
+    base: '/works/works2/Wix Rock Cycle',
+    files: [
+      'Rock Cycle 1 Crak Path.jpg',
+      'Rock Cycle 2 Transitions.jpg',
+      'Rock Cycle 3 The Bride of the Red Sea.jpg',
+      'Rock Cycle 4 MEMORY Restoration.jpg',
+      'Rock Cycle 5 Sealed Wounds.jpg',
+      'Rock Cycle 6 EVA.jpg',
+      'Rock Cycle 6 EVA copy.jpg',
+      'Rock Cycle 7 EVA 2.jpg',
+      'Rock Cycle 8 archival 2.jpg',
+      'Rock Cycle 9 archival.jpg'
+    ]
+  },
+  unearth: {
+    slug: 'unearth',
+    title: 'Unearth',
+    year: 2026,
+    technique: 'Ongoing research',
+    base: '/works/works2/wix Unearth',
+    files: [
+      'Unearth_1 The sedimented Nature of Objects.jpg',
+      'Unearth_1b  The sedimented Nature of Objects 2.jpg',
+      'Unearth_2 Textus.jpg',
+      'Unearth_3_Construction Remans.jpg',
+      'Unearth_4 Stacking the urban landscape.jpg',
+      'Unearth_5 The delicated nature of the built enviroment .jpg',
+      'Unearth_6 _Roots.jpg',
+      'Unearth_7 Weaving & Unraveling The Rocks .jpg',
+      'Unearth_8 .jpg',
+      'Unearth_9 .jpg',
+      'Unearth_10 .jpg',
+      'Unearth_11 .jpg',
+      'Unearth_12 .jpg',
+      'Unearth_13.jpg',
+      'Unearth_14 .jpg',
+      'Unearth_15.jpg'
+    ]
+  },
+  'landscape-on-landscape': {
+    slug: 'landscape',
+    title: 'Landscape on Landscape',
+    year: 2025,
+    technique: 'Photography and intervention',
+    base: '/works/works2/wix Landscape',
+    files: [
+      '1 - Landscape on Landscape Centro Cultural Recoleta.jpg',
+      '2- Landscape_on Landscape_Cod# ffc633.jpg',
+      '3- Landscape_on_Lanscape_4795C.jpg',
+      '4 Landscape_on Landscape_Cod#7fab79.jpg',
+      '5 Landscape on Landscape _Cod#f9b6b0 .jpg',
+      '6- Paiseje sobre Paisaje Cod# bec2f6.jpg',
+      '7- LandscapeOnLandscape1F7C29F.jpg',
+      '8 Landscape_on Landscape_Cod#d3fa80.jpg',
+      '9 Landscape on Landscape Cod#B00c48.jpg',
+      '10- Landscape_on_Lanscape_59392C.jpg',
+      '11 Landscape_on_Landscape_F7C29F.jpg',
+      '12 Landscape_on_Landscape_91CCF0.jpg',
+      '13 Landscape_on_Landscape f6be57.jpg',
+      '14 Landscape_on_Landscape_52EA30.jpg',
+      '15 Landscape_on_Landscape_3FA3DF.jpg',
+      '16 Landscape_on Landscape_Cod #aba1c0.jpg',
+      '17 LAndscape_on_Lanscape_807917.jpg',
+      '18- Landscape_on_Lanscape_CCCFCA.jpg',
+      '19 Landscape_on Landscape_2 .jpg',
+      '20 Landscape_on_Lanscape_2852cc.jpg',
+      '21 Landscape_on_landscape_#F1671c.jpg',
+      '22 Landscape_on Landscape_Cod##B6D3F0 .jpg',
+      '23 Landscape_on_landscape_Cod#DAD0B0.jpg',
+      '24 Landscape on Landscape Espacio DAR 25.jpg'
+    ]
+  },
+  kutho: {
+    slug: 'kutho',
+    title: 'Kutho',
+    year: 2021,
+    technique: 'Photography',
+    base: '/works/works1/wix kutho',
+    files: [
+      '1 Kutho_Portraits.jpg',
+      '2 Kutho Vertical a.jpg',
+      '3 Kutho Vertical b.jpg',
+      '4 Kutho Vertical c.jpg',
+      '5 Kutho Vertical x 18.jpg',
+      '6 Kutho Horizobtal a.jpg',
+      '7 Kutho Horizobtal b.jpg',
+      '8 Kutho Horizobtal c.jpg',
+      '9 Kutho gold.jpg'
+    ]
+  },
+  'brief-shape': {
+    slug: 'brief-shape',
+    title: 'Brief Shape',
+    year: 2023,
+    technique: 'Photography and installation',
+    base: '/works/works1/ Brief Form',
+    files: [
+      '0.jpg',
+      '1.jpg',
+      '1-a.jpg',
+      '2.jpg',
+      '3.jpg',
+      '4.jpg',
+      '7.jpg',
+      '8.jpg',
+      '9.jpg',
+      '10.jpg',
+      '12.jpg',
+      '13.jpg',
+      '14.jpg',
+      '15 POP UP BAPhoto _ OdA Arte.jpg'
+    ]
+  },
+  'urban-territories': {
+    slug: 'urban-territories',
+    title: 'Urban Territories',
+    year: 2018,
+    technique: 'Photography',
+    base: '/works/works1/Urban Territories',
+    files: [
+      'Urban_territories_1.jpg',
+      'Urban_territories_2.jpg',
+      'Urban_territories_3.jpg',
+      'Urban_territories_4.jpg',
+      'Urban_territories_5.jpg',
+      'Urban_territories_6.jpg',
+      'Urban_territories_7.jpg',
+      'Urban_territories_8.jpg',
+      'Urban_territories_9.jpg',
+      'Urban_territories_10.jpg',
+      'Urban_territories_11.jpg',
+      'Urban_territories_12.jpg',
+      'Urban_territories_13.jpg',
+      'Urban_territories_14.jpg'
+    ]
+  },
+  borders: {
+    slug: 'borders',
+    title: 'Borders',
+    year: 2018,
+    technique: 'Photography',
+    base: '/works/works1/Borders',
+    files: [
+      '1.jpg',
+      '2.jpg',
+      '3.jpg',
+      '4.jpg',
+      '5.jpg',
+      '6.jpg',
+      '7.jpg',
+      '8.jpg',
+      '9.jpg',
+      '10.jpg',
+      '11.jpg',
+      '12.jpg'
+    ]
+  },
+  'about-india': {
+    slug: 'about-india',
+    title: 'About India',
+    year: 2021,
+    technique: 'Photography',
+    base: '/works/works1/About India',
+    files: [
+      '00.jpg',
+      '08.jpg',
+      'About india 1.JPG',
+      'About india 2.JPG',
+      'About india 3.jpg',
+      'About india 4.jpg',
+      'About india 5.JPG',
+      'About india 6.jpg',
+      'About india 7.jpg',
+      'About india 8.JPG',
+      'About india 9.JPG',
+      'About india 10.JPG',
+      'About india 11.JPG'
+    ]
+  },
+  'uncertain-nature-book': {
+    slug: 'uncertain-nature',
+    title: 'Uncertain Nature Book',
+    year: 2022,
+    technique: 'Artist book',
+    base: '/works/works1/book UNCERTAIN NATURE ',
+    files: [
+      '01.jpg',
+      '2.JPG',
+      '3.JPG',
+      '4.JPG',
+      '5.JPG',
+      '6.JPG',
+      '7.JPG',
+      '8.JPG',
+      '9.JPG',
+      '10.JPG',
+      '11.JPG',
+      '12.JPG',
+      '13.JPG'
+    ]
+  }
+};
 
-const rockCycleFiles = [
-  'Park Pecno Slovenia_Alkalay _RockCycle_Slovenia Gallery.JPG',
-  'Park Pecno Slovenia_Alkalay _RockCycle_Slovenia Gallery EVA2.jpg',
-  ' Rock_Cycle_EVA 3.jpg',
-  ' Rock_Cycle_EVA 5.jpg',
-  ' Rock_Cycle_Memory restoration.jpg',
-  'Rock Cycle Bride.jpg',
-  'Rock Cycle Crak Path.jpg',
-  'Rock Cycle MEMORY Restoration.jpg',
-  'Rock Cycle Sealed Wounds.jpg',
-  'Rock Cycle Transitions.jpg'
-];
+const makeWorkSlides = project => project.files.map((file, index) => makeSlide({
+  slug: project.slug,
+  title: `${project.title} ${String(index + 1).padStart(2, '0')}`,
+  series: project.title,
+  year: project.year,
+  technique: project.technique,
+  file: `${project.base}/${file}`
+}, index));
 
 const recoletaExhibitionFiles = [
   'DSC08456.JPG',
@@ -88,49 +296,13 @@ export const exhibitionAssets = [
   }, index))
 ];
 
-export const projectAssets = {
-  'unfixed-landscapes': unfixedFiles.map((file, index) => makeSlide({
-    slug: 'unfixed',
-    title: `Unfixed Landscapes ${String(index + 1).padStart(2, '0')}`,
-    series: 'Unfixed Landscapes',
-    year: 2026,
-    technique: 'Installation view',
-    file: `/unfixed/${file}`
-  }, index)),
-  'the-rock-cycle': rockCycleFiles.map((file, index) => makeSlide({
-    slug: 'rockcycle',
-    title: `The Rock Cycle ${String(index + 1).padStart(2, '0')}`,
-    series: 'The Rock Cycle',
-    year: 2024,
-    technique: 'Photography and materiality',
-    file: `/rockcycle/${file}`
-  }, index))
-};
+export const projectAssets = Object.fromEntries(
+  Object.entries(workFiles).map(([slug, project]) => [slug, makeWorkSlides(project)])
+);
 
-export const projectGridAssets = {
-  'unfixed-landscapes': projectAssets['unfixed-landscapes'].map((slide, index) => ({ ...slide, slideIndex: index })),
-  'the-rock-cycle': projectAssets['the-rock-cycle'].flatMap((slide, index) => {
-    if (slide.title === 'The Rock Cycle 06') {
-      return [
-        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle Bride - left.jpg'), slideIndex: index },
-        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle Bride - right.jpg'), slideIndex: index }
-      ];
-    }
-    if (slide.title === 'The Rock Cycle 08') {
-      return [
-        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle MEMORY Restoration - left.jpg'), slideIndex: index },
-        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle MEMORY Restoration - right.jpg'), slideIndex: index }
-      ];
-    }
-    if (slide.title === 'The Rock Cycle 10') {
-      return [
-        { ...slide, id: `${slide.id}-left`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle Transitions - left.jpg'), slideIndex: index },
-        { ...slide, id: `${slide.id}-right`, imageUrl: asset('/rockcycle/split-frames/Rock Cycle Transitions - right.jpg'), slideIndex: index }
-      ];
-    }
-    return [{ ...slide, slideIndex: index }];
-  })
-};
+export const projectGridAssets = Object.fromEntries(
+  Object.entries(projectAssets).map(([slug, slides]) => [slug, slides.map((slide, index) => ({ ...slide, slideIndex: index }))])
+);
 
 const fallbackSlide = ({ slug, title, series = title, year, file }, index = 0) => makeSlide({
   slug,
@@ -142,16 +314,16 @@ const fallbackSlide = ({ slug, title, series = title, year, file }, index = 0) =
 }, index);
 
 export const workIndexItems = [
-  { slug: 'unfixed-landscapes', title: 'Unfixed Landscapes', year: 2026, imageUrl: '/andrealkalay-site-first-images/01-unfixed-landscapes.jpg' },
-  { slug: 'the-rock-cycle', title: 'The Rock Cycle', year: 2024, imageUrl: '/andrealkalay-site-first-images/02-the-rock-cycle.jpg' },
-  { slug: 'unearth', title: 'Unearth / ongoing', year: 2026, imageUrl: '/andrealkalay-site-first-images/03-unearth.jpg' },
-  { slug: 'landscape-on-landscape', title: 'Landscape on Landscape', year: 2025, imageUrl: '/andrealkalay-site-first-images/04-landscape-on-landscape.jpg' },
-  { slug: 'kutho', title: 'Kutho', year: 2021, imageUrl: '/andrealkalay-site-first-images/05-kutho.jpg' },
-  { slug: 'brief-shape', title: 'Brief Shape', year: 2023, imageUrl: '/andrealkalay-site-first-images/06-brief-shape.jpg' },
-  { slug: 'urban-territories', title: 'Urban Territories', year: 2018, imageUrl: '/andrealkalay-site-first-images/07-urban-territories.jpg' },
-  { slug: 'borders', title: 'Borders', year: 2018, imageUrl: '/andrealkalay-site-first-images/08-borders.jpg' },
-  { slug: 'about-india', title: 'About India', year: 2021, imageUrl: '/andrealkalay-site-first-images/09-about-india.jpg' },
-  { slug: 'uncertain-nature-book', title: 'Uncertain Nature Book', year: 2022, imageUrl: '/andrealkalay-site-first-images/10-uncertain-nature-book.jpg' }
+  { slug: 'unfixed-landscapes', title: 'Unfixed Landscapes', year: 2026, imageUrl: projectAssets['unfixed-landscapes'][0].imageUrl },
+  { slug: 'the-rock-cycle', title: 'The Rock Cycle', year: 2024, imageUrl: projectAssets['the-rock-cycle'][0].imageUrl },
+  { slug: 'unearth', title: 'Unearth / ongoing', year: 2026, imageUrl: projectAssets.unearth[0].imageUrl },
+  { slug: 'landscape-on-landscape', title: 'Landscape on Landscape', year: 2025, imageUrl: projectAssets['landscape-on-landscape'][0].imageUrl },
+  { slug: 'kutho', title: 'Kutho', year: 2021, imageUrl: projectAssets.kutho[0].imageUrl },
+  { slug: 'brief-shape', title: 'Brief Shape', year: 2023, imageUrl: projectAssets['brief-shape'][0].imageUrl },
+  { slug: 'urban-territories', title: 'Urban Territories', year: 2018, imageUrl: projectAssets['urban-territories'][0].imageUrl },
+  { slug: 'borders', title: 'Borders', year: 2018, imageUrl: projectAssets.borders[0].imageUrl },
+  { slug: 'about-india', title: 'About India', year: 2021, imageUrl: projectAssets['about-india'][0].imageUrl },
+  { slug: 'uncertain-nature-book', title: 'Uncertain Nature Book', year: 2022, imageUrl: projectAssets['uncertain-nature-book'][0].imageUrl }
 ];
 
 export const exhibitionProjects = [

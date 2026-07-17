@@ -14,7 +14,7 @@ export default function EditorialIntroCopy({ title, children, text }) {
 
     const updateCanExpand = () => {
       const lineHeight = Number.parseFloat(window.getComputedStyle(textNode).lineHeight);
-      const maxHeight = lineHeight * 3;
+      const maxHeight = lineHeight * 5;
       setCanExpand(textNode.scrollHeight > maxHeight + 1);
     };
 

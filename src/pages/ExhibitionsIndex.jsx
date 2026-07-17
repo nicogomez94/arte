@@ -10,8 +10,8 @@ const toColumns = items => items.reduce((columns, item, index) => {
 export default function ExhibitionsIndex() {
   const { projects: exhibitionProjects } = useSiteContent('exhibitions');
   const groups = [
-    { key: 'group', title: 'Group Show' },
-    { key: 'solo', title: 'Solo Show' }
+    { key: 'solo', title: 'Solo Show' },
+    { key: 'group', title: 'Group Show' }
   ];
 
   return (
