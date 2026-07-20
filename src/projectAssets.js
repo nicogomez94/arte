@@ -2,6 +2,8 @@
 // in asset filenames (for example `#` in the Landscape series) are not treated
 // as URL fragments by the browser.
 const asset = path => path.split('/').map(segment => encodeURIComponent(segment)).join('/');
+const isVideo = file => /\.(?:m4v|mov|mp4|webm)$/i.test(file);
+const videoPoster = file => file.replace(/\.(?:m4v|mov|mp4|webm)$/i, '.poster.jpg');
 
 const makeSlide = ({ slug, title, series, year, technique, file }, index) => ({
   id: `${slug}-${index + 1}`,
@@ -11,6 +13,8 @@ const makeSlide = ({ slug, title, series, year, technique, file }, index) => ({
   technique,
   description: series,
   imageUrl: asset(file),
+  mediaType: isVideo(file) ? 'video' : 'image',
+  posterUrl: isVideo(file) ? asset(videoPoster(file)) : undefined,
   alt: `${series} ${title}`,
   published: true,
   position: index + 1
@@ -233,6 +237,8 @@ const workFiles = {
     technique: 'Artist book',
     base: '/works/works1/book UNCERTAIN NATURE ',
     files: [
+      'naturaleza incierta final.mp4',
+      'uncertian nature.mp4',
       '01.jpg',
       '2.JPG',
       '3.JPG',
@@ -304,7 +310,11 @@ export const projectAssets = Object.fromEntries(
 );
 
 export const projectGridAssets = Object.fromEntries(
-  Object.entries(projectAssets).map(([slug, slides]) => [slug, slides.map((slide, index) => ({ ...slide, slideIndex: index }))])
+  Object.entries(projectAssets).map(([slug, slides]) => {
+    // The first video is the project cover. The second opens the archive grid.
+    const gridSlides = slug === 'uncertain-nature-book' ? slides.slice(1) : slides;
+    return [slug, gridSlides.map(slide => ({ ...slide, slideIndex: slides.indexOf(slide) }))];
+  })
 );
 
 const fallbackSlide = ({ slug, title, series = title, year, file }, index = 0) => makeSlide({
@@ -326,7 +336,7 @@ export const workIndexItems = [
   { slug: 'urban-territories', title: 'Urban Territories', year: 2018, imageUrl: projectAssets['urban-territories'][0].imageUrl },
   { slug: 'borders', title: 'Borders', year: 2018, imageUrl: projectAssets.borders[0].imageUrl },
   { slug: 'about-india', title: 'About India', year: 2021, imageUrl: projectAssets['about-india'][0].imageUrl },
-  { slug: 'uncertain-nature-book', title: 'Uncertain Nature Book', year: 2022, imageUrl: projectAssets['uncertain-nature-book'][0].imageUrl }
+  { slug: 'uncertain-nature-book', title: 'Uncertain Nature Book', year: 2022, imageUrl: projectAssets['uncertain-nature-book'][2].imageUrl }
 ];
 
 export const exhibitionProjects = [

@@ -7,6 +7,9 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
   const [playing, setPlaying] = useState(true);
   const pointerStart = useRef(null);
   const closeButton = useRef(null);
+  const videoRefs = useRef(new Map());
+  const activeArtwork = artworks[index];
+  const activeArtworkIsVideo = activeArtwork?.mediaType === 'video';
 
   const move = direction => setIndex(current => (current + direction + artworks.length) % artworks.length);
 
@@ -20,10 +23,16 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
   }, [open, initialIndex]);
 
   useEffect(() => {
-    if (!open || !playing || artworks.length < 2) return undefined;
+    if (!open || !playing || activeArtworkIsVideo || artworks.length < 2) return undefined;
     const timer = window.setInterval(() => move(1), 5500);
     return () => window.clearInterval(timer);
-  }, [open, playing, artworks.length]);
+  }, [open, playing, activeArtworkIsVideo, artworks.length]);
+
+  useEffect(() => {
+    videoRefs.current.forEach((video, videoIndex) => {
+      if (videoIndex !== index || !open) video.pause();
+    });
+  }, [index, open]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -31,7 +40,7 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
       if (event.key === 'Escape') onClose();
       if (event.key === 'ArrowRight') move(1);
       if (event.key === 'ArrowLeft') move(-1);
-      if (event.key === ' ') {
+      if (event.key === ' ' && event.target.tagName !== 'VIDEO') {
         event.preventDefault();
         setPlaying(value => !value);
       }
@@ -41,7 +50,7 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
   }, [open, artworks.length, onClose]);
 
   if (!open || !artworks.length) return null;
-  const artwork = artworks[index];
+  const artwork = activeArtwork;
 
   return (
     <div
@@ -67,7 +76,21 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
       <div className="slideshow-stage">
         {artworks.map((item, itemIndex) => (
           <figure className={itemIndex === index ? 'is-current' : ''} key={item.id} aria-hidden={itemIndex !== index}>
-            <img src={item.imageUrl} alt={item.alt || item.title} />
+            {item.mediaType === 'video' ? (
+              <video
+                ref={video => {
+                  if (video) videoRefs.current.set(itemIndex, video);
+                  else videoRefs.current.delete(itemIndex);
+                }}
+                controls
+                playsInline
+                preload="metadata"
+                src={item.imageUrl}
+                poster={item.posterUrl}
+                aria-label={item.alt || item.title}
+                onPlay={() => setPlaying(false)}
+              />
+            ) : <img src={item.imageUrl} alt={item.alt || item.title} />}
           </figure>
         ))}
       </div>

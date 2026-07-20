@@ -26,14 +26,20 @@ export default function WorkProject() {
         {!coverSlide ? <p className="empty-state">{global.noImagesLabel}</p> : (
           <>
           <section className="editorial-intro project-preview" aria-label={project.title}>
-            <button
-              className="editorial-intro-image image-open-button"
-              type="button"
-              onClick={() => { setStartIndex(0); setOpen(true); }}
-              aria-label={`Open ${project.title} slideshow`}
-            >
-              <img key={`${slug}-${coverSlide.id}`} src={coverSlide.imageUrl} alt={coverSlide.alt || coverSlide.title} />
-            </button>
+            {coverSlide.mediaType === 'video' ? (
+              <div className="editorial-intro-image editorial-intro-video">
+                <video controls playsInline preload="metadata" src={coverSlide.imageUrl} poster={coverSlide.posterUrl} aria-label={coverSlide.alt || coverSlide.title} />
+              </div>
+            ) : (
+              <button
+                className="editorial-intro-image image-open-button"
+                type="button"
+                onClick={() => { setStartIndex(0); setOpen(true); }}
+                aria-label={`Open ${project.title} slideshow`}
+              >
+                <img key={`${slug}-${coverSlide.id}`} src={coverSlide.imageUrl} alt={coverSlide.alt || coverSlide.title} />
+              </button>
+            )}
             <EditorialIntroCopy
               title={project.title}
               text={project.intro || 'A focused selection from the project archive, arranged for browsing before entering the full slideshow.'}
