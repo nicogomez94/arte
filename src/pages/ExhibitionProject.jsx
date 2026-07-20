@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import EditorialIntroCopy from '../components/EditorialIntroCopy';
 import FullscreenSlideshow from '../components/FullscreenSlideshow';
+import MasonryThumbGrid from '../components/MasonryThumbGrid';
 import { Footer, Header } from '../components/SiteChrome';
 import { useSiteContent } from '../siteContent';
 
@@ -39,13 +40,12 @@ export default function ExhibitionProject() {
         </section>
 
         <section className="gallery-archive" id="selected">
-          <div className="artwork-thumb-grid">
-            {slides.map((artwork, index) => (
-              <button type="button" key={artwork.id} onClick={() => { setStartIndex(index); setOpen(true); }} className="artwork-thumb">
-                <img src={artwork.imageUrl} alt="" />
-              </button>
-            ))}
-          </div>
+          <MasonryThumbGrid
+            items={slides}
+            keyPrefix={slug}
+            getKey={artwork => artwork.id}
+            onOpen={(_artwork, index) => { setStartIndex(index); setOpen(true); }}
+          />
         </section>
       </main>
       <Footer />

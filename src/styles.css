@@ -1123,6 +1123,36 @@ h1, h2, h3, strong, b { font-weight: 100; }
   }
 }
 
+.artwork-thumb-masonry {
+  grid-template-columns: repeat(var(--masonry-columns, 3), minmax(0, 1fr));
+  align-items: start;
+}
+
+.artwork-thumb-column {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(18px, 2.2vw, 30px);
+}
+
+.artwork-thumb-column .artwork-thumb {
+  display: block;
+  width: 100%;
+}
+
+.artwork-thumb-column .artwork-thumb img {
+  display: block;
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 680px) {
+  .artwork-thumb-column {
+    gap: 34px;
+  }
+}
+
 /* Compact contact page */
 .contact-hero {
   min-height: auto;

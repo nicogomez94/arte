@@ -1,4 +1,7 @@
-const asset = path => encodeURI(path);
+// Encode each path segment independently so reserved characters that are valid
+// in asset filenames (for example `#` in the Landscape series) are not treated
+// as URL fragments by the browser.
+const asset = path => path.split('/').map(segment => encodeURIComponent(segment)).join('/');
 
 const makeSlide = ({ slug, title, series, year, technique, file }, index) => ({
   id: `${slug}-${index + 1}`,
@@ -91,28 +94,28 @@ const workFiles = {
     base: '/works/works2/wix Landscape',
     files: [
       '1 - Landscape on Landscape Centro Cultural Recoleta.jpg',
-      '2- Landscape_on Landscape_Cod# ffc633.jpg',
+      '2- Landscape_on Landscape_Cod-ffc633.jpg',
       '3- Landscape_on_Lanscape_4795C.jpg',
-      '4 Landscape_on Landscape_Cod#7fab79.jpg',
-      '5 Landscape on Landscape _Cod#f9b6b0 .jpg',
-      '6- Paiseje sobre Paisaje Cod# bec2f6.jpg',
+      '4 Landscape_on Landscape_Cod-7fab79.jpg',
+      '5 Landscape on Landscape _Cod-f9b6b0 .jpg',
+      '6- Paiseje sobre Paisaje Cod-bec2f6.jpg',
       '7- LandscapeOnLandscape1F7C29F.jpg',
-      '8 Landscape_on Landscape_Cod#d3fa80.jpg',
-      '9 Landscape on Landscape Cod#B00c48.jpg',
+      '8 Landscape_on Landscape_Cod-d3fa80.jpg',
+      '9 Landscape on Landscape Cod-B00c48.jpg',
       '10- Landscape_on_Lanscape_59392C.jpg',
       '11 Landscape_on_Landscape_F7C29F.jpg',
       '12 Landscape_on_Landscape_91CCF0.jpg',
       '13 Landscape_on_Landscape f6be57.jpg',
       '14 Landscape_on_Landscape_52EA30.jpg',
       '15 Landscape_on_Landscape_3FA3DF.jpg',
-      '16 Landscape_on Landscape_Cod #aba1c0.jpg',
+      '16 Landscape_on Landscape_Cod-aba1c0.jpg',
       '17 LAndscape_on_Lanscape_807917.jpg',
       '18- Landscape_on_Lanscape_CCCFCA.jpg',
       '19 Landscape_on Landscape_2 .jpg',
       '20 Landscape_on_Lanscape_2852cc.jpg',
-      '21 Landscape_on_landscape_#F1671c.jpg',
-      '22 Landscape_on Landscape_Cod##B6D3F0 .jpg',
-      '23 Landscape_on_landscape_Cod#DAD0B0.jpg',
+      '21 Landscape_on_landscape-F1671c.jpg',
+      '22 Landscape_on Landscape_Cod-B6D3F0 .jpg',
+      '23 Landscape_on_landscape_Cod-DAD0B0.jpg',
       '24 Landscape on Landscape Espacio DAR 25.jpg'
     ]
   },
