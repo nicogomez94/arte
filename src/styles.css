@@ -1437,7 +1437,6 @@ h1, h2, h3, strong, b { font-weight: 100; }
 .exhibition-dropdown-group > div { max-height: min(48vh, 390px); padding: 1px 0 14px 13px; display: flex; flex-direction: column; align-items: flex-start; gap: 7px; overflow-y: auto; }
 .exhibition-dropdown-group > div a { color: #777; font-size: 11px; }
 .exhibition-dropdown-group > div a:hover { color: var(--ink); }
-.exhibition-dropdown-group > div .exhibition-view-all { margin-bottom: 2px; color: var(--ink); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
 
 .home-page {
   min-height: 100vh;
@@ -2214,7 +2213,7 @@ body,
 
 .slideshow-header button {
   color: #242424;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .slideshow-header button:hover,

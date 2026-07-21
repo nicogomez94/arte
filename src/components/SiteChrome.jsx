@@ -94,9 +94,6 @@ export function Header() {
                       <svg viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" /></svg>
                     </summary>
                     <div>
-                      {group.key !== 'solo' && (
-                        <Link className="exhibition-view-all" to={`/exhibitions#${group.key}-show`} onClick={() => setOpen(false)}>View all</Link>
-                      )}
                       {exhibitionProjects.filter(project => project.category === group.key).map(project => (
                         <Link key={project.slug} to={`/exhibitions/${project.slug}`} onClick={() => setOpen(false)}>{project.title}</Link>
                       ))}

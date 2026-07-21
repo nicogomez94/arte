@@ -237,8 +237,6 @@ const workFiles = {
     technique: 'Artist book',
     base: '/works/works1/book UNCERTAIN NATURE ',
     files: [
-      'naturaleza incierta final.mp4',
-      'uncertian nature.mp4',
       '01.jpg',
       '2.JPG',
       '3.JPG',
@@ -311,9 +309,7 @@ export const projectAssets = Object.fromEntries(
 
 export const projectGridAssets = Object.fromEntries(
   Object.entries(projectAssets).map(([slug, slides]) => {
-    // The first video is the project cover. The second opens the archive grid.
-    const gridSlides = slug === 'uncertain-nature-book' ? slides.slice(1) : slides;
-    return [slug, gridSlides.map(slide => ({ ...slide, slideIndex: slides.indexOf(slide) }))];
+    return [slug, slides.map((slide, index) => ({ ...slide, slideIndex: index }))];
   })
 );
 
@@ -336,7 +332,7 @@ export const workIndexItems = [
   { slug: 'urban-territories', title: 'Urban Territories', year: 2018, imageUrl: projectAssets['urban-territories'][0].imageUrl },
   { slug: 'borders', title: 'Borders', year: 2018, imageUrl: projectAssets.borders[0].imageUrl },
   { slug: 'about-india', title: 'About India', year: 2021, imageUrl: projectAssets['about-india'][0].imageUrl },
-  { slug: 'uncertain-nature-book', title: 'Uncertain Nature Book', year: 2022, imageUrl: projectAssets['uncertain-nature-book'][2].imageUrl }
+  { slug: 'uncertain-nature-book', title: 'Uncertain Nature Book', year: 2022, imageUrl: projectAssets['uncertain-nature-book'][0].imageUrl }
 ];
 
 export const exhibitionProjects = [
