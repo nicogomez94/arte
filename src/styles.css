@@ -2201,3 +2201,23 @@ body,
     margin-top: 0;
   }
 }
+
+/* Stronger controls on the expanded image viewer */
+.slideshow-header {
+  border-bottom-color: #cacaca;
+}
+
+.slideshow-brand {
+  color: #202020;
+  font-weight: 400;
+}
+
+.slideshow-header button {
+  color: #242424;
+  font-weight: 500;
+}
+
+.slideshow-header button:hover,
+.slideshow-header button:focus-visible {
+  color: #000;
+}

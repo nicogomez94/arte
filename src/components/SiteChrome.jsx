@@ -59,7 +59,7 @@ export function Header() {
           </div>
           <div className={`work-menu ${openSection === 'work' ? 'is-mobile-expanded' : ''}`}>
             <div className="nav-section-heading">
-              <NavLink className={pathname.startsWith('/work') ? 'active' : ''} to="/work" aria-haspopup="true">{global.workMenuLabel}</NavLink>
+              <NavLink className={pathname.startsWith('/work') ? 'active' : ''} to="/work/unfixed-landscapes" aria-haspopup="true">{global.workMenuLabel}</NavLink>
               <button className="mobile-submenu-toggle" type="button" onClick={() => toggleSection('work')} aria-expanded={openSection === 'work'} aria-controls="work-navigation-list" aria-label="Toggle Work projects">
                 <span />
               </button>

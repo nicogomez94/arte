@@ -7,7 +7,6 @@ import Contact from './pages/Contact';
 import Cv from './pages/Cv';
 import ExhibitionProject from './pages/ExhibitionProject';
 import ExhibitionsIndex from './pages/ExhibitionsIndex';
-import WorkIndex from './pages/WorkIndex';
 import WorkProject from './pages/WorkProject';
 import Statement from './pages/Statement';
 import { SiteContentProvider } from './siteContent';
@@ -39,7 +38,7 @@ export default function App() {
         <Route path="/galeria" element={<Navigate to="/exhibitions" replace />} />
         <Route path="/exhibitions" element={<ExhibitionsIndex />} />
         <Route path="/exhibitions/:slug" element={<ExhibitionProject />} />
-        <Route path="/work" element={<WorkIndex />} />
+        <Route path="/work" element={<Navigate to="/work/unfixed-landscapes" replace />} />
         <Route path="/work/:slug" element={<WorkProject />} />
         <Route path="/statement" element={<Statement />} />
         <Route path="/acerca-de-mi" element={<About />} />
