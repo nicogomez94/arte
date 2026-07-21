@@ -142,6 +142,12 @@ export const mergeSiteContent = (stored = {}) => {
   ))) {
     merged.work = defaultSiteContent.work;
   }
+  // Statements kept beside each Work image archive are the canonical public
+  // project texts. Apply them by slug while preserving saved images and order.
+  merged.work.projects = (merged.work.projects || []).map(project => {
+    const sourceProject = projects.find(item => item.slug === project.slug);
+    return sourceProject?.intro ? { ...project, intro: sourceProject.intro } : project;
+  });
   return merged;
 };
 
