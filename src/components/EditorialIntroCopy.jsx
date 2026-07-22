@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSiteContent } from '../siteContent';
 
+const COLLAPSED_LINE_COUNT = 10;
+
 export default function EditorialIntroCopy({ title, children, text }) {
   const global = useSiteContent('global');
   const textRef = useRef(null);
@@ -14,7 +16,7 @@ export default function EditorialIntroCopy({ title, children, text }) {
 
     const updateCanExpand = () => {
       const lineHeight = Number.parseFloat(window.getComputedStyle(textNode).lineHeight);
-      const maxHeight = lineHeight * 5;
+      const maxHeight = lineHeight * COLLAPSED_LINE_COUNT;
       setCanExpand(textNode.scrollHeight > maxHeight + 1);
     };
 
@@ -34,7 +36,13 @@ export default function EditorialIntroCopy({ title, children, text }) {
     <div className="editorial-intro-copy">
       <h3>{title}</h3>
       <div className={`intro-text-shell ${canExpand && !expanded ? 'is-faded' : ''}`}>
-        <p ref={textRef} className={!expanded ? 'is-clamped' : undefined}>{text}</p>
+        <p
+          ref={textRef}
+          className={!expanded ? 'is-clamped' : undefined}
+          style={{ '--collapsed-lines': COLLAPSED_LINE_COUNT }}
+        >
+          {text}
+        </p>
       </div>
       {canExpand && (
         <button

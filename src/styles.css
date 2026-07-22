@@ -689,14 +689,16 @@ body { background: #fff; font-weight: 400; }
 body, button, input, textarea { font-weight: 100; }
 h1, h2, h3, strong, b { font-weight: 100; }
 .wordmark {
+  text-transform: uppercase;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: start;
   gap: 8px;
-  font-size: 23px;
+  font-size: 20px;
   font-weight: 100;
-  line-height: .88;
+  line-height: 0;
   letter-spacing: .01em;
+  margin-top: 5px;
 }
 .wordmark span,
 .wordmark small {
@@ -916,7 +918,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: var(--collapsed-lines, 10);
 }
 
 .intro-expand-button {
@@ -2020,8 +2022,8 @@ body,
 }
 
 .project-detail-intro {
-  min-height: 570px;
-  padding: 132px 0 82px;
+  min-height: 0;
+  padding: 132px 0 122px;
 }
 
 .back-home-link {
@@ -2059,8 +2061,8 @@ body,
   max-width: 440px;
   margin: 0;
   color: var(--ink);
-  font: 600 clamp(16px, 1.35vw, 19px)/1.3 var(--sans);
-  letter-spacing: -.015em;
+  font: 100 20px/1.05 var(--display);
+  letter-spacing: .01em;
 }
 
 .project-detail-meta p {
@@ -2115,7 +2117,7 @@ body,
 
   .project-detail-intro {
     min-height: 0;
-    padding: 112px 0 66px;
+    padding: 112px 0 48px;
   }
 
   .project-detail-grid {
@@ -2125,7 +2127,7 @@ body,
   }
 
   .project-detail-meta h1 {
-    font-size: 17px;
+    font-size: 23px;
   }
 
   .project-detail-meta p {
