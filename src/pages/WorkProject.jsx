@@ -26,10 +26,9 @@ export default function WorkProject() {
           <div className="project-detail-grid">
             <div className="project-detail-meta">
               <h1 id="project-title">{project.title}</h1>
-              <p>{project.year}</p>
             </div>
             <EditorialIntroCopy
-              title="About the series"
+              title="statement"
               text={project.intro || 'A focused selection from the project archive.'}
             />
           </div>

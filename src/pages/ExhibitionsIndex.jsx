@@ -31,7 +31,6 @@ export default function ExhibitionsIndex() {
                       <Link className={`visual-index-card visual-index-card-${(columnIndex + itemIndex) % 6}`} to={`/exhibitions/${item.slug}`} key={item.slug}>
                         <img src={item.imageUrl} alt="" />
                         <h2>{item.title}</h2>
-                        <p>{item.year}</p>
                       </Link>
                     ))}
                   </div>

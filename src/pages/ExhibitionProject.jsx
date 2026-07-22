@@ -24,7 +24,6 @@ export default function ExhibitionProject() {
           <div className="project-detail-grid">
             <div className="project-detail-meta">
               <h1 id="exhibition-title">{project.title}</h1>
-              <p>{project.year}</p>
             </div>
             <EditorialIntroCopy
               title="About the exhibition"

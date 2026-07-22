@@ -38,8 +38,10 @@ export default function MasonryThumbGrid({ items, getKey, onOpen, keyPrefix = 'm
             >
               {item.mediaType === 'video' ? (
                 <>
-                  <video src={item.imageUrl} poster={item.posterUrl} muted playsInline preload="metadata" aria-label={item.alt || item.title} />
-                  <span className="media-play-indicator" aria-hidden="true">Play</span>
+                  <img src={item.posterUrl} alt="" />
+                  <span className="media-play-indicator" aria-hidden="true">
+                    <svg viewBox="0 0 16 18"><path d="M15 9 1 17V1z" /></svg>
+                  </span>
                 </>
               ) : <img src={item.imageUrl} alt="" />}
             </button>

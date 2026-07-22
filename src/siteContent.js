@@ -66,7 +66,7 @@ export const defaultSiteContent = {
     noImagesLabel: 'No images available.'
   },
   home: {
-    heroImageUrl: '/exhibicion-01.png',
+    heroImageUrl: '/esta.jpg',
     heroImageAlt: 'Andrea Alkalay installation at Soulangh Cultural Park',
     heroCaption: 'Unfixed Landscapes · Soulangh Cultural Park, Taiwan · 2026',
     selectedWorkLabel: 'selected work',
@@ -146,7 +146,30 @@ export const mergeSiteContent = (stored = {}) => {
   // project texts. Apply them by slug while preserving saved images and order.
   merged.work.projects = (merged.work.projects || []).map(project => {
     const sourceProject = projects.find(item => item.slug === project.slug);
-    return sourceProject?.intro ? { ...project, intro: sourceProject.intro } : project;
+    const canonicalVideos = (projectAssets[project.slug] || []).filter(item => item.mediaType === 'video');
+    if (!canonicalVideos.length) return sourceProject?.intro ? { ...project, intro: sourceProject.intro } : project;
+
+    const isObsoleteUncertainVideo = item => item.imageUrl?.endsWith('/IMG_3675.m4v');
+    const currentImages = (project.images || []).filter(item => !isObsoleteUncertainVideo(item));
+    const currentImageUrls = new Set(currentImages.map(item => item.imageUrl));
+    const images = [...currentImages, ...canonicalVideos.filter(item => !currentImageUrls.has(item.imageUrl))];
+    const currentGrid = project.gridImages?.length
+      ? project.gridImages.filter(item => !isObsoleteUncertainVideo(item))
+      : currentImages.map((item, index) => ({ ...item, slideIndex: index }));
+    const currentGridUrls = new Set(currentGrid.map(item => item.imageUrl));
+    const gridVideos = canonicalVideos
+      .filter(item => !currentGridUrls.has(item.imageUrl))
+      .map(item => ({ ...item, slideIndex: images.findIndex(image => image.imageUrl === item.imageUrl) }));
+
+    return {
+      ...project,
+      ...(sourceProject?.intro ? { intro: sourceProject.intro } : {}),
+      images,
+      gridImages: [...currentGrid, ...gridVideos].map(item => ({
+        ...item,
+        slideIndex: images.findIndex(image => image.imageUrl === item.imageUrl)
+      }))
+    };
   });
   return merged;
 };
