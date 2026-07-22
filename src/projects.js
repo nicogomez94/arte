@@ -68,7 +68,7 @@ Indochina, 2019.`
   },
   {
     slug: 'brief-shape',
-    title: 'Brief Shape',
+    title: 'Brief Form',
     intro: `Lying down
 I see the clouds go by
 summer room

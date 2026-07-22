@@ -143,7 +143,7 @@ const workFiles = {
   },
   'brief-shape': {
     slug: 'brief-shape',
-    title: 'Brief Shape',
+    title: 'Brief Form',
     year: 2023,
     technique: 'Photography and installation',
     base: '/works/works1/ Brief Form',
@@ -331,7 +331,7 @@ export const workIndexItems = [
   { slug: 'unearth', title: 'Unearth / ongoing', year: 2026, imageUrl: projectAssets.unearth[0].imageUrl },
   { slug: 'landscape-on-landscape', title: 'Landscape on Landscape', year: 2025, imageUrl: projectAssets['landscape-on-landscape'][0].imageUrl },
   { slug: 'kutho', title: 'Kutho', year: 2021, imageUrl: projectAssets.kutho[0].imageUrl },
-  { slug: 'brief-shape', title: 'Brief Shape', year: 2023, imageUrl: projectAssets['brief-shape'][0].imageUrl },
+  { slug: 'brief-shape', title: 'Brief Form', year: 2023, imageUrl: projectAssets['brief-shape'][0].imageUrl },
   { slug: 'urban-territories', title: 'Urban Territories', year: 2018, imageUrl: projectAssets['urban-territories'][0].imageUrl },
   { slug: 'borders', title: 'Borders', year: 2018, imageUrl: projectAssets.borders[0].imageUrl },
   { slug: 'about-india', title: 'About India', year: 2021, imageUrl: projectAssets['about-india'][0].imageUrl },

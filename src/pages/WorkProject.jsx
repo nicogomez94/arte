@@ -28,7 +28,7 @@ export default function WorkProject() {
               <h1 id="project-title">{project.title}</h1>
             </div>
             <EditorialIntroCopy
-              title="statement"
+              title="Statement"
               text={project.intro || 'A focused selection from the project archive.'}
             />
           </div>

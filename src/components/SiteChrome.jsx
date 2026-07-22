@@ -50,12 +50,10 @@ export function Header() {
       <div className="header-inner">
         <Link className="wordmark" to="/">
           <span>{global.artistName}</span>
-          <small>{global.artistDiscipline}</small>
         </Link>
         <nav id="main-navigation" className={open ? 'site-nav is-open' : 'site-nav'} aria-label="Main navigation">
           <div className="mobile-nav-heading" aria-hidden="true">
             <span>Menu</span>
-            <span>Andrea Alkalay</span>
           </div>
           <div className={`work-menu ${openSection === 'work' ? 'is-mobile-expanded' : ''}`}>
             <div className="nav-section-heading">
@@ -107,7 +105,6 @@ export function Header() {
           <NavLink to="/contacto" onClick={() => setOpen(false)}>{global.contactMenuLabel}</NavLink>
           <NavLink to="/cv" onClick={() => setOpen(false)}>{global.cvMenuLabel}</NavLink>
           <div className="mobile-nav-foot" aria-hidden="true">
-            <span>Art Photography</span>
             <span>Buenos Aires</span>
           </div>
         </nav>
