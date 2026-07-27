@@ -31,7 +31,7 @@ export default function Cv() {
     <div className="site-page cv-page">
       <Header />
       <main className="cv-main">
-        <section className="cv-hero" aria-label="Andrea Alkalay CV">
+        <section className="cv-hero" aria-label="Andrea Alkalay biography">
           <figure className="cv-portrait reveal">
             <img src={content.imageUrl} alt={content.imageAlt} />
           </figure>
@@ -41,7 +41,7 @@ export default function Cv() {
           </div>
         </section>
 
-        <section className="cv-sections" aria-label="CV details">
+        <section className="cv-sections" aria-label="Biography details">
           {content.sections.map(section => (
             <article className="cv-section" key={section.title}>
               <h2>{section.title}</h2>

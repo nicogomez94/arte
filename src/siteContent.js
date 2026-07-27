@@ -32,7 +32,10 @@ const parseCv = () => {
       sections.push(current);
     } else if (current) current.items.push(line);
   });
-  return { intro, sections };
+  return {
+    intro,
+    sections: sections.filter(section => !section.title.toLowerCase().startsWith('group exhibitions'))
+  };
 };
 
 const workProjects = workIndexItems.map(item => {
@@ -54,7 +57,7 @@ export const defaultSiteContent = {
     exhibitionsMenuLabel: 'Exhibitions',
     statementMenuLabel: 'Statement',
     contactMenuLabel: 'Contact',
-    cvMenuLabel: 'CV',
+    cvMenuLabel: 'Bio',
     instagramUrl: 'https://instagram.com/andrealkalay',
     footerText: 'andrea alkalay | 2026',
     startViewingLabel: 'Start viewing',
@@ -101,16 +104,20 @@ export const defaultSiteContent = {
     linkLabel: 'View work'
   },
   contact: {
+    contentVersion: 1,
     imageUrl: '/exhibicion-03.png', imageAlt: 'Andrea Alkalay exhibition detail',
     title: 'Let’s connect.', subtitle: 'Exhibitions, collaborations and press.',
     links: [
       { label: 'Email', value: 'info@andrealkalay.com', url: 'mailto:info@andrealkalay.com' },
-      { label: 'Instagram', value: '@andrealkalay', url: 'https://instagram.com/andrealkalay' }
+      { label: 'Instagram', value: '@andrealkalay', url: 'https://instagram.com/andrealkalay' },
+      { label: 'LinkedIn', value: 'linkedin.com/in/andreaalkalay', url: 'https://www.linkedin.com/in/andreaalkalay/' },
+      { label: 'Facebook', value: 'facebook.com/andrea.alkalay.7', url: 'https://www.facebook.com/andrea.alkalay.7' }
     ]
   },
   cv: {
     imageUrl: '/contact/Andrea-Alkalay.jpg.avif', imageAlt: 'Andrea Alkalay',
-    introLabel: 'About Andrea,', ...parseCv()
+    introLabel: 'About Andrea,',
+    ...parseCv()
   }
 };
 
@@ -121,7 +128,21 @@ export const mergeSiteContent = (stored = {}) => {
       ? { ...value, ...(stored?.[key] || {}) }
       : (stored?.[key] ?? value)
   ]));
+  if (merged.global.cvMenuLabel?.trim().toLowerCase() === 'cv') {
+    merged.global.cvMenuLabel = 'Bio';
+  }
   merged.contact.links = (merged.contact.links || []).filter(link => link.url !== 'https://www.andrealkalay.com/');
+  if (Number(stored.contact?.contentVersion || 0) < 1) {
+    defaultSiteContent.contact.links.slice(-2).forEach(socialLink => {
+      if (!merged.contact.links.some(link => link.label?.trim().toLowerCase() === socialLink.label.toLowerCase())) {
+        merged.contact.links.push(socialLink);
+      }
+    });
+  }
+  delete merged.cv.links;
+  merged.cv.sections = (merged.cv.sections || []).filter(section => (
+    !section.title?.trim().toLowerCase().startsWith('group exhibitions')
+  ));
   // Bio used to live inside Statement. Strip legacy saved fields as well so it
   // disappears from both the public page and the content editor.
   if (merged.statement) {

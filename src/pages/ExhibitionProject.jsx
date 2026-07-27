@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import EditorialIntroCopy from '../components/EditorialIntroCopy';
 import FullscreenSlideshow from '../components/FullscreenSlideshow';
 import MasonryThumbGrid from '../components/MasonryThumbGrid';
@@ -20,7 +20,6 @@ export default function ExhibitionProject() {
       <Header />
       <main className="project-main">
         <section className="project-detail-intro" aria-labelledby="exhibition-title">
-          <Link className="back-home-link" to="/">← Back to home</Link>
           <div className="project-detail-grid">
             <div className="project-detail-meta">
               <h1 id="exhibition-title">{project.title}</h1>

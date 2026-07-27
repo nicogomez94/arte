@@ -2026,34 +2026,10 @@ body,
   padding: 132px 0 122px;
 }
 
-.back-home-link {
-  width: max-content;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #414141;
-  font-size: 10px;
-  line-height: 1;
-  letter-spacing: .17em;
-  text-transform: uppercase;
-  transition: color .2s, transform .2s;
-}
-
-.back-home-link:hover {
-  color: var(--muted);
-  transform: translateX(-3px);
-}
-
-.back-home-link:focus-visible {
-  outline: 1px solid currentColor;
-  outline-offset: 6px;
-}
-
 .project-detail-grid {
-  margin-top: clamp(37px, 2vw, 72px);
   display: grid;
-  grid-template-columns: minmax(240px, .95fr) minmax(360px, 1.05fr);
-  gap: clamp(60px, 9vw, 142px);
+  grid-template-columns: minmax(220px, .68fr) minmax(360px, 1.32fr);
+  gap: clamp(40px, 5vw, 76px);
   align-items: start;
 }
 

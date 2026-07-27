@@ -9,13 +9,13 @@ const sections = [
   { key: 'exhibitions', label: 'Exhibitions', route: '/exhibitions' },
   { key: 'statement', label: 'Statement', route: '/statement' },
   { key: 'contact', label: 'Contact', route: '/contacto' },
-  { key: 'cv', label: 'CV', route: '/cv' }
+  { key: 'cv', label: 'Bio', route: '/cv' }
 ];
 
 const labels = {
   artistName: 'Nombre de la artista', artistDiscipline: 'Disciplina', workMenuLabel: 'Texto del menú Work',
   exhibitionsMenuLabel: 'Texto del menú Exhibitions', statementMenuLabel: 'Texto del menú Statement',
-  contactMenuLabel: 'Texto del menú Contact', cvMenuLabel: 'Texto del menú CV', instagramUrl: 'Enlace de Instagram',
+  contactMenuLabel: 'Texto del menú Contact', cvMenuLabel: 'Texto del menú Bio', instagramUrl: 'Enlace de Instagram',
   footerText: 'Texto del pie', heroImageUrl: 'Imagen principal', heroImageAlt: 'Descripción de la imagen principal',
   startViewingLabel: 'Texto de iniciar recorrido', expandLabel: 'Texto de expandir', showLessLabel: 'Texto de contraer',
   pauseLabel: 'Texto de pausa', playLabel: 'Texto de reproducción', closeLabel: 'Texto de cerrar', noImagesLabel: 'Mensaje sin imágenes',
@@ -30,10 +30,10 @@ const labels = {
   detailCaption: 'Epígrafe de detalle', detailLabel: 'Etiqueta de detalle', detailTitle: 'Título de detalle',
   facts: 'Datos', label: 'Etiqueta', value: 'Texto visible', linkLabel: 'Texto del enlace', imageAlt: 'Descripción de imagen',
   subtitle: 'Bajada', links: 'Enlaces', url: 'Destino del enlace', introLabel: 'Título de introducción',
-  sections: 'Secciones del CV', items: 'Entradas', category: 'Categoría'
+  sections: 'Secciones de Bio', items: 'Entradas', category: 'Categoría'
 };
 
-const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'published', 'position', 'createdAt', 'updatedAt']);
+const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion']);
 const imageKeys = new Set(['imageUrl', 'heroImageUrl', 'portraitImageUrl', 'detailImageUrl']);
 const clone = value => JSON.parse(JSON.stringify(value));
 const titleForItem = (item, index) => item.title || item.label || item.value || `Elemento ${index + 1}`;
@@ -136,7 +136,9 @@ function ProjectCovers({ projects, onChange, category = null }) {
 function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, projectCategory = null }) {
   const [dragIndex, setDragIndex] = useState(null);
   if (Array.isArray(value)) {
-    const objectItems = value.some(item => item && typeof item === 'object');
+    const kind = path.at(-1);
+    const objectList = ['projects', 'images', 'gridImages', 'links', 'sections'].includes(kind);
+    const objectItems = objectList || value.some(item => item && typeof item === 'object');
     if (!objectItems) {
       const fieldName = path.at(-1);
       const paragraphs = ['paragraphs', 'practiceParagraphs'].includes(fieldName);
@@ -152,10 +154,15 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
         </label>
       );
     }
-    const kind = path.at(-1);
-    const reorderable = ['projects', 'images', 'gridImages'].includes(kind);
-    const editableList = ['projects', 'images', 'gridImages', 'links'].includes(kind);
-    const addLabel = kind === 'projects' ? 'Agregar proyecto' : kind === 'links' ? 'Agregar enlace' : 'Agregar imagen';
+    const reorderable = ['projects', 'images', 'gridImages', 'sections'].includes(kind);
+    const editableList = ['projects', 'images', 'gridImages', 'links', 'sections'].includes(kind);
+    const addLabel = kind === 'projects'
+      ? 'Agregar proyecto'
+      : kind === 'links'
+        ? 'Agregar enlace'
+        : kind === 'sections'
+          ? 'Agregar sección'
+          : 'Agregar imagen';
     return (
       <div className="admin-content-list">
         {value.map((item, index) => ({ item, index })).filter(({ item }) => kind !== 'projects' || !projectCategory || item.category === projectCategory).map(({ item, index }) => {
@@ -309,6 +316,8 @@ export default function Admin() {
         });
       } else if (kind === 'links') {
         list.push({ label: 'Nuevo enlace', value: '', url: '' });
+      } else if (kind === 'sections') {
+        list.push({ title: 'Nueva sección', items: ['Nueva entrada'] });
       } else {
         list.push({
           id: uniqueId(kind === 'gridImages' ? 'grilla' : 'imagen'),
@@ -328,7 +337,13 @@ export default function Admin() {
       window.alert('Work debe conservar al menos un proyecto porque Home utiliza ese contenido.');
       return;
     }
-    const message = kind === 'projects' ? '¿Eliminar este proyecto y todo su contenido?' : kind === 'links' ? '¿Eliminar este enlace?' : '¿Eliminar esta imagen?';
+    const message = kind === 'projects'
+      ? '¿Eliminar este proyecto y todo su contenido?'
+      : kind === 'links'
+        ? '¿Eliminar este enlace?'
+        : kind === 'sections'
+          ? '¿Eliminar esta sección de Bio?'
+          : '¿Eliminar esta imagen?';
     if (!window.confirm(message)) return;
     setDraft(current => {
       const next = clone(current);
