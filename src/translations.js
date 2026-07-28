@@ -1,3 +1,5 @@
+import { exhibitionStatementsEs, workStatementsEs } from './spanishStatements.js';
+
 const workTranslations = {
   'unfixed-landscapes': {
     intro: `Taiwán, moldeado por la migración y la colonización, desempeña un papel clave en la economía digital global. Exploro estas tensiones a una escala íntima a través del paisaje, el agua y la adaptación del territorio.
@@ -231,31 +233,22 @@ export function translateSiteContent(content, language) {
     },
     work: {
       ...content.work,
-      projects: (content.work.projects || []).map(project => {
-        const translation = workTranslations[project.slug];
-        if (!translation) return project;
-        return {
-          ...project,
-          title: project.title,
-          intro: translation.intro,
-          images: (project.images || []).map(translateArtwork),
-          gridImages: (project.gridImages || []).map(translateArtwork)
-        };
-      })
+      projects: (content.work.projects || []).map(project => ({
+        ...project,
+        title: project.title,
+        intro: workStatementsEs[project.slug] ?? project.intro,
+        images: (project.images || []).map(translateArtwork),
+        gridImages: (project.gridImages || []).map(translateArtwork)
+      }))
     },
     exhibitions: {
       ...content.exhibitions,
-      projects: (content.exhibitions.projects || []).map(project => {
-        const intro = project.category === 'solo'
-          ? 'Documentación seleccionada de esta exposición individual, que sigue la relación entre la obra, su presencia material y la arquitectura del espacio.'
-          : 'Documentación seleccionada de esta exposición colectiva, que recorre el diálogo entre las obras, la arquitectura y las otras prácticas que comparten el espacio.';
-        return {
-          ...project,
-          title: project.title,
-          intro,
-          images: (project.images || []).map(translateArtwork)
-        };
-      })
+      projects: (content.exhibitions.projects || []).map(project => ({
+        ...project,
+        title: project.title,
+        intro: exhibitionStatementsEs[project.slug] ?? project.intro,
+        images: (project.images || []).map(translateArtwork)
+      }))
     },
     statement: {
       ...content.statement,
