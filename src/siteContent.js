@@ -5,7 +5,8 @@ import { exhibitionProjects } from './exhibitionAssets';
 import { projects } from './projects';
 import { api } from './api';
 import { useLanguage } from './i18n';
-import { translateSiteContent } from './translations';
+import { exhibitionStatementsEs, workStatementsEs } from './spanishStatements';
+import { statementParagraphsEs, translateSiteContent } from './translations';
 
 const cleanLine = line => line
   .replace(/[\u200B-\u200D\uFEFF]/g, '')
@@ -46,10 +47,21 @@ const workProjects = workIndexItems.map(item => {
     id: `${item.slug}-cover`, title: item.title, series: item.title, year: item.year,
     technique: 'Photography', imageUrl: item.imageUrl, alt: item.title
   }];
-  return { ...item, intro: project.intro || '', images, gridImages: projectGridAssets[item.slug] || images.map((image, index) => ({ ...image, slideIndex: index })) };
+  return {
+    ...item,
+    intro: project.intro || '',
+    introEs: workStatementsEs[item.slug] || '',
+    statementVersion: 1,
+    images,
+    gridImages: projectGridAssets[item.slug] || images.map((image, index) => ({ ...image, slideIndex: index }))
+  };
 });
 
-const exhibitions = exhibitionProjects;
+const exhibitions = exhibitionProjects.map(project => ({
+  ...project,
+  introEs: exhibitionStatementsEs[project.slug] || '',
+  statementVersion: 1
+}));
 
 export const defaultSiteContent = {
   global: {
@@ -91,7 +103,8 @@ export const defaultSiteContent = {
       'My work moves between observation and construction. Fragments of stone, textile, paper and photographic matter form temporary constellations in which erosion and repair coexist. Each gesture asks how an image can carry the evidence of change without becoming a closed document.',
       'I am interested in the material histories embedded in surfaces, and the ways memory is sedimented across time and place. Recent projects examine patterns of human care and neglect, mapping traces of use and abandonment to reveal unexpected continuities and relations between body and landscape.',
       'Rather than offering a complete narrative, I create spaces for pause and attentive looking. The landscape emerges as both evidence and question: an open archive where body, matter and memory remain in continuous transformation.'
-    ]
+    ],
+    paragraphsEs: [...statementParagraphsEs]
   },
   about: {
     eyebrow: 'About', nameFirstLine: 'Andrea', nameSecondLine: 'Alkalay',
@@ -166,11 +179,21 @@ export const mergeSiteContent = (stored = {}) => {
     merged.work = defaultSiteContent.work;
   }
   // Statements kept beside each Work image archive are the canonical public
-  // project texts. Apply them by slug while preserving saved images and order.
+  // project texts. Seed both languages once, then preserve all admin edits.
   merged.work.projects = (merged.work.projects || []).map(project => {
     const sourceProject = projects.find(item => item.slug === project.slug);
+    const savedProject = stored.work?.projects?.find(item => item.slug === project.slug);
+    const statementsWereSeeded = Number(savedProject?.statementVersion || 0) >= 1;
+    const intro = statementsWereSeeded && typeof project.intro === 'string'
+      ? project.intro
+      : (sourceProject?.intro ?? project.intro ?? '');
+    const introEs = statementsWereSeeded && typeof project.introEs === 'string'
+      ? project.introEs
+      : (workStatementsEs[project.slug] || '');
     const canonicalVideos = (projectAssets[project.slug] || []).filter(item => item.mediaType === 'video');
-    if (!canonicalVideos.length) return sourceProject?.intro ? { ...project, intro: sourceProject.intro } : project;
+    if (!canonicalVideos.length) {
+      return { ...project, intro, introEs, statementVersion: 1 };
+    }
 
     const isObsoleteUncertainVideo = item => item.imageUrl?.endsWith('/IMG_3675.m4v');
     const currentImages = (project.images || []).filter(item => !isObsoleteUncertainVideo(item));
@@ -186,7 +209,9 @@ export const mergeSiteContent = (stored = {}) => {
 
     return {
       ...project,
-      ...(sourceProject?.intro ? { intro: sourceProject.intro } : {}),
+      intro,
+      introEs,
+      statementVersion: 1,
       images,
       gridImages: [...currentGrid, ...gridVideos].map(item => ({
         ...item,
@@ -194,6 +219,14 @@ export const mergeSiteContent = (stored = {}) => {
       }))
     };
   });
+  merged.exhibitions.projects = (merged.exhibitions.projects || []).map(project => ({
+    ...project,
+    intro: typeof project.intro === 'string' ? project.intro : '',
+    introEs: typeof project.introEs === 'string'
+      ? project.introEs
+      : (exhibitionStatementsEs[project.slug] || ''),
+    statementVersion: 1
+  }));
   return merged;
 };
 

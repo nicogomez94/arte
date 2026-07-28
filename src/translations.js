@@ -175,7 +175,7 @@ const translateCvText = value => {
   return cvReplacements.reduce((text, [english, spanish]) => text.replaceAll(english, spanish), value);
 };
 
-const spanishStatement = [
+export const statementParagraphsEs = [
   'Mi práctica se desarrolla en la intersección expandida de la fotografía, la materialidad y la investigación, y aborda el paisaje y el territorio como archivos sensibles de la memoria.',
   'Entiendo el paisaje no como una vista fija, sino como un sistema vivo: una superficie marcada por el tiempo, la presión, el desplazamiento y el cuidado. A través de la fotografía, la instalación y la experimentación material, rastreo las tensiones sutiles entre los procesos naturales y la intervención humana.',
   'Las imágenes suelen abandonar el marco para convertirse en objetos plegados, suspendidos o heridos. Sus transformaciones físicas revelan la inestabilidad de lo que vemos y las múltiples capas de memoria contenidas en un territorio.',
@@ -236,7 +236,7 @@ export function translateSiteContent(content, language) {
       projects: (content.work.projects || []).map(project => ({
         ...project,
         title: project.title,
-        intro: workStatementsEs[project.slug] ?? project.intro,
+        intro: project.introEs?.trim() || workStatementsEs[project.slug] || project.intro,
         images: (project.images || []).map(translateArtwork),
         gridImages: (project.gridImages || []).map(translateArtwork)
       }))
@@ -246,7 +246,7 @@ export function translateSiteContent(content, language) {
       projects: (content.exhibitions.projects || []).map(project => ({
         ...project,
         title: project.title,
-        intro: exhibitionStatementsEs[project.slug] ?? project.intro,
+        intro: project.introEs?.trim() || exhibitionStatementsEs[project.slug] || project.intro,
         images: (project.images || []).map(translateArtwork)
       }))
     },
@@ -254,7 +254,9 @@ export function translateSiteContent(content, language) {
       ...content.statement,
       imageAlt: 'Retrato de Andrea Alkalay',
       title: 'Statement',
-      paragraphs: spanishStatement
+      paragraphs: content.statement.paragraphsEs?.length
+        ? content.statement.paragraphsEs
+        : content.statement.paragraphs
     },
     about: { ...content.about, ...spanishAbout },
     contact: {

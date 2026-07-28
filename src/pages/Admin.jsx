@@ -21,8 +21,9 @@ const labels = {
   pauseLabel: 'Texto de pausa', playLabel: 'Texto de reproducción', closeLabel: 'Texto de cerrar', noImagesLabel: 'Mensaje sin imágenes',
   heroCaption: 'Epígrafe', selectedWorkLabel: 'Título de la sección', viewWorkLabel: 'Texto del botón',
   viewMoreLabel: 'Texto de ver más', projects: 'Proyectos', title: 'Título', year: 'Año', imageUrl: 'Imagen',
-  alt: 'Descripción de imagen', intro: 'Introducción', images: 'Galería de imágenes', series: 'Serie',
-  technique: 'Técnica', description: 'Descripción', gridImages: 'Imágenes de la grilla', paragraphs: 'Párrafos',
+  alt: 'Descripción de imagen', intro: 'Statement · Inglés', introEs: 'Statement · Español',
+  images: 'Galería de imágenes', series: 'Serie', technique: 'Técnica', description: 'Descripción',
+  gridImages: 'Imágenes de la grilla', paragraphs: 'Statement · Inglés', paragraphsEs: 'Statement · Español',
   eyebrow: 'Etiqueta superior', nameFirstLine: 'Primera línea del nombre',
   nameSecondLine: 'Segunda línea del nombre', role: 'Descripción profesional', portraitImageUrl: 'Retrato',
   portraitImageAlt: 'Descripción del retrato', practiceLabel: 'Etiqueta de práctica', practiceTitle: 'Título de práctica',
@@ -33,7 +34,7 @@ const labels = {
   sections: 'Secciones de Bio', items: 'Entradas', category: 'Categoría'
 };
 
-const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion']);
+const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion', 'statementVersion']);
 const imageKeys = new Set(['imageUrl', 'heroImageUrl', 'portraitImageUrl', 'detailImageUrl']);
 const clone = value => JSON.parse(JSON.stringify(value));
 const titleForItem = (item, index) => item.title || item.label || item.value || `Elemento ${index + 1}`;
@@ -141,7 +142,7 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
     const objectItems = objectList || value.some(item => item && typeof item === 'object');
     if (!objectItems) {
       const fieldName = path.at(-1);
-      const paragraphs = ['paragraphs', 'practiceParagraphs'].includes(fieldName);
+      const paragraphs = ['paragraphs', 'paragraphsEs', 'practiceParagraphs'].includes(fieldName);
       const separator = paragraphs ? '\n\n' : '\n';
       return (
         <label className="admin-content-field field-wide admin-combined-text">
@@ -224,11 +225,12 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
             </select>
           </label>
         );
-        const long = String(fieldValue ?? '').length > 90 || ['intro', 'description', 'subtitle'].includes(key);
+        const long = String(fieldValue ?? '').length > 90 || ['intro', 'introEs', 'description', 'subtitle'].includes(key);
+        const statementField = ['intro', 'introEs'].includes(key);
         return (
           <label className={`admin-content-field ${long ? 'field-wide' : ''}`} key={key}>
             <span>{label}</span>
-            {long ? <textarea value={fieldValue ?? ''} rows="4" onChange={event => onChange(fieldPath, event.target.value)} /> : (
+            {long ? <textarea value={fieldValue ?? ''} rows={statementField ? 10 : 4} onChange={event => onChange(fieldPath, event.target.value)} /> : (
               <input type={typeof fieldValue === 'number' ? 'number' : 'text'} value={fieldValue ?? ''} onChange={event => onChange(fieldPath, typeof fieldValue === 'number' ? Number(event.target.value) : event.target.value)} />
             )}
           </label>
@@ -311,7 +313,8 @@ export default function Admin() {
         const title = active === 'work' ? 'Nuevo work' : 'Nueva exhibition';
         const image = { id: uniqueId('imagen'), title: 'Nueva imagen', series: title, year: new Date().getFullYear(), technique: '', description: '', imageUrl: '/exhibicion-01.png', alt: 'Nueva imagen' };
         list.push({
-          slug, title, year: new Date().getFullYear(), imageUrl: '/exhibicion-01.png', intro: '',
+          slug, title, year: new Date().getFullYear(), imageUrl: '/exhibicion-01.png',
+          intro: '', introEs: '', statementVersion: 1,
           images: [image], ...(active === 'work' ? { gridImages: [{ ...image, id: uniqueId('grilla'), slideIndex: 0 }] } : { category: exhibitionCategory })
         });
       } else if (kind === 'links') {
