@@ -4,6 +4,8 @@ import { projectAssets, projectGridAssets, workIndexItems } from './projectAsset
 import { exhibitionProjects } from './exhibitionAssets';
 import { projects } from './projects';
 import { api } from './api';
+import { useLanguage } from './i18n';
+import { translateSiteContent } from './translations';
 
 const cleanLine = line => line
   .replace(/[\u200B-\u200D\uFEFF]/g, '')
@@ -199,8 +201,12 @@ const SiteContentContext = createContext(defaultSiteContent);
 
 export function SiteContentProvider({ children }) {
   const [stored, setStored] = useState({});
+  const { language } = useLanguage();
   useEffect(() => { api.content().then(setStored).catch(() => {}); }, []);
-  const value = useMemo(() => mergeSiteContent(stored), [stored]);
+  const value = useMemo(
+    () => translateSiteContent(mergeSiteContent(stored), language),
+    [stored, language]
+  );
   return createElement(SiteContentContext.Provider, { value }, children);
 }
 

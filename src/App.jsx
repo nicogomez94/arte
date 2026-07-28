@@ -9,6 +9,7 @@ import ExhibitionProject from './pages/ExhibitionProject';
 import ExhibitionsIndex from './pages/ExhibitionsIndex';
 import WorkProject from './pages/WorkProject';
 import Statement from './pages/Statement';
+import { LanguageProvider } from './i18n';
 import { SiteContentProvider } from './siteContent';
 
 function ScrollToTop() {
@@ -31,22 +32,24 @@ function ScrollToTop() {
 
 export default function App() {
   return (
-    <SiteContentProvider>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/galeria" element={<Navigate to="/exhibitions" replace />} />
-        <Route path="/exhibitions" element={<ExhibitionsIndex />} />
-        <Route path="/exhibitions/:slug" element={<ExhibitionProject />} />
-        <Route path="/work" element={<Navigate to="/work/unfixed-landscapes" replace />} />
-        <Route path="/work/:slug" element={<WorkProject />} />
-        <Route path="/statement" element={<Statement />} />
-        <Route path="/acerca-de-mi" element={<About />} />
-        <Route path="/contacto" element={<Contact />} />
-        <Route path="/cv" element={<Cv />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </SiteContentProvider>
+    <LanguageProvider>
+      <SiteContentProvider>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/galeria" element={<Navigate to="/exhibitions" replace />} />
+          <Route path="/exhibitions" element={<ExhibitionsIndex />} />
+          <Route path="/exhibitions/:slug" element={<ExhibitionProject />} />
+          <Route path="/work" element={<Navigate to="/work/unfixed-landscapes" replace />} />
+          <Route path="/work/:slug" element={<WorkProject />} />
+          <Route path="/statement" element={<Statement />} />
+          <Route path="/acerca-de-mi" element={<About />} />
+          <Route path="/contacto" element={<Contact />} />
+          <Route path="/cv" element={<Cv />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </SiteContentProvider>
+    </LanguageProvider>
   );
 }

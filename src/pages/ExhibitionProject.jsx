@@ -4,11 +4,13 @@ import EditorialIntroCopy from '../components/EditorialIntroCopy';
 import FullscreenSlideshow from '../components/FullscreenSlideshow';
 import MasonryThumbGrid from '../components/MasonryThumbGrid';
 import { Footer, Header } from '../components/SiteChrome';
+import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
 
 export default function ExhibitionProject() {
   const { slug } = useParams();
   const { projects: exhibitionProjects } = useSiteContent('exhibitions');
+  const { t } = useLanguage();
   const project = exhibitionProjects.find(item => item.slug === slug);
   const slides = project?.images || [];
   const [open, setOpen] = useState(false);
@@ -25,14 +27,14 @@ export default function ExhibitionProject() {
               <h1 id="exhibition-title">{project.title}</h1>
             </div>
             <EditorialIntroCopy
-              title="About the exhibition"
-              text={project.intro || 'Selected exhibition documentation from the archive.'}
+              title={t('aboutExhibition')}
+              text={project.intro || t('exhibitionFallback')}
             />
           </div>
         </section>
 
         {slides.length ? (
-          <section className="gallery-archive" id="selected" aria-label={`${project.title} images`}>
+          <section className="gallery-archive" id="selected" aria-label={`${project.title}: ${t('projectImages')}`}>
             <MasonryThumbGrid
               items={slides}
               keyPrefix={slug}
@@ -40,10 +42,10 @@ export default function ExhibitionProject() {
               onOpen={(_artwork, index) => { setStartIndex(index); setOpen(true); }}
             />
           </section>
-        ) : <p className="empty-state">No images available.</p>}
+        ) : <p className="empty-state">{t('noImages')}</p>}
       </main>
       <Footer />
-      <FullscreenSlideshow artworks={slides} open={open} initialIndex={startIndex} onClose={() => setOpen(false)} label={`${project.title} slideshow`} />
+      <FullscreenSlideshow artworks={slides} open={open} initialIndex={startIndex} onClose={() => setOpen(false)} label={`${project.title}: ${t('slideshow')}`} />
     </div>
   );
 }

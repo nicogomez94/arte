@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Footer, Header } from '../components/SiteChrome';
+import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
 
 const toColumns = items => items.reduce((columns, item, index) => {
@@ -9,15 +10,16 @@ const toColumns = items => items.reduce((columns, item, index) => {
 
 export default function ExhibitionsIndex() {
   const { projects: exhibitionProjects } = useSiteContent('exhibitions');
+  const { t } = useLanguage();
   const groups = [
-    { key: 'solo', title: 'Solo Show' },
-    { key: 'group', title: 'Group Show' }
+    { key: 'solo', title: t('soloShow') },
+    { key: 'group', title: t('groupShow') }
   ];
 
   return (
     <div className="site-page index-page">
       <Header />
-      <main className="visual-index-main" aria-label="Exhibitions index">
+      <main className="visual-index-main" aria-label={t('exhibitionsIndex')}>
         {groups.map(group => {
           const items = exhibitionProjects.filter(project => project.category === group.key);
           const columns = toColumns(items);

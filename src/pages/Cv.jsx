@@ -1,4 +1,5 @@
 import { Footer, Header } from '../components/SiteChrome';
+import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
 
 const cvItemLinks = [
@@ -8,14 +9,17 @@ const cvItemLinks = [
   ['art amalgama', 'https://www.artamalgama.com/artists-1/andrea-alkalay'],
   ['atrum art', 'https://www.atrumart.com/artists/544'],
   ['f-stop interview', 'https://www.fstopmagazine.com/blog/2023/interview-with-featured-photographer-andrea-alkalay/'],
+  ['f-stop entrevista', 'https://www.fstopmagazine.com/blog/2023/interview-with-featured-photographer-andrea-alkalay/'],
   ['lenscratch', 'http://lenscratch.com/2022/06/andrea-alkalay-landscape-on-landscape/'],
   ['aethetica mag', 'https://issuu.com/aesthetica_magazine/docs/aesthetica-issue107?fr=sMWQ3ODQ4NTY2MTM'],
   ['world photography organization', 'https://www.worldphoto.org/blogs/06-08-21/breaking-boundaries-andrea-alkalay'],
   ['phmuseum kutho', 'https://phmuseum.com/galleries/kutho'],
   ['float magazine', 'https://www.floatmagazine.us/portfolios/andrea-alkalay'],
   ['artdoc photography magazine', 'https://www.artdoc.photo/articles/ancient-relationship-between-gold-and-religion'],
+  ['artdoc revista de fotografía', 'https://www.artdoc.photo/articles/ancient-relationship-between-gold-and-religion'],
   ['art fluent', 'https://www.art-fluent.com/andrea-alkalay'],
-  ['uncertain nature', 'https://issuu.com/andreaalkalay/docs/naturaleza_incierta']
+  ['uncertain nature', 'https://issuu.com/andreaalkalay/docs/naturaleza_incierta'],
+  ['naturaleza incierta', 'https://issuu.com/andreaalkalay/docs/naturaleza_incierta']
 ];
 
 const normalizeCvItem = item => item.toLowerCase().replace(/\s+/g, ' ').trim();
@@ -26,12 +30,13 @@ const findCvItemLink = item => {
 
 export default function Cv() {
   const content = useSiteContent('cv');
+  const { t } = useLanguage();
 
   return (
     <div className="site-page cv-page">
       <Header />
       <main className="cv-main">
-        <section className="cv-hero" aria-label="Andrea Alkalay biography">
+        <section className="cv-hero" aria-label={t('biography')}>
           <figure className="cv-portrait reveal">
             <img src={content.imageUrl} alt={content.imageAlt} />
           </figure>
@@ -41,13 +46,13 @@ export default function Cv() {
           </div>
         </section>
 
-        <section className="cv-sections" aria-label="Biography details">
+        <section className="cv-sections" aria-label={t('biographyDetails')}>
           {content.sections.map(section => (
             <article className="cv-section" key={section.title}>
               <h2>{section.title}</h2>
               <ul>
                 {section.items.map((item, index) => {
-                  const itemLink = ['Publications', 'Artist Book'].includes(section.title)
+                  const itemLink = ['Publications', 'Artist Book', 'Publicaciones', 'Libro de artista'].includes(section.title)
                     ? findCvItemLink(item)
                     : undefined;
                   return (

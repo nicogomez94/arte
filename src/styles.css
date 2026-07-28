@@ -529,7 +529,7 @@ body { background: #fff; font-weight: 400; }
 .site-nav a { color: var(--ink); font-size: 11px; letter-spacing: .06em; }
 .site-nav a::after { bottom: -6px; }
 .header-actions { gap: 17px; font-size: 10px; letter-spacing: .08em; }
-.language-toggle { display: flex; gap: 4px; padding: 0; border: 0; background: transparent; color: #aaa; font-size: 9px; letter-spacing: .08em; cursor: default; }
+.language-toggle { display: flex; gap: 4px; padding: 0; border: 0; background: transparent; color: #aaa; font-size: 9px; letter-spacing: .08em; cursor: pointer; }
 .language-toggle .is-active { color: var(--ink); }
 .eyebrow { color: var(--ink); font-size: 9px; font-weight: 400; letter-spacing: .16em; }
 .text-link { gap: 42px; padding: 10px 0; font-size: 11px; }

@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
 
-export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, onClose, label = 'Artwork slideshow' }) {
+export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, onClose, label }) {
   const global = useSiteContent('global');
+  const { t } = useLanguage();
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(true);
   const pointerStart = useRef(null);
@@ -57,7 +59,7 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
       className="fullscreen-gallery"
       role="dialog"
       aria-modal="true"
-      aria-label={label}
+      aria-label={label || t('artworkSlideshow')}
       onPointerDown={event => { pointerStart.current = event.clientX; }}
       onPointerUp={event => {
         if (pointerStart.current === null) return;
@@ -101,9 +103,9 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
           <p>{artwork.technique}</p>
         </div>
         <div className="slide-navigation">
-          <button type="button" onClick={() => move(-1)} aria-label="Previous artwork">←</button>
+          <button type="button" onClick={() => move(-1)} aria-label={t('previousArtwork')}>←</button>
           <span>{String(index + 1).padStart(2, '0')} / {String(artworks.length).padStart(2, '0')}</span>
-          <button type="button" onClick={() => move(1)} aria-label="Next artwork">→</button>
+          <button type="button" onClick={() => move(1)} aria-label={t('nextArtwork')}>→</button>
         </div>
         <div className="slide-progress" aria-hidden="true"><span key={`${index}-${playing}`} className={playing ? 'is-playing' : ''} /></div>
       </footer>
