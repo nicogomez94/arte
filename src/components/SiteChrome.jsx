@@ -6,6 +6,7 @@ import { useSiteContent } from '../siteContent';
 export function Header() {
   const [open, setOpen] = useState(false);
   const [openSection, setOpenSection] = useState(null);
+  const [desktopSection, setDesktopSection] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
   const global = useSiteContent('global');
@@ -27,6 +28,7 @@ export function Header() {
   useEffect(() => {
     setOpen(false);
     setOpenSection(null);
+    setDesktopSection(null);
   }, [pathname]);
 
   useEffect(() => {
@@ -47,6 +49,15 @@ export function Header() {
     setOpenSection(current => current === section ? null : section);
   };
 
+  const desktopMenuProps = section => ({
+    onMouseEnter: () => setDesktopSection(section),
+    onMouseLeave: () => setDesktopSection(null),
+    onFocus: () => setDesktopSection(section),
+    onBlur: event => {
+      if (!event.currentTarget.contains(event.relatedTarget)) setDesktopSection(null);
+    }
+  });
+
   return (
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="header-inner">
@@ -57,7 +68,10 @@ export function Header() {
           <div className="mobile-nav-heading" aria-hidden="true">
             <span>{t('menu')}</span>
           </div>
-          <div className={`work-menu ${openSection === 'work' ? 'is-mobile-expanded' : ''}`}>
+          <div
+            className={`work-menu ${openSection === 'work' ? 'is-mobile-expanded' : ''} ${desktopSection === 'work' ? 'is-desktop-open' : ''}`}
+            {...desktopMenuProps('work')}
+          >
             <div className="nav-section-heading">
               <NavLink className={pathname.startsWith('/work') ? 'active' : ''} to="/work/unfixed-landscapes" aria-haspopup="true">{global.workMenuLabel}</NavLink>
               <button className="mobile-submenu-toggle" type="button" onClick={() => toggleSection('work')} aria-expanded={openSection === 'work'} aria-controls="work-navigation-list" aria-label={t('toggleWork')}>
@@ -78,7 +92,10 @@ export function Header() {
               </div>
             </div>
           </div>
-          <div className={`work-menu exhibitions-menu ${openSection === 'exhibitions' ? 'is-mobile-expanded' : ''}`}>
+          <div
+            className={`work-menu exhibitions-menu ${openSection === 'exhibitions' ? 'is-mobile-expanded' : ''} ${desktopSection === 'exhibitions' ? 'is-desktop-open' : ''}`}
+            {...desktopMenuProps('exhibitions')}
+          >
             <div className="nav-section-heading">
               <NavLink className={pathname.startsWith('/exhibitions') ? 'active' : ''} to="/exhibitions" aria-haspopup="true">{global.exhibitionsMenuLabel}</NavLink>
               <button className="mobile-submenu-toggle" type="button" onClick={() => toggleSection('exhibitions')} aria-expanded={openSection === 'exhibitions'} aria-controls="exhibitions-navigation-list" aria-label={t('toggleExhibitions')}>
@@ -104,8 +121,8 @@ export function Header() {
             </div>
           </div>
           <NavLink to="/statement" onClick={() => setOpen(false)}>{global.statementMenuLabel}</NavLink>
-          <NavLink to="/contacto" onClick={() => setOpen(false)}>{global.contactMenuLabel}</NavLink>
           <NavLink to="/cv" onClick={() => setOpen(false)}>{global.cvMenuLabel}</NavLink>
+          <NavLink to="/contacto" onClick={() => setOpen(false)}>{global.contactMenuLabel}</NavLink>
           <div className="mobile-nav-foot" aria-hidden="true">
             <span>Buenos Aires</span>
           </div>

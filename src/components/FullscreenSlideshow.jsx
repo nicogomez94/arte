@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
 
-export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, onClose, label }) {
+export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, onClose, label, caption }) {
   const global = useSiteContent('global');
   const { t } = useLanguage();
   const [index, setIndex] = useState(0);
@@ -98,9 +98,7 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
       </div>
       <footer className="slideshow-footer">
         <div className="slide-caption">
-          <span>{artwork.series}</span>
-          <h2>{artwork.title}</h2>
-          <p>{artwork.technique}</p>
+          <h2>{caption || artwork.series || artwork.title}</h2>
         </div>
         <div className="slide-navigation">
           <button type="button" onClick={() => move(-1)} aria-label={t('previousArtwork')}>←</button>

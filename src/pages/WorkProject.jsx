@@ -47,7 +47,7 @@ export default function WorkProject() {
         ) : <p className="empty-state">{global.noImagesLabel}</p>}
       </main>
       <Footer />
-      <FullscreenSlideshow artworks={slides} open={open} initialIndex={startIndex} onClose={() => setOpen(false)} label={`${project.title}: ${t('slideshow')}`} />
+      <FullscreenSlideshow artworks={slides} open={open} initialIndex={startIndex} onClose={() => setOpen(false)} label={`${project.title}: ${t('slideshow')}`} caption={project.title} />
     </div>
   );
 }

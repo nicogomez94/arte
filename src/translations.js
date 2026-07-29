@@ -204,8 +204,8 @@ const spanishAbout = {
 
 const spanishGlobal = {
   artistDiscipline: 'Fotografía artística',
-  workMenuLabel: 'Work',
-  exhibitionsMenuLabel: 'Exhibitions',
+  workMenuLabel: 'Obra',
+  exhibitionsMenuLabel: 'Exposiciones',
   statementMenuLabel: 'Statement',
   contactMenuLabel: 'Contacto',
   cvMenuLabel: 'Biografía',
@@ -216,6 +216,21 @@ const spanishGlobal = {
   playLabel: 'reproducir',
   closeLabel: 'cerrar x',
   noImagesLabel: 'No hay imágenes disponibles.'
+};
+
+// These titles are transcribed from the Spanish headings in the Word file
+// stored beside each project. Projects without a source document deliberately
+// keep their existing title until the missing copy is supplied.
+const spanishWorkTitles = {
+  'unfixed-landscapes': 'Paisajes inestables, sistemas heridos',
+  'the-rock-cycle': 'El ciclo de la roca',
+  unearth: 'Desenterrar',
+  'landscape-on-landscape': 'Paisaje sobre paisaje',
+  kutho: 'Kutho',
+  'brief-shape': 'Forma breve',
+  'urban-territories': 'Territorios urbanos',
+  borders: 'Frontera',
+  'uncertain-nature-book': 'Naturaleza incierta'
 };
 
 export function translateSiteContent(content, language) {
@@ -235,7 +250,7 @@ export function translateSiteContent(content, language) {
       ...content.work,
       projects: (content.work.projects || []).map(project => ({
         ...project,
-        title: project.title,
+        title: spanishWorkTitles[project.slug] || project.title,
         intro: project.introEs?.trim() || workStatementsEs[project.slug] || project.intro,
         images: (project.images || []).map(translateArtwork),
         gridImages: (project.gridImages || []).map(translateArtwork)
