@@ -215,8 +215,6 @@ const workFiles = {
     technique: 'Photography',
     base: '/works/works1/About India',
     files: [
-      '00.jpg',
-      '08.jpg',
       'About india 1.JPG',
       'About india 2.JPG',
       'About india 3.jpg',
@@ -249,10 +247,7 @@ const workFiles = {
       '10.JPG',
       '11.JPG',
       '12.JPG',
-      '13.JPG',
-      'uncertian nature.mp4',
-      'IMG_3675.mp4',
-      'naturaleza incierta final.mp4'
+      '13.JPG'
     ]
   }
 };

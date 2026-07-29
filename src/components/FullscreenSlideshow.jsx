@@ -69,7 +69,7 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
       }}
     >
       <header className="slideshow-header">
-        <span className="slideshow-brand">{global.artistName}</span>
+        <span className="slideshow-brand wordmark"><span>{global.artistName}</span></span>
         <div>
           <button type="button" onClick={() => setPlaying(value => !value)}>{playing ? global.pauseLabel : global.playLabel}</button>
           <button ref={closeButton} type="button" onClick={onClose}>{global.closeLabel}</button>

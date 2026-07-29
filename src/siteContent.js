@@ -181,6 +181,23 @@ export const mergeSiteContent = (stored = {}) => {
   // Statements kept beside each Work image archive are the canonical public
   // project texts. Seed both languages once, then preserve all admin edits.
   merged.work.projects = (merged.work.projects || []).map(project => {
+    const isRemovedProjectMedia = item => (
+      project.slug === 'uncertain-nature-book' && (
+        item.mediaType === 'video' ||
+        /\.(?:m4v|mov|mp4|webm)$/i.test(item.imageUrl || '')
+      )
+    ) || (
+      project.slug === 'about-india' &&
+      /\/(?:00|08)\.jpg$/i.test(item.imageUrl || '')
+    );
+    project = {
+      ...project,
+      imageUrl: isRemovedProjectMedia({ imageUrl: project.imageUrl })
+        ? (projectAssets[project.slug]?.[0]?.imageUrl || '')
+        : project.imageUrl,
+      images: (project.images || []).filter(item => !isRemovedProjectMedia(item)),
+      gridImages: (project.gridImages || []).filter(item => !isRemovedProjectMedia(item))
+    };
     const sourceProject = projects.find(item => item.slug === project.slug);
     const savedProject = stored.work?.projects?.find(item => item.slug === project.slug);
     const statementsWereSeeded = Number(savedProject?.statementVersion || 0) >= 1;
