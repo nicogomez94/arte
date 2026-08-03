@@ -209,7 +209,9 @@ export const mergeSiteContent = (stored = {}) => {
     const introEs = statementsWereSeeded && typeof project.introEs === 'string'
       ? project.introEs
       : (workStatementsEs[project.slug] || '');
-    const canonicalVideos = (projectAssets[project.slug] || []).filter(item => item.mediaType === 'video');
+    const canonicalVideos = (projectAssets[project.slug] || []).filter(item => (
+      item.mediaType === 'video' || item.mediaType === 'youtube'
+    ));
     if (!canonicalVideos.length) {
       return { ...project, intro, introEs, statementVersion: 1 };
     }
@@ -238,25 +240,14 @@ export const mergeSiteContent = (stored = {}) => {
       }))
     };
   });
-  merged.exhibitions.projects = (merged.exhibitions.projects || []).map(project => {
-    const canonicalProject = exhibitionProjects.find(item => item.slug === project.slug);
-    const canonicalVideos = (canonicalProject?.images || []).filter(item => item.mediaType === 'youtube');
-    const canonicalVideoIds = new Set(canonicalVideos.map(item => item.id));
-    const images = [
-      ...(project.images || []).filter(item => !canonicalVideoIds.has(item.id)),
-      ...canonicalVideos
-    ];
-
-    return {
-      ...project,
-      intro: typeof project.intro === 'string' ? project.intro : '',
-      introEs: typeof project.introEs === 'string'
-        ? project.introEs
-        : (exhibitionStatementsEs[project.slug] || ''),
-      statementVersion: 1,
-      images
-    };
-  });
+  merged.exhibitions.projects = (merged.exhibitions.projects || []).map(project => ({
+    ...project,
+    intro: typeof project.intro === 'string' ? project.intro : '',
+    introEs: typeof project.introEs === 'string'
+      ? project.introEs
+      : (exhibitionStatementsEs[project.slug] || ''),
+    statementVersion: 1
+  }));
   return merged;
 };
 

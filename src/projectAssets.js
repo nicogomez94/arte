@@ -43,7 +43,14 @@ const workFiles = {
       'Unfixed Landscapes_wounded systems-13 RIZOMA.jpg',
       'Unfixed Landscapes_wounded systems-14 ASH RECORDS.jpg',
       'Unfixed Landscapes_wounded systems-15 SHIFTING SOVEREIGNTIES.jpg',
-      'Unfixed Landscapes_wounded systems-16 THE RESIDUAL.jpg'
+      'Unfixed Landscapes_wounded systems-16 THE RESIDUAL.jpg',
+      {
+        mediaType: 'youtube',
+        id: 'mKDtXe9t1eI',
+        title: 'Unfixed Landscapes: Wounded Systems · Soulangh Cultural Park',
+        embedUrl: 'https://www.youtube-nocookie.com/embed/mKDtXe9t1eI',
+        thumbnailUrl: 'https://i.ytimg.com/vi/mKDtXe9t1eI/hqdefault.jpg'
+      }
     ]
   },
   'the-rock-cycle': {
@@ -255,6 +262,24 @@ const workFiles = {
 };
 
 const makeWorkSlides = project => project.files.map((entry, index) => {
+  if (typeof entry === 'object' && entry.mediaType === 'youtube') {
+    return {
+      id: `${project.slug}-youtube-${entry.id}`,
+      title: entry.title,
+      series: project.title,
+      year: project.year,
+      technique: 'Project video',
+      description: entry.title,
+      imageUrl: entry.thumbnailUrl,
+      posterUrl: entry.thumbnailUrl,
+      embedUrl: entry.embedUrl,
+      mediaType: 'youtube',
+      alt: entry.title,
+      published: true,
+      position: index + 1
+    };
+  }
+
   const file = typeof entry === 'string' ? entry : entry.file;
   return {
     ...makeSlide({

@@ -110,12 +110,6 @@ const exhibitionDefinitions = [
   {
     slug: "unfixed-landscapes-taiwan", title: "Unfixed Landscapes, Wounded Systems", year: 2026, category: "solo",
     directory: "solo show/1 Unfixed Landsacpes",
-    video: {
-      id: "mKDtXe9t1eI",
-      title: "Unfixed Landscapes: Wounded Systems · Soulangh Cultural Park",
-      embedUrl: "https://www.youtube-nocookie.com/embed/mKDtXe9t1eI",
-      thumbnailUrl: "https://i.ytimg.com/vi/mKDtXe9t1eI/hqdefault.jpg"
-    },
     files: [
           "Unfixed Landscape_Solo Show taiwan Andrea Alkalay 1.jpg",
           "Unfixed Landscape_Solo Show taiwan Andrea Alkalay 10.JPG",
@@ -240,7 +234,7 @@ const introByCategory = {
 };
 
 export const exhibitionProjects = exhibitionDefinitions.map(definition => {
-  const imageSlides = definition.files.map((file, index) => ({
+  const images = definition.files.map((file, index) => ({
     id: `${definition.slug}-${index + 1}`,
     title: `${definition.title} ${String(index + 1).padStart(2, '0')}`,
     series: definition.title,
@@ -252,22 +246,6 @@ export const exhibitionProjects = exhibitionDefinitions.map(definition => {
     published: true,
     position: index + 1
   }));
-  const videoSlide = definition.video ? {
-    id: `${definition.slug}-video-${definition.video.id}`,
-    title: definition.video.title,
-    series: definition.title,
-    year: definition.year,
-    technique: 'Exhibition video',
-    description: definition.video.title,
-    imageUrl: definition.video.thumbnailUrl,
-    posterUrl: definition.video.thumbnailUrl,
-    embedUrl: definition.video.embedUrl,
-    mediaType: 'youtube',
-    alt: definition.video.title,
-    published: true,
-    position: imageSlides.length + 1
-  } : null;
-  const images = videoSlide ? [...imageSlides, videoSlide] : imageSlides;
   return {
     slug: definition.slug,
     title: definition.title,
