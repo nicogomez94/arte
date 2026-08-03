@@ -36,7 +36,7 @@ export default function MasonryThumbGrid({ items, getKey, onOpen, keyPrefix = 'm
               onClick={() => onOpen(item, index)}
               className="artwork-thumb"
             >
-              {item.mediaType === 'video' ? (
+              {item.mediaType === 'video' || item.mediaType === 'youtube' ? (
                 <>
                   <img src={item.posterUrl} alt="" />
                   <span className="media-play-indicator" aria-hidden="true">

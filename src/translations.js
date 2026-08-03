@@ -233,8 +233,24 @@ const spanishWorkTitles = {
   'uncertain-nature-book': 'Naturaleza incierta'
 };
 
+const localizeWorkMedia = (project, language) => {
+  const images = (project.images || []).filter(item => !item.language || item.language === language);
+  const imageIndexByUrl = new Map(images.map((item, index) => [item.imageUrl, index]));
+  const gridImages = (project.gridImages || [])
+    .filter(item => !item.language || item.language === language)
+    .map(item => ({ ...item, slideIndex: imageIndexByUrl.get(item.imageUrl) }));
+
+  return { ...project, images, gridImages };
+};
+
 export function translateSiteContent(content, language) {
-  if (language !== 'es') return content;
+  const localizedWorkProjects = (content.work.projects || []).map(project => localizeWorkMedia(project, language));
+  if (language !== 'es') {
+    return {
+      ...content,
+      work: { ...content.work, projects: localizedWorkProjects }
+    };
+  }
 
   return {
     ...content,
@@ -248,7 +264,7 @@ export function translateSiteContent(content, language) {
     },
     work: {
       ...content.work,
-      projects: (content.work.projects || []).map(project => ({
+      projects: localizedWorkProjects.map(project => ({
         ...project,
         title: spanishWorkTitles[project.slug] || project.title,
         intro: project.introEs?.trim() || workStatementsEs[project.slug] || project.intro,

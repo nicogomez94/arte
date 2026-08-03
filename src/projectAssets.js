@@ -247,19 +247,27 @@ const workFiles = {
       '10.JPG',
       '11.JPG',
       '12.JPG',
-      '13.JPG'
+      '13.JPG',
+      { file: 'uncertian nature.mp4', language: 'en' },
+      { file: 'naturaleza incierta final.mp4', language: 'es' }
     ]
   }
 };
 
-const makeWorkSlides = project => project.files.map((file, index) => makeSlide({
-  slug: project.slug,
-  title: `${project.title} ${String(index + 1).padStart(2, '0')}`,
-  series: project.title,
-  year: project.year,
-  technique: project.technique,
-  file: `${project.base}/${file}`
-}, index));
+const makeWorkSlides = project => project.files.map((entry, index) => {
+  const file = typeof entry === 'string' ? entry : entry.file;
+  return {
+    ...makeSlide({
+      slug: project.slug,
+      title: `${project.title} ${String(index + 1).padStart(2, '0')}`,
+      series: project.title,
+      year: project.year,
+      technique: project.technique,
+      file: `${project.base}/${file}`
+    }, index),
+    ...(typeof entry === 'object' && entry.language ? { language: entry.language } : {})
+  };
+});
 
 const recoletaExhibitionFiles = [
   'DSC08456.JPG',

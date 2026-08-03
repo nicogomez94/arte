@@ -73,6 +73,8 @@ export const defaultSiteContent = {
     contactMenuLabel: 'Contact',
     cvMenuLabel: 'Bio',
     instagramUrl: 'https://instagram.com/andrealkalay',
+    facebookUrl: 'https://www.facebook.com/andrea.alkalay.7',
+    linkedinUrl: 'https://www.linkedin.com/in/andreaalkalay/',
     footerText: 'andrea alkalay | 2026',
     startViewingLabel: 'Start viewing',
     expandLabel: 'Expand',
@@ -236,14 +238,25 @@ export const mergeSiteContent = (stored = {}) => {
       }))
     };
   });
-  merged.exhibitions.projects = (merged.exhibitions.projects || []).map(project => ({
-    ...project,
-    intro: typeof project.intro === 'string' ? project.intro : '',
-    introEs: typeof project.introEs === 'string'
-      ? project.introEs
-      : (exhibitionStatementsEs[project.slug] || ''),
-    statementVersion: 1
-  }));
+  merged.exhibitions.projects = (merged.exhibitions.projects || []).map(project => {
+    const canonicalProject = exhibitionProjects.find(item => item.slug === project.slug);
+    const canonicalVideos = (canonicalProject?.images || []).filter(item => item.mediaType === 'youtube');
+    const canonicalVideoIds = new Set(canonicalVideos.map(item => item.id));
+    const images = [
+      ...(project.images || []).filter(item => !canonicalVideoIds.has(item.id)),
+      ...canonicalVideos
+    ];
+
+    return {
+      ...project,
+      intro: typeof project.intro === 'string' ? project.intro : '',
+      introEs: typeof project.introEs === 'string'
+        ? project.introEs
+        : (exhibitionStatementsEs[project.slug] || ''),
+      statementVersion: 1,
+      images
+    };
+  });
   return merged;
 };
 

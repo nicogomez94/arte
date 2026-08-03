@@ -11,7 +11,7 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
   const closeButton = useRef(null);
   const videoRefs = useRef(new Map());
   const activeArtwork = artworks[index];
-  const activeArtworkIsVideo = activeArtwork?.mediaType === 'video';
+  const activeArtworkIsMovingMedia = activeArtwork?.mediaType === 'video' || activeArtwork?.mediaType === 'youtube';
 
   const move = direction => setIndex(current => (current + direction + artworks.length) % artworks.length);
 
@@ -25,10 +25,10 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
   }, [open, initialIndex]);
 
   useEffect(() => {
-    if (!open || !playing || activeArtworkIsVideo || artworks.length < 2) return undefined;
+    if (!open || !playing || activeArtworkIsMovingMedia || artworks.length < 2) return undefined;
     const timer = window.setInterval(() => move(1), 5500);
     return () => window.clearInterval(timer);
-  }, [open, playing, activeArtworkIsVideo, artworks.length]);
+  }, [open, playing, activeArtworkIsMovingMedia, artworks.length]);
 
   useEffect(() => {
     videoRefs.current.forEach((video, videoIndex) => {
@@ -78,7 +78,17 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
       <div className="slideshow-stage">
         {artworks.map((item, itemIndex) => (
           <figure className={itemIndex === index ? 'is-current' : ''} key={item.id} aria-hidden={itemIndex !== index}>
-            {item.mediaType === 'video' ? (
+            {item.mediaType === 'youtube' ? (
+              itemIndex === index ? (
+                <iframe
+                  src={item.embedUrl}
+                  title={item.alt || item.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              ) : null
+            ) : item.mediaType === 'video' ? (
               <video
                 ref={video => {
                   if (video) videoRefs.current.set(itemIndex, video);
