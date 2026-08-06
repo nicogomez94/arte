@@ -16,7 +16,6 @@ export default function WorkProject() {
   const [open, setOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const slides = project?.images || [];
-  const gridSlides = (project?.gridImages || slides).map((slide, index) => ({ ...slide, slideIndex: slide.slideIndex ?? index }));
 
   if (!project) return <Navigate to="/work/unfixed-landscapes" replace />;
   return (
@@ -38,10 +37,10 @@ export default function WorkProject() {
         {slides.length ? (
           <section className="project-archive" aria-label={`${project.title}: ${t('projectImages')}`}>
             <MasonryThumbGrid
-              items={gridSlides}
+              items={slides}
               keyPrefix={slug}
               getKey={artwork => `${slug}-${artwork.id}`}
-              onOpen={artwork => { setStartIndex(artwork.slideIndex); setOpen(true); }}
+              onOpen={(_artwork, index) => { setStartIndex(index); setOpen(true); }}
             />
           </section>
         ) : <p className="empty-state">{global.noImagesLabel}</p>}

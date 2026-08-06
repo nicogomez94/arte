@@ -36,6 +36,14 @@ export const api = {
   createArtwork: artwork => request('/api/admin/artworks', { method: 'POST', body: JSON.stringify(artwork) }),
   updateArtwork: artwork => request(`/api/admin/artworks/${artwork.id}`, { method: 'PUT', body: JSON.stringify(artwork) }),
   deleteArtwork: id => request(`/api/admin/artworks/${id}`, { method: 'DELETE' }),
+  uploadVideo: async file => {
+    const response = await fetch('/api/admin/media/video', {
+      method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': file.type }, body: file
+    });
+    const data = await response.json().catch(() => null);
+    if (!response.ok) throw new Error(data?.error || 'No se pudo subir el video.');
+    return data;
+  },
   adminContent: () => request('/api/admin/content'),
   updateContent: (section, content) => request(`/api/admin/content/${section}`, { method: 'PUT', body: JSON.stringify(content) })
 };

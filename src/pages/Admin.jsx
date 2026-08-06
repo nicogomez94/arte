@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
+import { mediaTypeFor, mediaValidationError, youtubeMediaFromUrl } from '../mediaContent';
 import { defaultSiteContent, mergeSiteContent } from '../siteContent';
 
 const sections = [
@@ -34,10 +35,12 @@ const labels = {
   sections: 'Secciones de Bio', items: 'Entradas', category: 'Categoría'
 };
 
-const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion', 'statementVersion']);
+const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'mediaType', 'embedUrl', 'posterUrl', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion', 'statementVersion']);
 const imageKeys = new Set(['imageUrl', 'heroImageUrl', 'portraitImageUrl', 'detailImageUrl']);
+const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const clone = value => JSON.parse(JSON.stringify(value));
 const titleForItem = (item, index) => item.title || item.label || item.value || `Elemento ${index + 1}`;
+const thumbnailForItem = item => mediaTypeFor(item) === 'image' ? item.imageUrl : (item.posterUrl || item.imageUrl);
 const uniqueId = prefix => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
 const imageFromFile = file => new Promise((resolve, reject) => {
@@ -60,6 +63,43 @@ const imageFromFile = file => new Promise((resolve, reject) => {
     image.src = reader.result;
   };
   reader.readAsDataURL(file);
+});
+
+const posterFromVideo = file => new Promise((resolve, reject) => {
+  const url = URL.createObjectURL(file);
+  const video = document.createElement('video');
+  let settled = false;
+  const finish = callback => {
+    if (settled) return;
+    settled = true;
+    URL.revokeObjectURL(url);
+    callback();
+  };
+  const capture = () => {
+    try {
+      const max = 1400;
+      const scale = Math.min(1, max / Math.max(video.videoWidth, video.videoHeight));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
+      canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      finish(() => resolve(canvas.toDataURL('image/webp', 0.82)));
+    } catch {
+      finish(() => reject(new Error('No pudimos generar la miniatura del video.')));
+    }
+  };
+  video.onerror = () => finish(() => reject(new Error('El archivo no parece ser un video válido.')));
+  video.onloadeddata = () => {
+    if (Number.isFinite(video.duration) && video.duration > 0.2) {
+      video.onseeked = capture;
+      video.currentTime = Math.min(0.25, video.duration / 2);
+    } else capture();
+  };
+  video.muted = true;
+  video.playsInline = true;
+  video.preload = 'auto';
+  video.src = url;
+  video.load();
 });
 
 function Login({ onSuccess }) {
@@ -106,11 +146,68 @@ function ImageField({ label, value, onChange }) {
     <div className="admin-content-image-field">
       <span>{label}</span>
       <button type="button" onClick={() => input.current?.click()} disabled={busy}>
-        <img src={value} alt="" />
+        {value ? <img src={value} alt="" /> : <span className="admin-image-placeholder">Sin imagen</span>}
         <em>{busy ? 'Preparando…' : 'Cambiar imagen'}</em>
       </button>
       <input ref={input} className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={choose} />
     </div>
+  );
+}
+
+function VideoField({ item, path, onChange }) {
+  const input = useRef(null);
+  const [busy, setBusy] = useState(false);
+  const choose = async event => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!['video/mp4', 'video/webm'].includes(file.type)) {
+      window.alert('Elegí un video MP4 o WebM.');
+      event.target.value = '';
+      return;
+    }
+    if (file.size > MAX_VIDEO_BYTES) {
+      window.alert('El video supera los 50 MB.');
+      event.target.value = '';
+      return;
+    }
+    setBusy(true);
+    try {
+      const poster = await posterFromVideo(file);
+      const uploaded = await api.uploadVideo(file);
+      onChange(path, {
+        ...item,
+        mediaType: 'video',
+        imageUrl: uploaded.url,
+        posterUrl: poster,
+        title: item.title === 'Nuevo video' ? file.name.replace(/\.[^.]+$/, '') : item.title
+      });
+    } catch (error) { window.alert(error.message); }
+    finally { setBusy(false); event.target.value = ''; }
+  };
+  return (
+    <section className="admin-media-source">
+      <div className="admin-media-source-heading"><span>Archivo de video</span><small>MP4 o WebM · máximo 50 MB</small></div>
+      {item.imageUrl ? <video src={item.imageUrl} poster={item.posterUrl} controls preload="metadata" /> : <div className="admin-video-placeholder">Todavía no subiste un archivo.</div>}
+      <button className="admin-media-upload" type="button" onClick={() => input.current?.click()} disabled={busy}>{busy ? 'Subiendo y preparando…' : item.imageUrl ? 'Reemplazar video' : 'Seleccionar video'}</button>
+      <input ref={input} className="visually-hidden" type="file" accept="video/mp4,video/webm" onChange={choose} />
+      <ImageField label="Miniatura del video" value={item.posterUrl} onChange={posterUrl => onChange(path, { ...item, posterUrl })} />
+    </section>
+  );
+}
+
+function YouTubeField({ item, path, onChange }) {
+  const [url, setUrl] = useState(item.embedUrl || '');
+  const apply = () => {
+    const next = youtubeMediaFromUrl(url, item);
+    if (!next) return window.alert('Ingresá un enlace válido de YouTube.');
+    onChange(path, next);
+  };
+  return (
+    <section className="admin-media-source">
+      <div className="admin-media-source-heading"><span>Video de YouTube</span><small>Admite enlaces watch, youtu.be, Shorts y embed.</small></div>
+      {item.embedUrl && <div className="admin-youtube-preview"><img src={item.posterUrl || item.imageUrl} alt="" /><span>▶</span></div>}
+      <div className="admin-youtube-input"><input type="url" value={url} placeholder="https://www.youtube.com/watch?v=…" onChange={event => setUrl(event.target.value)} /><button type="button" onClick={apply}>Aplicar enlace</button></div>
+    </section>
   );
 }
 
@@ -134,11 +231,56 @@ function ProjectCovers({ projects, onChange, category = null }) {
   );
 }
 
-function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, projectCategory = null }) {
+function MediaItemFields({ item, path, onChange }) {
+  const type = mediaTypeFor(item);
+  return (
+    <div className="admin-media-editor">
+      <header className="admin-editor-subheading"><span>Fuente</span><b>{type === 'image' ? 'Imagen' : type === 'video' ? 'Video' : 'YouTube'}</b></header>
+      {type === 'image' && <ImageField label="Archivo de imagen" value={item.imageUrl} onChange={imageUrl => onChange(path, { ...item, mediaType: 'image', imageUrl })} />}
+      {type === 'video' && <VideoField item={item} path={path} onChange={onChange} />}
+      {type === 'youtube' && <YouTubeField item={item} path={path} onChange={onChange} />}
+      <section className="admin-field-section">
+        <header><h4>Información del ítem</h4><p>Estos datos identifican el contenido y mejoran su accesibilidad.</p></header>
+        <div className="admin-content-fields">
+          <label className="admin-content-field"><span>Título</span><input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} /></label>
+          <label className="admin-content-field"><span>Técnica</span><input type="text" value={item.technique || ''} onChange={event => onChange([...path, 'technique'], event.target.value)} /></label>
+          <label className="admin-content-field field-wide"><span>Descripción</span><textarea rows="3" value={item.description || ''} onChange={event => onChange([...path, 'description'], event.target.value)} /></label>
+          <label className="admin-content-field field-wide"><span>Descripción accesible</span><input type="text" value={item.alt || ''} onChange={event => onChange([...path, 'alt'], event.target.value)} /></label>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function ProjectFields({ project, path, onChange, onMove, onAdd, onRemove, projectCategory }) {
+  return (
+    <div className="admin-project-editor">
+      <section className="admin-field-section">
+        <header><h4>Datos del proyecto</h4><p>Información principal que identifica esta entrada.</p></header>
+        <div className="admin-content-fields">
+          <label className="admin-content-field field-wide"><span>Título</span><input type="text" value={project.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} /></label>
+        </div>
+      </section>
+      <section className="admin-field-section">
+        <header><h4>Textos</h4><p>Statement del proyecto en los dos idiomas del sitio.</p></header>
+        <div className="admin-content-fields">
+          <label className="admin-content-field field-wide"><span>Statement · Inglés</span><textarea rows="10" value={project.intro || ''} onChange={event => onChange([...path, 'intro'], event.target.value)} /></label>
+          <label className="admin-content-field field-wide"><span>Statement · Español</span><textarea rows="10" value={project.introEs || ''} onChange={event => onChange([...path, 'introEs'], event.target.value)} /></label>
+        </div>
+      </section>
+      <section className="admin-field-section admin-project-media-section">
+        <header><h4>Contenido multimedia</h4><p>Una sola lista define tanto la grilla como el recorrido ampliado.</p></header>
+        <ContentFields value={project.images || []} path={[...path, 'images']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />
+      </section>
+    </div>
+  );
+}
+
+function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, projectCategory = null, includeKeys = null }) {
   const [dragIndex, setDragIndex] = useState(null);
   if (Array.isArray(value)) {
     const kind = path.at(-1);
-    const objectList = ['projects', 'images', 'gridImages', 'links', 'sections'].includes(kind);
+    const objectList = ['projects', 'images', 'links', 'sections'].includes(kind);
     const objectItems = objectList || value.some(item => item && typeof item === 'object');
     if (!objectItems) {
       const fieldName = path.at(-1);
@@ -155,8 +297,8 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
         </label>
       );
     }
-    const reorderable = ['projects', 'images', 'gridImages', 'sections'].includes(kind);
-    const editableList = ['projects', 'images', 'gridImages', 'links', 'sections'].includes(kind);
+    const reorderable = ['projects', 'images', 'sections'].includes(kind);
+    const editableList = ['projects', 'images', 'links', 'sections'].includes(kind);
     const addLabel = kind === 'projects'
       ? 'Agregar proyecto'
       : kind === 'links'
@@ -181,13 +323,13 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
               }}
             >
               <summary
-                className={item.imageUrl ? 'has-thumbnail' : ''}
+                className={thumbnailForItem(item) ? 'has-thumbnail' : ''}
                 draggable={reorderable}
                 onDragStart={event => { setDragIndex(index); event.dataTransfer.effectAllowed = 'move'; }}
                 onDragEnd={() => setDragIndex(null)}
               >
                 <span>{String(index + 1).padStart(2, '0')}</span>
-                {item.imageUrl && <img src={item.imageUrl} alt="" />}
+                {thumbnailForItem(item) && <img src={thumbnailForItem(item)} alt="" />}
                 <strong>{titleForItem(item, index)}</strong>
                 <span className="admin-card-actions">{reorderable && <em title="Arrastrar para reordenar">↕</em>}<b>＋</b></span>
               </summary>
@@ -199,14 +341,26 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
           );
           return null;
         })}
-        {editableList && <button className="admin-add-item" type="button" onClick={() => onAdd(path)}>＋ {addLabel}</button>}
+        {editableList && kind !== 'images' && <button className="admin-add-item" type="button" onClick={() => onAdd(path)}>＋ {addLabel}</button>}
+        {kind === 'images' && (
+          <div className="admin-media-add-actions" aria-label="Agregar contenido multimedia">
+            <button type="button" onClick={() => onAdd(path, 'image')}><span>＋</span> Agregar imagen</button>
+            <button type="button" onClick={() => onAdd(path, 'video')}><span>＋</span> Subir video</button>
+            <button type="button" onClick={() => onAdd(path, 'youtube')}><span>＋</span> Incrustar YouTube</button>
+          </div>
+        )}
       </div>
     );
   }
 
+  const isProject = path[0] === 'projects' && path.length === 2;
+  if (isProject) return <ProjectFields project={value} path={path} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />;
+  const isMediaItem = path.at(-2) === 'images' && typeof path.at(-1) === 'number';
+  if (isMediaItem) return <MediaItemFields item={value} path={path} onChange={onChange} />;
+
   return (
     <div className="admin-content-fields">
-      {Object.entries(value || {}).filter(([key]) => !hiddenKeys.has(key) && !(key === 'imageUrl' && path[0] === 'projects' && path.length === 2)).map(([key, fieldValue]) => {
+      {Object.entries(value || {}).filter(([key]) => (!includeKeys || includeKeys.includes(key)) && !hiddenKeys.has(key) && key !== 'year' && !(key === 'imageUrl' && path[0] === 'projects' && path.length === 2)).map(([key, fieldValue]) => {
         const fieldPath = [...path, key];
         const label = labels[key] || key;
         if (imageKeys.has(key)) return <ImageField key={key} label={label} value={fieldValue} onChange={next => onChange(fieldPath, next)} />;
@@ -238,6 +392,51 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
       })}
     </div>
   );
+}
+
+function AdminFieldGroup({ title, description, children }) {
+  return (
+    <section className="admin-page-group">
+      <header><h2>{title}</h2><p>{description}</p></header>
+      {children}
+    </section>
+  );
+}
+
+function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, projectCategory }) {
+  const fields = keys => (
+    <ContentFields value={draft} includeKeys={keys} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />
+  );
+
+  if (active === 'home') return (
+    <AdminFieldGroup title="Portada" description="La imagen que ocupa la pantalla principal del sitio.">
+      {fields(['heroImageUrl'])}
+    </AdminFieldGroup>
+  );
+  if (active === 'work' || active === 'exhibitions') return (
+    <AdminFieldGroup title="Proyectos" description="Abrí un proyecto para editar sus datos, textos y contenido multimedia.">
+      {fields(['projects'])}
+    </AdminFieldGroup>
+  );
+  if (active === 'statement') return (
+    <>
+      <AdminFieldGroup title="Imagen" description="Imagen editorial que acompaña el Statement.">{fields(['imageUrl', 'imageAlt'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Textos" description="Título y contenido en inglés y español.">{fields(['title', 'paragraphs', 'paragraphsEs'])}</AdminFieldGroup>
+    </>
+  );
+  if (active === 'contact') return (
+    <>
+      <AdminFieldGroup title="Presentación" description="Imagen y encabezado de la página de contacto.">{fields(['imageUrl', 'imageAlt', 'title', 'subtitle'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Enlaces" description="Canales de contacto y redes sociales visibles.">{fields(['links'])}</AdminFieldGroup>
+    </>
+  );
+  if (active === 'cv') return (
+    <>
+      <AdminFieldGroup title="Presentación" description="Retrato y texto introductorio de Bio.">{fields(['imageUrl', 'imageAlt', 'introLabel', 'intro'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Trayectoria" description="Secciones y entradas del currículum.">{fields(['sections'])}</AdminFieldGroup>
+    </>
+  );
+  return fields(Object.keys(draft || {}));
 }
 
 export default function Admin() {
@@ -301,7 +500,7 @@ export default function Admin() {
     setDirty(true); setStatus('Orden actualizado. Guardá los cambios para publicarlo.');
   };
 
-  const addAtPath = path => {
+  const addAtPath = (path, mediaType = 'image') => {
     setDraft(current => {
       const next = clone(current);
       let list = next;
@@ -311,23 +510,23 @@ export default function Admin() {
       if (kind === 'projects') {
         const slug = uniqueId(active === 'work' ? 'nuevo-work' : 'nueva-exhibition');
         const title = active === 'work' ? 'Nuevo work' : 'Nueva exhibition';
-        const image = { id: uniqueId('imagen'), title: 'Nueva imagen', series: title, year: new Date().getFullYear(), technique: '', description: '', imageUrl: '/exhibicion-01.png', alt: 'Nueva imagen' };
+        const image = { id: uniqueId('imagen'), mediaType: 'image', title: 'Nueva imagen', series: title, technique: '', description: '', imageUrl: '/exhibicion-01.png', alt: 'Nueva imagen' };
         list.push({
-          slug, title, year: new Date().getFullYear(), imageUrl: '/exhibicion-01.png',
+          slug, title, imageUrl: '/exhibicion-01.png',
           intro: '', introEs: '', statementVersion: 1,
-          images: [image], ...(active === 'work' ? { gridImages: [{ ...image, id: uniqueId('grilla'), slideIndex: 0 }] } : { category: exhibitionCategory })
+          images: [image], ...(active === 'exhibitions' ? { category: exhibitionCategory } : {})
         });
       } else if (kind === 'links') {
         list.push({ label: 'Nuevo enlace', value: '', url: '' });
       } else if (kind === 'sections') {
         list.push({ title: 'Nueva sección', items: ['Nueva entrada'] });
       } else {
-        list.push({
-          id: uniqueId(kind === 'gridImages' ? 'grilla' : 'imagen'),
-          title: 'Nueva imagen', series: project?.title || '', year: project?.year || new Date().getFullYear(),
-          technique: '', description: '', imageUrl: project?.imageUrl || '/exhibicion-01.png', alt: 'Nueva imagen',
-          ...(kind === 'gridImages' ? { slideIndex: project?.images?.length ? project.images.length - 1 : 0 } : {})
-        });
+        const base = {
+          id: uniqueId(mediaType), mediaType, series: project?.title || '', technique: '', description: '', alt: ''
+        };
+        if (mediaType === 'video') list.push({ ...base, title: 'Nuevo video', imageUrl: '', posterUrl: '' });
+        else if (mediaType === 'youtube') list.push({ ...base, title: 'Nuevo video de YouTube', imageUrl: '', posterUrl: '', embedUrl: '' });
+        else list.push({ ...base, title: 'Nueva imagen', imageUrl: project?.imageUrl || '/exhibicion-01.png', alt: 'Nueva imagen' });
       }
       return next;
     });
@@ -359,7 +558,17 @@ export default function Admin() {
   };
 
   const save = async event => {
-    event.preventDefault(); setBusy(true); setStatus('Guardando…');
+    event.preventDefault();
+    if (active === 'work' || active === 'exhibitions') {
+      for (const project of draft.projects || []) {
+        const invalidItem = (project.images || []).find(item => mediaValidationError(item));
+        if (invalidItem) {
+          setStatus(`${project.title}: ${mediaValidationError(invalidItem)}`);
+          return;
+        }
+      }
+    }
+    setBusy(true); setStatus('Guardando…');
     try {
       const saved = await api.updateContent(active, draft);
       setContent(current => ({ ...current, [active]: saved }));
@@ -372,12 +581,6 @@ export default function Admin() {
   const current = sections.find(section => section.key === active);
   const currentLabel = active === 'exhibitions' ? (exhibitionCategory === 'group' ? 'Exhibitions · Group Show' : 'Exhibitions · Solo Show') : current.label;
   const previewRoute = active === 'exhibitions' ? `/exhibitions#${exhibitionCategory}-show` : current.route;
-  const visibleDraft = active === 'home' ? {
-    heroImageUrl: draft.heroImageUrl,
-    heroImageAlt: draft.heroImageAlt,
-    heroCaption: draft.heroCaption
-  } : draft;
-
   if (auth === null) return <div className="admin-boot">abriendo editor…</div>;
   if (!auth) return <Login onSuccess={async () => { setAuth(true); await loadContent(); }} />;
 
@@ -416,8 +619,11 @@ export default function Admin() {
           <Link className="admin-preview-link" to={previewRoute} target="_blank">Ver página ↗</Link>
         </header>
         <form className="admin-content-editor" onSubmit={save}>
-          {(active === 'work' || active === 'exhibitions') && <ProjectCovers projects={draft.projects} onChange={updateAtPath} category={active === 'exhibitions' ? exhibitionCategory : null} />}
-          <ContentFields value={visibleDraft} onChange={updateAtPath} onMove={moveAtPath} onAdd={addAtPath} onRemove={removeAtPath} projectCategory={active === 'exhibitions' ? exhibitionCategory : null} />
+          {active === 'exhibitions' && <ProjectCovers projects={draft.projects} onChange={updateAtPath} category={exhibitionCategory} />}
+          {/* Editor de portadas de Work oculto temporalmente. Conservar para reactivarlo más adelante.
+          {active === 'work' && <ProjectCovers projects={draft.projects} onChange={updateAtPath} />}
+          */}
+          <SectionEditor active={active} draft={draft} onChange={updateAtPath} onMove={moveAtPath} onAdd={addAtPath} onRemove={removeAtPath} projectCategory={active === 'exhibitions' ? exhibitionCategory : null} />
           <div className="admin-content-savebar"><p role="status">{status}</p><button type="submit" disabled={busy || !dirty}>{busy ? 'Guardando…' : 'Guardar cambios →'}</button></div>
         </form>
       </main>

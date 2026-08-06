@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { Header } from '../components/SiteChrome';
 import { useLanguage } from '../i18n';
+import { useSiteContent } from '../siteContent';
 
 export default function Home() {
   const { t } = useLanguage();
+  const home = useSiteContent('home');
 
   useEffect(() => {
     document.body.classList.add('home-screen-active');
@@ -15,7 +17,7 @@ export default function Home() {
       <Header />
       <main className="home-main">
         <section className="home-hero" aria-label={t('homeHero')}>
-          <img src="/esta.jpg" alt={t('homeHeroAlt')} />
+          <img src={home.heroImageUrl} alt={t('homeHeroAlt')} />
         </section>
       </main>
     </div>

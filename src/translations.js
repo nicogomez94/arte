@@ -235,12 +235,7 @@ const spanishWorkTitles = {
 
 const localizeWorkMedia = (project, language) => {
   const images = (project.images || []).filter(item => !item.language || item.language === language);
-  const imageIndexByUrl = new Map(images.map((item, index) => [item.imageUrl, index]));
-  const gridImages = (project.gridImages || [])
-    .filter(item => !item.language || item.language === language)
-    .map(item => ({ ...item, slideIndex: imageIndexByUrl.get(item.imageUrl) }));
-
-  return { ...project, images, gridImages };
+  return { ...project, images };
 };
 
 export function translateSiteContent(content, language) {
@@ -268,8 +263,7 @@ export function translateSiteContent(content, language) {
         ...project,
         title: spanishWorkTitles[project.slug] || project.title,
         intro: project.introEs?.trim() || workStatementsEs[project.slug] || project.intro,
-        images: (project.images || []).map(translateArtwork),
-        gridImages: (project.gridImages || []).map(translateArtwork)
+        images: (project.images || []).map(translateArtwork)
       }))
     },
     exhibitions: {

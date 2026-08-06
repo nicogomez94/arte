@@ -338,12 +338,6 @@ export const projectAssets = Object.fromEntries(
   Object.entries(workFiles).map(([slug, project]) => [slug, makeWorkSlides(project)])
 );
 
-export const projectGridAssets = Object.fromEntries(
-  Object.entries(projectAssets).map(([slug, slides]) => {
-    return [slug, slides.map((slide, index) => ({ ...slide, slideIndex: index }))];
-  })
-);
-
 const fallbackSlide = ({ slug, title, series = title, year, file }, index = 0) => makeSlide({
   slug,
   title,

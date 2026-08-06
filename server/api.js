@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import express from 'express';
 import { createStore } from './store.js';
+import { MAX_VIDEO_BYTES, parseByteRange, validateVideoUpload } from './media.js';
 
 const SESSION_DURATION = 12 * 60 * 60 * 1000;
 const CONTENT_SECTIONS = new Set(['global', 'home', 'work', 'exhibitions', 'statement', 'about', 'contact', 'cv']);
@@ -39,9 +40,9 @@ const normalizeArtwork = (body, existing = {}) => {
   };
 };
 
-export const createApi = ({ production = false } = {}) => {
+export const createApi = ({ production = false, store: suppliedStore = null } = {}) => {
   const router = express.Router();
-  const store = createStore({ production });
+  const store = suppliedStore || createStore({ production });
   const loginAttempts = new Map();
   const adminPassword = process.env.ADMIN_PASSWORD || (production ? '' : 'admin');
   const sessionSecret = process.env.SESSION_SECRET || 'local-development-only';
@@ -96,9 +97,26 @@ export const createApi = ({ production = false } = {}) => {
       if (!MEDIA_ID.test(req.params.id)) return res.status(404).end();
       const media = await store.readMedia(req.params.id);
       if (!media) return res.status(404).end();
-      res.set('Content-Type', media.mime);
-      res.set('Cache-Control', 'public, max-age=31536000, immutable');
-      res.send(media.data);
+      const headers = {
+        'Content-Type': media.mime,
+        'Cache-Control': 'public, max-age=31536000, immutable',
+        'Content-Length': media.data.length
+      };
+      if (media.mime.startsWith('video/')) headers['Accept-Ranges'] = 'bytes';
+      if (media.mime.startsWith('video/') && req.headers.range) {
+        const range = parseByteRange(req.headers.range, media.data.length);
+        if (!range) {
+          res.set('Content-Range', `bytes */${media.data.length}`);
+          return res.status(416).end();
+        }
+        const chunk = media.data.subarray(range.start, range.end + 1);
+        return res.status(206).set({
+          ...headers,
+          'Content-Length': chunk.length,
+          'Content-Range': `bytes ${range.start}-${range.end}/${media.data.length}`
+        }).send(chunk);
+      }
+      res.set(headers).send(media.data);
     } catch (error) { next(error); }
   });
   router.post('/api/admin/login', (req, res) => {
@@ -123,6 +141,21 @@ export const createApi = ({ production = false } = {}) => {
   router.get('/api/admin/content', requireAdmin, async (_req, res, next) => {
     try { res.json(await store.publicContent()); } catch (error) { next(error); }
   });
+  router.post(
+    '/api/admin/media/video',
+    requireAdmin,
+    express.raw({ type: ['video/mp4', 'video/webm'], limit: MAX_VIDEO_BYTES }),
+    async (req, res, next) => {
+      try {
+        const mime = String(req.headers['content-type'] || '').split(';')[0].toLowerCase();
+        const error = validateVideoUpload(mime, Buffer.isBuffer(req.body) ? req.body.length : 0, req.body);
+        if (error) return res.status(error.includes('50 MB') ? 413 : 400).json({ error });
+        const id = crypto.randomUUID();
+        await store.saveMedia(id, mime, req.body);
+        res.status(201).json({ url: `/api/media/${id}`, mime, size: req.body.length });
+      } catch (error) { next(error); }
+    }
+  );
   router.put('/api/admin/content/:section', requireAdmin, async (req, res, next) => {
     try {
       const { section } = req.params;
@@ -154,7 +187,11 @@ export const createApi = ({ production = false } = {}) => {
       res.status(204).end();
     } catch (error) { next(error); }
   });
-  router.use((error, _req, res, _next) => { console.error(error); res.status(500).json({ error: 'Ocurrió un error inesperado.' }); });
+  router.use((error, _req, res, _next) => {
+    if (error?.type === 'entity.too.large') return res.status(413).json({ error: 'El video supera los 50 MB.' });
+    console.error(error);
+    res.status(500).json({ error: 'Ocurrió un error inesperado.' });
+  });
 
   return { router, store };
 };

@@ -1,12 +1,13 @@
 import { createContext, createElement, useContext, useEffect, useMemo, useState } from 'react';
 import cvText from '../texto.md?raw';
-import { projectAssets, projectGridAssets, workIndexItems } from './projectAssets';
+import { projectAssets, workIndexItems } from './projectAssets';
 import { exhibitionProjects } from './exhibitionAssets';
 import { projects } from './projects';
 import { api } from './api';
 import { useLanguage } from './i18n';
 import { exhibitionStatementsEs, workStatementsEs } from './spanishStatements';
 import { statementParagraphsEs, translateSiteContent } from './translations';
+import { normalizeProjectMedia } from './mediaContent';
 
 const cleanLine = line => line
   .replace(/[\u200B-\u200D\uFEFF]/g, '')
@@ -52,8 +53,7 @@ const workProjects = workIndexItems.map(item => {
     intro: project.intro || '',
     introEs: workStatementsEs[item.slug] || '',
     statementVersion: 1,
-    images,
-    gridImages: projectGridAssets[item.slug] || images.map((image, index) => ({ ...image, slideIndex: index }))
+    images
   };
 });
 
@@ -192,14 +192,13 @@ export const mergeSiteContent = (stored = {}) => {
       project.slug === 'about-india' &&
       /\/(?:00|08)\.jpg$/i.test(item.imageUrl || '')
     );
-    project = {
+    project = normalizeProjectMedia({
       ...project,
       imageUrl: isRemovedProjectMedia({ imageUrl: project.imageUrl })
         ? (projectAssets[project.slug]?.[0]?.imageUrl || '')
         : project.imageUrl,
-      images: (project.images || []).filter(item => !isRemovedProjectMedia(item)),
-      gridImages: (project.gridImages || []).filter(item => !isRemovedProjectMedia(item))
-    };
+      images: (Array.isArray(project.images) ? project.images : project.gridImages || []).filter(item => !isRemovedProjectMedia(item))
+    });
     const sourceProject = projects.find(item => item.slug === project.slug);
     const savedProject = stored.work?.projects?.find(item => item.slug === project.slug);
     const statementsWereSeeded = Number(savedProject?.statementVersion || 0) >= 1;
@@ -220,27 +219,15 @@ export const mergeSiteContent = (stored = {}) => {
     const currentImages = (project.images || []).filter(item => !isObsoleteUncertainVideo(item));
     const currentImageUrls = new Set(currentImages.map(item => item.imageUrl));
     const images = [...currentImages, ...canonicalVideos.filter(item => !currentImageUrls.has(item.imageUrl))];
-    const currentGrid = project.gridImages?.length
-      ? project.gridImages.filter(item => !isObsoleteUncertainVideo(item))
-      : currentImages.map((item, index) => ({ ...item, slideIndex: index }));
-    const currentGridUrls = new Set(currentGrid.map(item => item.imageUrl));
-    const gridVideos = canonicalVideos
-      .filter(item => !currentGridUrls.has(item.imageUrl))
-      .map(item => ({ ...item, slideIndex: images.findIndex(image => image.imageUrl === item.imageUrl) }));
-
     return {
       ...project,
       intro,
       introEs,
       statementVersion: 1,
-      images,
-      gridImages: [...currentGrid, ...gridVideos].map(item => ({
-        ...item,
-        slideIndex: images.findIndex(image => image.imageUrl === item.imageUrl)
-      }))
+      images
     };
   });
-  merged.exhibitions.projects = (merged.exhibitions.projects || []).map(project => ({
+  merged.exhibitions.projects = (merged.exhibitions.projects || []).map(project => normalizeProjectMedia({
     ...project,
     intro: typeof project.intro === 'string' ? project.intro : '',
     introEs: typeof project.introEs === 'string'
