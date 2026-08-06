@@ -236,18 +236,10 @@ function MediaItemFields({ item, path, onChange }) {
   return (
     <div className="admin-media-editor">
       <header className="admin-editor-subheading"><span>Fuente</span><b>{type === 'image' ? 'Imagen' : type === 'video' ? 'Video' : 'YouTube'}</b></header>
-      {type === 'image' && <ImageField label="Archivo de imagen" value={item.imageUrl} onChange={imageUrl => onChange(path, { ...item, mediaType: 'image', imageUrl })} />}
+      <label className="admin-content-field admin-media-title-field"><span>Título</span><input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} /></label>
+      {type === 'image' && <ImageField label="Imagen" value={item.imageUrl} onChange={imageUrl => onChange(path, { ...item, mediaType: 'image', imageUrl })} />}
       {type === 'video' && <VideoField item={item} path={path} onChange={onChange} />}
       {type === 'youtube' && <YouTubeField item={item} path={path} onChange={onChange} />}
-      <section className="admin-field-section">
-        <header><h4>Información del ítem</h4><p>Estos datos identifican el contenido y mejoran su accesibilidad.</p></header>
-        <div className="admin-content-fields">
-          <label className="admin-content-field"><span>Título</span><input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} /></label>
-          <label className="admin-content-field"><span>Técnica</span><input type="text" value={item.technique || ''} onChange={event => onChange([...path, 'technique'], event.target.value)} /></label>
-          <label className="admin-content-field field-wide"><span>Descripción</span><textarea rows="3" value={item.description || ''} onChange={event => onChange([...path, 'description'], event.target.value)} /></label>
-          <label className="admin-content-field field-wide"><span>Descripción accesible</span><input type="text" value={item.alt || ''} onChange={event => onChange([...path, 'alt'], event.target.value)} /></label>
-        </div>
-      </section>
     </div>
   );
 }
@@ -278,6 +270,7 @@ function ProjectFields({ project, path, onChange, onMove, onAdd, onRemove, proje
 
 function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, projectCategory = null, includeKeys = null }) {
   const [dragIndex, setDragIndex] = useState(null);
+  const [dropTarget, setDropTarget] = useState(null);
   if (Array.isArray(value)) {
     const kind = path.at(-1);
     const objectList = ['projects', 'images', 'links', 'sections'].includes(kind);
@@ -307,26 +300,37 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
           ? 'Agregar sección'
           : 'Agregar imagen';
     return (
-      <div className="admin-content-list">
+      <div className={`admin-content-list ${dragIndex !== null ? 'is-reordering' : ''}`}>
         {value.map((item, index) => ({ item, index })).filter(({ item }) => kind !== 'projects' || !projectCategory || item.category === projectCategory).map(({ item, index }) => {
           const itemPath = [...path, index];
           if (item && typeof item === 'object') return (
             <details
               id={kind === 'projects' ? `admin-project-${item.slug}` : undefined}
-              className={`admin-content-card ${dragIndex === index ? 'is-dragging' : ''}`}
+              className={`admin-content-card ${kind === 'projects' ? 'admin-project-card' : ''} ${dragIndex === index ? 'is-dragging' : ''} ${dropTarget?.index === index ? `is-drop-${dropTarget.position}` : ''}`}
               key={item.id || item.slug || index}
-              onDragOver={event => { if (reorderable) event.preventDefault(); }}
+              onDragOver={event => {
+                if (!reorderable || dragIndex === null || dragIndex === index) return;
+                event.preventDefault();
+                const rect = event.currentTarget.getBoundingClientRect();
+                setDropTarget({ index, position: event.clientY < rect.top + rect.height / 2 ? 'before' : 'after' });
+                event.dataTransfer.dropEffect = 'move';
+              }}
               onDrop={event => {
                 event.preventDefault();
-                if (reorderable && dragIndex !== null && dragIndex !== index) onMove(path, dragIndex, index);
+                if (reorderable && dragIndex !== null && dropTarget?.index === index) {
+                  let destination = index + (dropTarget.position === 'after' ? 1 : 0);
+                  if (dragIndex < destination) destination -= 1;
+                  if (dragIndex !== destination) onMove(path, dragIndex, destination);
+                }
                 setDragIndex(null);
+                setDropTarget(null);
               }}
             >
               <summary
                 className={thumbnailForItem(item) ? 'has-thumbnail' : ''}
                 draggable={reorderable}
-                onDragStart={event => { setDragIndex(index); event.dataTransfer.effectAllowed = 'move'; }}
-                onDragEnd={() => setDragIndex(null)}
+                onDragStart={event => { setDragIndex(index); setDropTarget(null); event.dataTransfer.effectAllowed = 'move'; }}
+                onDragEnd={() => { setDragIndex(null); setDropTarget(null); }}
               >
                 <span>{String(index + 1).padStart(2, '0')}</span>
                 {thumbnailForItem(item) && <img src={thumbnailForItem(item)} alt="" />}
