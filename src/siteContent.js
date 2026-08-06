@@ -8,6 +8,7 @@ import { useLanguage } from './i18n';
 import { exhibitionStatementsEs, workStatementsEs } from './spanishStatements';
 import { statementParagraphsEs, translateSiteContent } from './translations';
 import { normalizeProjectMedia } from './mediaContent';
+import { normalizeCvItem, normalizeCvSections } from './cvItems';
 
 const cleanLine = line => line
   .replace(/[\u200B-\u200D\uFEFF]/g, '')
@@ -34,7 +35,7 @@ const parseCv = () => {
     if (headingLabels.has(key)) {
       current = { title: headingLabels.get(key), items: [] };
       sections.push(current);
-    } else if (current) current.items.push(line);
+    } else if (current) current.items.push(normalizeCvItem(line));
   });
   return {
     intro,
@@ -157,9 +158,9 @@ export const mergeSiteContent = (stored = {}) => {
     });
   }
   delete merged.cv.links;
-  merged.cv.sections = (merged.cv.sections || []).filter(section => (
+  merged.cv.sections = normalizeCvSections((merged.cv.sections || []).filter(section => (
     !section.title?.trim().toLowerCase().startsWith('group exhibitions')
-  ));
+  )));
   // Bio used to live inside Statement. Strip legacy saved fields as well so it
   // disappears from both the public page and the content editor.
   if (merged.statement) {

@@ -301,7 +301,9 @@ export function translateSiteContent(content, language) {
       sections: (content.cv.sections || []).map(section => ({
         ...section,
         title: translateCvText(section.title),
-        items: (section.items || []).map(translateCvText)
+        items: (section.items || []).map(item => typeof item === 'string'
+          ? translateCvText(item)
+          : { ...item, title: translateCvText(item.title) })
       }))
     }
   };

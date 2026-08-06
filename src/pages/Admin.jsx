@@ -32,7 +32,7 @@ const labels = {
   detailCaption: 'Epígrafe de detalle', detailLabel: 'Etiqueta de detalle', detailTitle: 'Título de detalle',
   facts: 'Datos', label: 'Etiqueta', value: 'Texto visible', linkLabel: 'Texto del enlace', imageAlt: 'Descripción de imagen',
   subtitle: 'Bajada', links: 'Enlaces', url: 'Destino del enlace', introLabel: 'Título de introducción',
-  sections: 'Secciones de Bio', items: 'Entradas', category: 'Categoría'
+  sections: 'Secciones de Bio', items: 'Entradas', href: 'Destino del enlace (href)', category: 'Categoría'
 };
 
 const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'mediaType', 'embedUrl', 'posterUrl', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion', 'statementVersion']);
@@ -268,12 +268,27 @@ function ProjectFields({ project, path, onChange, onMove, onAdd, onRemove, proje
   );
 }
 
+function CvItemFields({ item, path, onChange }) {
+  return (
+    <div className="admin-content-fields admin-cv-item-fields">
+      <label className="admin-content-field field-wide">
+        <span>Título visible</span>
+        <input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} />
+      </label>
+      <label className="admin-content-field field-wide">
+        <span>Link (href)</span>
+        <input type="text" inputMode="url" placeholder="https://…" value={item.href || ''} onChange={event => onChange([...path, 'href'], event.target.value)} />
+      </label>
+    </div>
+  );
+}
+
 function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, projectCategory = null, includeKeys = null }) {
   const [dragIndex, setDragIndex] = useState(null);
   const [dropTarget, setDropTarget] = useState(null);
   if (Array.isArray(value)) {
     const kind = path.at(-1);
-    const objectList = ['projects', 'images', 'links', 'sections'].includes(kind);
+    const objectList = ['projects', 'images', 'links', 'sections', 'items'].includes(kind);
     const objectItems = objectList || value.some(item => item && typeof item === 'object');
     if (!objectItems) {
       const fieldName = path.at(-1);
@@ -290,15 +305,17 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
         </label>
       );
     }
-    const reorderable = ['projects', 'images', 'sections'].includes(kind);
-    const editableList = ['projects', 'images', 'links', 'sections'].includes(kind);
+    const reorderable = ['projects', 'images', 'sections', 'items'].includes(kind);
+    const editableList = ['projects', 'images', 'links', 'sections', 'items'].includes(kind);
     const addLabel = kind === 'projects'
       ? 'Agregar proyecto'
       : kind === 'links'
         ? 'Agregar enlace'
         : kind === 'sections'
           ? 'Agregar sección'
-          : 'Agregar imagen';
+          : kind === 'items'
+            ? 'Agregar entrada'
+            : 'Agregar imagen';
     return (
       <div className={`admin-content-list ${dragIndex !== null ? 'is-reordering' : ''}`}>
         {value.map((item, index) => ({ item, index })).filter(({ item }) => kind !== 'projects' || !projectCategory || item.category === projectCategory).map(({ item, index }) => {
@@ -361,6 +378,8 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
   if (isProject) return <ProjectFields project={value} path={path} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />;
   const isMediaItem = path.at(-2) === 'images' && typeof path.at(-1) === 'number';
   if (isMediaItem) return <MediaItemFields item={value} path={path} onChange={onChange} />;
+  const isCvItem = path.at(-2) === 'items' && typeof path.at(-1) === 'number';
+  if (isCvItem) return <CvItemFields item={value} path={path} onChange={onChange} />;
 
   return (
     <div className="admin-content-fields">
@@ -523,7 +542,9 @@ export default function Admin() {
       } else if (kind === 'links') {
         list.push({ label: 'Nuevo enlace', value: '', url: '' });
       } else if (kind === 'sections') {
-        list.push({ title: 'Nueva sección', items: ['Nueva entrada'] });
+        list.push({ title: 'Nueva sección', items: [{ title: 'Nueva entrada', href: '' }] });
+      } else if (kind === 'items') {
+        list.push({ title: 'Nueva entrada', href: '' });
       } else {
         const base = {
           id: uniqueId(mediaType), mediaType, series: project?.title || '', technique: '', description: '', alt: ''
@@ -547,9 +568,11 @@ export default function Admin() {
       ? '¿Eliminar este proyecto y todo su contenido?'
       : kind === 'links'
         ? '¿Eliminar este enlace?'
-        : kind === 'sections'
+      : kind === 'sections'
           ? '¿Eliminar esta sección de Bio?'
-          : '¿Eliminar esta imagen?';
+          : kind === 'items'
+            ? '¿Eliminar esta entrada de Bio?'
+            : '¿Eliminar esta imagen?';
     if (!window.confirm(message)) return;
     setDraft(current => {
       const next = clone(current);
