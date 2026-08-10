@@ -2566,26 +2566,20 @@ body,
 .workshops-main {
   width: var(--page);
   margin: 0 auto;
-  padding: 130px 0 120px;
-}
-
-.workshop-row > div > span {
-  color: #898989;
-  font-size: 8px;
-  letter-spacing: .16em;
-  text-transform: uppercase;
+  padding: 104px 0 104px;
 }
 
 .workshop-row {
-  padding: 58px 0;
+  padding: 44px 0;
   border-bottom: 1px solid var(--line);
   display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(0, 1fr);
-  gap: clamp(42px, 8vw, 112px);
+  grid-template-columns: minmax(220px, .72fr) minmax(0, 1fr);
+  gap: clamp(42px, 7vw, 90px);
   align-items: center;
 }
 
 .workshop-row figure {
+  width: min(100%, 390px);
   margin: 0;
   overflow: hidden;
   background: #e7e7e7;
@@ -2604,10 +2598,7 @@ body,
 }
 
 .workshop-row > div {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
-  gap: 18px;
-  align-items: start;
+  min-width: 0;
 }
 
 .workshop-row p {
@@ -2647,7 +2638,7 @@ body,
     max-width: calc(100vw - 145px);
     margin-top: 0;
     overflow: hidden;
-    font-size: 18px;
+    font-size: 16px;
     text-overflow: ellipsis;
   }
 
@@ -2674,22 +2665,33 @@ body,
   }
 
   .workshops-main {
-    padding: 104px 0 82px;
+    padding: 94px 0 76px;
   }
 
   .workshop-row {
-    padding: 36px 0 42px;
+    padding: 28px 0 34px;
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 18px;
   }
 
-  .workshop-row > div {
-    grid-template-columns: 30px minmax(0, 1fr);
-    gap: 12px;
+  .workshop-row figure {
+    width: 72%;
   }
 
   .workshop-row p {
     font-size: 13px;
+  }
+}
+
+@media (max-width: 380px) {
+  .wordmark {
+    max-width: calc(100vw - 142px);
+    font-size: 14px;
+    letter-spacing: -.02em;
+  }
+
+  .language-toggle {
+    font-size: 8px;
   }
 }
 

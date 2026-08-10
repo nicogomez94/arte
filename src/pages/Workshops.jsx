@@ -14,12 +14,9 @@ export default function Workshops() {
               <figure>
                 <img src={row.imageUrl} alt={row.imageAlt} />
               </figure>
-              <div>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <div className="workshop-copy">
-                  <h2>{row.title}</h2>
-                  <p>{row.text}</p>
-                </div>
+              <div className="workshop-copy">
+                <h2>{row.title}</h2>
+                <p>{row.text}</p>
               </div>
             </article>
           ))}
