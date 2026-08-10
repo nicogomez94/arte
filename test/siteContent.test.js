@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { mergeContentSections } from '../src/contentMerge.js';
+import { mergeContentSections, normalizeStoredContent } from '../src/contentMerge.js';
 import { translateSiteContent } from '../src/translations.js';
 
 test('stored Contact and CV image URLs take precedence over defaults', () => {
@@ -15,6 +15,13 @@ test('stored Contact and CV image URLs take precedence over defaults', () => {
   const merged = mergeContentSections(defaults, stored);
   assert.equal(merged.contact.imageUrl, stored.contact.imageUrl);
   assert.equal(merged.cv.imageUrl, stored.cv.imageUrl);
+});
+
+test('null content responses fall back to an empty stored content object', () => {
+  assert.deepEqual(normalizeStoredContent(null), {});
+  assert.deepEqual(mergeContentSections({ global: { artistName: 'Andrea' } }, null), {
+    global: { artistName: 'Andrea' }
+  });
 });
 
 test('Spanish translation preserves Contact and CV image URLs', () => {

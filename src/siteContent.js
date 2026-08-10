@@ -9,7 +9,7 @@ import { exhibitionStatementsEs, workStatementsEs } from './spanishStatements';
 import { statementParagraphsEs, translateSiteContent } from './translations';
 import { normalizeProjectMedia } from './mediaContent';
 import { normalizeCvItem, normalizeCvSections } from './cvItems';
-import { mergeContentSections } from './contentMerge';
+import { mergeContentSections, normalizeStoredContent } from './contentMerge';
 
 const cleanLine = line => line
   .replace(/[\u200B-\u200D\uFEFF]/g, '')
@@ -166,8 +166,9 @@ export const defaultSiteContent = {
 };
 
 export const mergeSiteContent = (stored = {}) => {
-  const merged = mergeContentSections(defaultSiteContent, stored);
-  if (Number(stored.global?.menuLabelsVersion || 0) < 1) {
+  const normalizedStored = normalizeStoredContent(stored);
+  const merged = mergeContentSections(defaultSiteContent, normalizedStored);
+  if (Number(normalizedStored.global?.menuLabelsVersion || 0) < 1) {
     merged.global = {
       ...merged.global,
       menuLabelsVersion: 1,
@@ -178,7 +179,7 @@ export const mergeSiteContent = (stored = {}) => {
     };
   }
   merged.contact.links = (merged.contact.links || []).filter(link => link.url !== 'https://www.andrealkalay.com/');
-  if (Number(stored.contact?.contentVersion || 0) < 1) {
+  if (Number(normalizedStored.contact?.contentVersion || 0) < 1) {
     defaultSiteContent.contact.links.slice(-2).forEach(socialLink => {
       if (!merged.contact.links.some(link => link.label?.trim().toLowerCase() === socialLink.label.toLowerCase())) {
         merged.contact.links.push(socialLink);
@@ -198,12 +199,12 @@ export const mergeSiteContent = (stored = {}) => {
   // Content saved before exhibitions were split into Solo and Group shows is
   // replaced once with the new folder-driven archive. Subsequent admin edits
   // already include `category` and continue to take precedence.
-  if (stored.exhibitions?.projects?.length && !stored.exhibitions.projects.some(project => project.category)) {
+  if (normalizedStored.exhibitions?.projects?.length && !normalizedStored.exhibitions.projects.some(project => project.category)) {
     merged.exhibitions = defaultSiteContent.exhibitions;
   }
   // Older saved Work content pointed at the previous `/unfixed` and
   // `/rockcycle` image sets. Prefer the new folder-driven archive once.
-  if (stored.work?.projects?.length && !stored.work.projects.some(project => (
+  if (normalizedStored.work?.projects?.length && !normalizedStored.work.projects.some(project => (
     project.imageUrl?.startsWith('/works/') ||
     project.images?.some(image => image.imageUrl?.startsWith('/works/'))
   ))) {
@@ -229,7 +230,7 @@ export const mergeSiteContent = (stored = {}) => {
       images: (Array.isArray(project.images) ? project.images : project.gridImages || []).filter(item => !isRemovedProjectMedia(item))
     });
     const sourceProject = projects.find(item => item.slug === project.slug);
-    const savedProject = stored.work?.projects?.find(item => item.slug === project.slug);
+    const savedProject = normalizedStored.work?.projects?.find(item => item.slug === project.slug);
     const statementsWereSeeded = Number(savedProject?.statementVersion || 0) >= 1;
     const intro = statementsWereSeeded && typeof project.intro === 'string'
       ? project.intro
