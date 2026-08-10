@@ -1,8 +1,9 @@
 const request = async (url, options = {}) => {
+  const { headers, ...requestOptions } = options;
   const response = await fetch(url, {
     credentials: 'same-origin',
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options
+    headers: { 'Content-Type': 'application/json', ...headers },
+    ...requestOptions
   });
   const data = response.status === 204 ? null : await response.json().catch(() => null);
   if (!response.ok) throw new Error(data?.error || 'No se pudo completar la acción.');
@@ -27,7 +28,7 @@ const toEnglishArtwork = artwork => Object.fromEntries(
 );
 
 export const api = {
-  content: () => request('/api/content'),
+  content: (options = {}) => request('/api/content', { cache: 'no-store', ...options }),
   artworks: () => request('/api/artworks').then(items => items.map(toEnglishArtwork)),
   session: () => request('/api/admin/session'),
   adminArtworks: () => request('/api/admin/artworks'),
@@ -44,6 +45,6 @@ export const api = {
     if (!response.ok) throw new Error(data?.error || 'No se pudo subir el video.');
     return data;
   },
-  adminContent: () => request('/api/admin/content'),
+  adminContent: (options = {}) => request('/api/admin/content', { cache: 'no-store', ...options }),
   updateContent: (section, content) => request(`/api/admin/content/${section}`, { method: 'PUT', body: JSON.stringify(content) })
 };

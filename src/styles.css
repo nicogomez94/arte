@@ -37,7 +37,7 @@ img { display: block; max-width: 100%; }
 .site-nav a::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -8px; height: .6px; background: var(--bordo); transition: right .25s; }
 .site-nav a:hover::after, .site-nav a.active::after { right: 0; }
 .header-actions { justify-self: end; display: flex; align-items: center; gap: 22px; font-size: 12px; text-transform: uppercase; }
-.menu-button { display: none; width: 32px; height: 32px; border: 0; background: none; padding: 6px; }
+.menu-button { display: none; width: 32px; height: 32px; border: 0; background: none; padding: 6px; margin-bottom: 2px;}
 .menu-button span { display: block; height: 1px; background: var(--ink); margin: 6px 0; }
 .eyebrow { display: block; color: var(--gold); font-size: 10px; font-weight: 500; letter-spacing: .19em; text-transform: uppercase; }
 .text-link { display: inline-flex; align-items: center; gap: 55px; padding: 12px 0; border-bottom: 1px solid var(--ink); font-size: 13px; }
@@ -634,7 +634,7 @@ body { background: #fff; font-weight: 400; }
 }
 
 @media (max-width: 680px) {
-  .header-actions { gap: 12px; }
+  .header-actions { gap: 12px; margin-bottom: 4px; }
   .wordmark { font-size: 20px; }
   .home-hero { padding: 100px 0 48px; }
   .hero-image { height: 64vh; margin: 0; }
@@ -2533,25 +2533,25 @@ body,
 
 .cv-intro {
   padding-top: 20px;
-  border-top: 1px solid var(--bordo);
+  border-top: 1px solid var(--line);
 }
 
 .cv-intro h4 {
   margin: 0 0 13px;
-  color: var(--bordo);
+  color: var(--ink);
   font: 100 9px/1.25 var(--sans);
   letter-spacing: .15em;
   text-transform: uppercase;
 }
 
 .cv-intro p {
-  color: var(--bordo);
   font-size: 13px;
   line-height: 1.7;
 }
 
 .cv-honors {
-  padding-top: 16px;
+  padding-top: 0;
+  border-top: 0;
 }
 
 .cv-sections {
@@ -2559,24 +2559,8 @@ body,
   column-gap: clamp(38px, 6vw, 90px);
 }
 
-.cv-section h2,
-.cv-section li,
-.cv-section li a,
-.cv-external-mark {
+.cv-section h2 {
   color: var(--bordo);
-}
-
-.cv-section {
-  border-top-color: var(--bordo);
-}
-
-.cv-section li a {
-  border-bottom-color: var(--bordo);
-}
-
-.cv-section li a:hover {
-  color: var(--bordo);
-  border-bottom-color: var(--bordo);
 }
 
 .workshops-main {

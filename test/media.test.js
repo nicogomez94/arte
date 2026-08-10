@@ -87,5 +87,63 @@ test('authenticated video upload is stored and served with byte ranges', async t
   const ranged = await fetch(`${base}${uploaded.url}`, { headers: { Range: 'bytes=4-7' } });
   assert.equal(ranged.status, 206);
   assert.equal(ranged.headers.get('content-range'), 'bytes 4-7/12');
+  assert.equal(ranged.headers.get('cache-control'), 'public, max-age=31536000, immutable');
   assert.equal(await ranged.text(), 'ftyp');
+});
+
+test('Contact and CV images are materialized with unique URLs and content responses are never cached', async t => {
+  const content = {};
+  const media = new Map();
+  const store = {
+    async publicContent() { return structuredClone(content); },
+    async updateContent(section, data) {
+      content[section] = structuredClone(data);
+      return structuredClone(data);
+    },
+    async saveMedia(id, mime, data) { media.set(id, { mime, data }); },
+    async readMedia(id) { return media.get(id) || null; }
+  };
+  const app = express();
+  app.use(createApi({ store }).router);
+  const server = await new Promise(resolve => {
+    const instance = app.listen(0, '127.0.0.1', () => resolve(instance));
+  });
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  const base = `http://127.0.0.1:${server.address().port}`;
+
+  const login = await fetch(`${base}/api/admin/login`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: 'admin' })
+  });
+  const cookie = login.headers.get('set-cookie').split(';')[0];
+  const image = 'data:image/png;base64,aW1hZ2UtYnl0ZXM=';
+
+  const saveSection = async section => {
+    const response = await fetch(`${base}/api/admin/content/${section}`, {
+      method: 'PUT',
+      headers: { Cookie: cookie, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageUrl: image, imageAlt: section })
+    });
+    assert.equal(response.status, 200);
+    assert.match(response.headers.get('cache-control'), /no-store/);
+    return response.json();
+  };
+
+  const contact = await saveSection('contact');
+  const cv = await saveSection('cv');
+  assert.match(contact.imageUrl, /^\/api\/media\/[a-f0-9-]{36}$/);
+  assert.match(cv.imageUrl, /^\/api\/media\/[a-f0-9-]{36}$/);
+  assert.notEqual(contact.imageUrl, cv.imageUrl);
+  assert.equal(media.size, 2);
+
+  const publicResponse = await fetch(`${base}/api/content`);
+  assert.match(publicResponse.headers.get('cache-control'), /no-store/);
+  const publicContent = await publicResponse.json();
+  assert.equal(publicContent.contact.imageUrl, contact.imageUrl);
+  assert.equal(publicContent.cv.imageUrl, cv.imageUrl);
+
+  const adminResponse = await fetch(`${base}/api/admin/content`, { headers: { Cookie: cookie } });
+  assert.match(adminResponse.headers.get('cache-control'), /no-store/);
+  const adminContent = await adminResponse.json();
+  assert.equal(adminContent.contact.imageUrl, contact.imageUrl);
+  assert.equal(adminContent.cv.imageUrl, cv.imageUrl);
 });

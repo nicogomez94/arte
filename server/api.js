@@ -6,6 +6,12 @@ import { MAX_VIDEO_BYTES, parseByteRange, validateVideoUpload } from './media.js
 const SESSION_DURATION = 12 * 60 * 60 * 1000;
 const CONTENT_SECTIONS = new Set(['global', 'home', 'work', 'exhibitions', 'statement', 'about', 'contact', 'cv', 'workshops']);
 const MEDIA_ID = /^[a-f0-9-]{36}$/;
+const CONTENT_CACHE_HEADERS = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  Pragma: 'no-cache',
+  Expires: '0',
+  'Surrogate-Control': 'no-store'
+};
 
 const safeEqual = (left = '', right = '') => {
   const a = Buffer.from(String(left));
@@ -90,7 +96,7 @@ export const createApi = ({ production = false, store: suppliedStore = null } = 
     try { res.json(await store.publicArtworks()); } catch (error) { next(error); }
   });
   router.get('/api/content', async (_req, res, next) => {
-    try { res.json(await store.publicContent()); } catch (error) { next(error); }
+    try { res.set(CONTENT_CACHE_HEADERS).json(await store.publicContent()); } catch (error) { next(error); }
   });
   router.get('/api/media/:id', async (req, res, next) => {
     try {
@@ -139,7 +145,7 @@ export const createApi = ({ production = false, store: suppliedStore = null } = 
     try { res.json(await store.allArtworks()); } catch (error) { next(error); }
   });
   router.get('/api/admin/content', requireAdmin, async (_req, res, next) => {
-    try { res.json(await store.publicContent()); } catch (error) { next(error); }
+    try { res.set(CONTENT_CACHE_HEADERS).json(await store.publicContent()); } catch (error) { next(error); }
   });
   router.post(
     '/api/admin/media/video',
@@ -163,7 +169,7 @@ export const createApi = ({ production = false, store: suppliedStore = null } = 
       if (!req.body || Array.isArray(req.body) || typeof req.body !== 'object') return res.status(400).json({ error: 'El contenido no es válido.' });
       if (JSON.stringify(req.body).length > 40_000_000) return res.status(413).json({ error: 'La sección supera el límite permitido.' });
       const content = await materializeImages(req.body);
-      res.json(await store.updateContent(section, content));
+      res.set(CONTENT_CACHE_HEADERS).json(await store.updateContent(section, content));
     } catch (error) {
       if (error.message?.includes('imagen')) return res.status(400).json({ error: error.message });
       next(error);

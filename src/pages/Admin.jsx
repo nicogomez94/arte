@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { mediaTypeFor, mediaValidationError, youtubeMediaFromUrl } from '../mediaContent';
-import { defaultSiteContent, mergeSiteContent } from '../siteContent';
+import { defaultSiteContent, mergeSiteContent, SITE_CONTENT_UPDATED_EVENT } from '../siteContent';
 
 const sections = [
   { key: 'global', label: 'Navegación', route: '/' },
@@ -49,6 +49,24 @@ const clone = value => JSON.parse(JSON.stringify(value));
 const titleForItem = (item, index) => item.title || item.label || item.value || `Elemento ${index + 1}`;
 const thumbnailForItem = item => mediaTypeFor(item) === 'image' ? item.imageUrl : (item.posterUrl || item.imageUrl);
 const uniqueId = prefix => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+const MediaProcessingContext = createContext(() => {});
+
+const useMediaProcessing = () => {
+  const reportProcessing = useContext(MediaProcessingContext);
+  const token = useRef(Symbol('media-processing'));
+  const processing = useRef(false);
+  const setProcessing = useCallback(next => {
+    if (processing.current === next) return;
+    processing.current = next;
+    reportProcessing(token.current, next);
+  }, [reportProcessing]);
+
+  useEffect(() => () => {
+    if (processing.current) reportProcessing(token.current, false);
+  }, [reportProcessing]);
+
+  return setProcessing;
+};
 
 const imageFromFile = file => new Promise((resolve, reject) => {
   if (!file.type.startsWith('image/')) return reject(new Error('Elegí un archivo de imagen.'));
@@ -141,13 +159,14 @@ function Login({ onSuccess }) {
 function ImageField({ label, value, onChange }) {
   const input = useRef(null);
   const [busy, setBusy] = useState(false);
+  const setProcessing = useMediaProcessing();
   const choose = async event => {
     const file = event.target.files?.[0];
     if (!file) return;
-    setBusy(true);
+    setBusy(true); setProcessing(true);
     try { onChange(await imageFromFile(file)); }
     catch (error) { window.alert(error.message); }
-    finally { setBusy(false); event.target.value = ''; }
+    finally { setBusy(false); setProcessing(false); event.target.value = ''; }
   };
   return (
     <div className="admin-content-image-field">
@@ -164,6 +183,7 @@ function ImageField({ label, value, onChange }) {
 function VideoField({ item, path, onChange }) {
   const input = useRef(null);
   const [busy, setBusy] = useState(false);
+  const setProcessing = useMediaProcessing();
   const choose = async event => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -177,7 +197,7 @@ function VideoField({ item, path, onChange }) {
       event.target.value = '';
       return;
     }
-    setBusy(true);
+    setBusy(true); setProcessing(true);
     try {
       const poster = await posterFromVideo(file);
       const uploaded = await api.uploadVideo(file);
@@ -189,7 +209,7 @@ function VideoField({ item, path, onChange }) {
         title: item.title === 'Nuevo video' ? file.name.replace(/\.[^.]+$/, '') : item.title
       });
     } catch (error) { window.alert(error.message); }
-    finally { setBusy(false); event.target.value = ''; }
+    finally { setBusy(false); setProcessing(false); event.target.value = ''; }
   };
   return (
     <section className="admin-media-source">
@@ -502,6 +522,17 @@ export default function Admin() {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   const [dirty, setDirty] = useState(false);
+  const [processingMedia, setProcessingMedia] = useState(() => new Set());
+  const mediaBusy = processingMedia.size > 0;
+
+  const trackMediaProcessing = useCallback((token, processing) => {
+    setProcessingMedia(current => {
+      const next = new Set(current);
+      if (processing) next.add(token);
+      else next.delete(token);
+      return next;
+    });
+  }, []);
 
   const loadContent = async () => {
     const stored = await api.adminContent();
@@ -514,6 +545,10 @@ export default function Admin() {
 
   const selectSection = (key, category = null) => {
     if (key === active && (key !== 'exhibitions' || category === exhibitionCategory)) return true;
+    if (mediaBusy) {
+      setStatus('Esperá a que termine de procesarse la imagen antes de cambiar de sección.');
+      return false;
+    }
     if (dirty && !window.confirm('Hay cambios sin guardar. ¿Querés salir de esta sección?')) return false;
     if (category) setExhibitionCategory(category);
     setActive(key); setDraft(clone(content[key])); setDirty(false); setStatus('');
@@ -630,6 +665,10 @@ export default function Admin() {
 
   const save = async event => {
     event.preventDefault();
+    if (mediaBusy) {
+      setStatus('Esperá a que termine de procesarse la imagen antes de guardar.');
+      return;
+    }
     if (active === 'global') {
       const menuKeys = [
         'workMenuLabel', 'workMenuLabelEs', 'exhibitionsMenuLabel', 'exhibitionsMenuLabelEs',
@@ -659,6 +698,7 @@ export default function Admin() {
       const saved = await api.updateContent(active, draft);
       setContent(current => ({ ...current, [active]: saved }));
       setDraft(clone(saved)); setDirty(false); setStatus('Cambios publicados correctamente.');
+      window.dispatchEvent(new Event(SITE_CONTENT_UPDATED_EVENT));
     } catch (error) { setStatus(error.message); }
     finally { setBusy(false); }
   };
@@ -704,12 +744,17 @@ export default function Admin() {
           <div><span className="eyebrow">Contenido del sitio</span><h1>{currentLabel}</h1></div>
           <Link className="admin-preview-link" to={previewRoute} target="_blank">Ver página ↗</Link>
         </header>
-        <form className="admin-content-editor" onSubmit={save}>
-          {active === 'exhibitions' && <ProjectCovers projects={draft.projects} onChange={updateAtPath} category={exhibitionCategory} />}
-          {active === 'work' && <ProjectCovers projects={draft.projects} onChange={updateAtPath} />}
-          <SectionEditor active={active} draft={draft} onChange={updateAtPath} onMove={moveAtPath} onAdd={addAtPath} onRemove={removeAtPath} projectCategory={active === 'exhibitions' ? exhibitionCategory : null} />
-          <div className="admin-content-savebar"><p role="status">{status}</p><button type="submit" disabled={busy || !dirty}>{busy ? 'Guardando…' : 'Guardar cambios →'}</button></div>
-        </form>
+        <MediaProcessingContext.Provider value={trackMediaProcessing}>
+          <form className="admin-content-editor" onSubmit={save} aria-busy={mediaBusy || busy}>
+            {active === 'exhibitions' && <ProjectCovers projects={draft.projects} onChange={updateAtPath} category={exhibitionCategory} />}
+            {active === 'work' && <ProjectCovers projects={draft.projects} onChange={updateAtPath} />}
+            <SectionEditor active={active} draft={draft} onChange={updateAtPath} onMove={moveAtPath} onAdd={addAtPath} onRemove={removeAtPath} projectCategory={active === 'exhibitions' ? exhibitionCategory : null} />
+            <div className="admin-content-savebar">
+              <p role="status">{mediaBusy ? 'Procesando imagen…' : status}</p>
+              <button type="submit" disabled={busy || mediaBusy || !dirty}>{mediaBusy ? 'Procesando imagen…' : busy ? 'Guardando…' : 'Guardar cambios →'}</button>
+            </div>
+          </form>
+        </MediaProcessingContext.Provider>
       </main>
     </div>
   );

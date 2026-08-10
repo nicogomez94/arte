@@ -1,4 +1,4 @@
-import { createContext, createElement, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import cvText from '../texto.md?raw';
 import { projectAssets, workIndexItems } from './projectAssets';
 import { exhibitionProjects } from './exhibitionAssets';
@@ -9,6 +9,7 @@ import { exhibitionStatementsEs, workStatementsEs } from './spanishStatements';
 import { statementParagraphsEs, translateSiteContent } from './translations';
 import { normalizeProjectMedia } from './mediaContent';
 import { normalizeCvItem, normalizeCvSections } from './cvItems';
+import { mergeContentSections } from './contentMerge';
 
 const cleanLine = line => line
   .replace(/[\u200B-\u200D\uFEFF]/g, '')
@@ -165,12 +166,7 @@ export const defaultSiteContent = {
 };
 
 export const mergeSiteContent = (stored = {}) => {
-  const merged = Object.fromEntries(Object.entries(defaultSiteContent).map(([key, value]) => [
-    key,
-    value && typeof value === 'object' && !Array.isArray(value)
-      ? { ...value, ...(stored?.[key] || {}) }
-      : (stored?.[key] ?? value)
-  ]));
+  const merged = mergeContentSections(defaultSiteContent, stored);
   if (Number(stored.global?.menuLabelsVersion || 0) < 1) {
     merged.global = {
       ...merged.global,
@@ -272,11 +268,60 @@ export const mergeSiteContent = (stored = {}) => {
 };
 
 const SiteContentContext = createContext(defaultSiteContent);
+export const SITE_CONTENT_UPDATED_EVENT = 'site-content-updated';
 
 export function SiteContentProvider({ children }) {
   const [stored, setStored] = useState({});
+  const inFlight = useRef(null);
+  const abortController = useRef(null);
+  const refreshTimer = useRef(null);
   const { language } = useLanguage();
-  useEffect(() => { api.content().then(setStored).catch(() => {}); }, []);
+
+  const refreshContent = useCallback((force = false) => {
+    if (inFlight.current && !force) return inFlight.current;
+    if (force) {
+      abortController.current?.abort();
+      inFlight.current = null;
+    }
+    abortController.current = new AbortController();
+    const currentRequest = api.content({ signal: abortController.current.signal })
+      .then(setStored)
+      .catch(error => {
+        if (error.name !== 'AbortError') throw error;
+      })
+      .finally(() => {
+        if (inFlight.current === currentRequest) inFlight.current = null;
+      });
+    inFlight.current = currentRequest;
+    return currentRequest;
+  }, []);
+
+  useEffect(() => {
+    refreshContent().catch(() => {});
+    const scheduleRefresh = () => {
+      if (refreshTimer.current !== null) return;
+      refreshTimer.current = window.setTimeout(() => {
+        refreshTimer.current = null;
+        refreshContent(true).catch(() => {});
+      }, 50);
+    };
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') scheduleRefresh();
+    };
+
+    window.addEventListener('focus', scheduleRefresh);
+    window.addEventListener(SITE_CONTENT_UPDATED_EVENT, scheduleRefresh);
+    document.addEventListener('visibilitychange', refreshWhenVisible);
+    return () => {
+      window.removeEventListener('focus', scheduleRefresh);
+      window.removeEventListener(SITE_CONTENT_UPDATED_EVENT, scheduleRefresh);
+      document.removeEventListener('visibilitychange', refreshWhenVisible);
+      if (refreshTimer.current !== null) window.clearTimeout(refreshTimer.current);
+      refreshTimer.current = null;
+      abortController.current?.abort();
+      inFlight.current = null;
+    };
+  }, [refreshContent]);
   const value = useMemo(
     () => translateSiteContent(mergeSiteContent(stored), language),
     [stored, language]
