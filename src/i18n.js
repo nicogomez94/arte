@@ -33,8 +33,8 @@ const messages = {
     galleryIntro: 'Installation views, visual research and exhibition fragments gathered as a quiet index of the work in space. This archive follows how each project changes when it meets a room, a route, a wall or an outdoor landscape. The images are not only records of display; they show scale, distance, light and the relation between works. Together they trace how the practice expands beyond the individual piece and becomes a spatial experience.',
     startViewing: 'Start viewing',
     noPublishedWorks: 'No works published yet.',
-    biography: 'Andrea Alkalay biography',
-    biographyDetails: 'Biography details'
+    biography: 'Andrea Alkalay CV',
+    biographyDetails: 'CV details'
   },
   es: {
     mainNavigation: 'Navegación principal',
@@ -68,8 +68,8 @@ const messages = {
     galleryIntro: 'Vistas de instalación, investigación visual y fragmentos de exposiciones reunidos como un índice sereno de la obra en el espacio. Este archivo sigue cómo cambia cada proyecto al encontrarse con una sala, un recorrido, una pared o un paisaje exterior. Las imágenes no son solo registros del montaje: muestran la escala, la distancia, la luz y la relación entre las obras. En conjunto, trazan cómo la práctica se expande más allá de la pieza individual y se convierte en una experiencia espacial.',
     startViewing: 'Comenzar recorrido',
     noPublishedWorks: 'Todavía no hay obras publicadas.',
-    biography: 'Biografía de Andrea Alkalay',
-    biographyDetails: 'Detalles de la biografía'
+    biography: 'CV de Andrea Alkalay',
+    biographyDetails: 'Detalles del CV'
   }
 };
 

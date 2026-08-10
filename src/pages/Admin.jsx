@@ -5,18 +5,23 @@ import { mediaTypeFor, mediaValidationError, youtubeMediaFromUrl } from '../medi
 import { defaultSiteContent, mergeSiteContent } from '../siteContent';
 
 const sections = [
+  { key: 'global', label: 'Navegación', route: '/' },
   { key: 'home', label: 'Home', route: '/' },
   { key: 'work', label: 'Work', route: '/work' },
   { key: 'exhibitions', label: 'Exhibitions', route: '/exhibitions' },
   { key: 'statement', label: 'Statement', route: '/statement' },
-  { key: 'contact', label: 'Contact', route: '/contacto' },
-  { key: 'cv', label: 'Bio', route: '/cv' }
+  { key: 'cv', label: 'CV', route: '/cv' },
+  { key: 'workshops', label: 'Workshops', route: '/workshops' },
+  { key: 'contact', label: 'Contact', route: '/contacto' }
 ];
 
 const labels = {
-  artistName: 'Nombre de la artista', artistDiscipline: 'Disciplina', workMenuLabel: 'Texto del menú Work',
-  exhibitionsMenuLabel: 'Texto del menú Exhibitions', statementMenuLabel: 'Texto del menú Statement',
-  contactMenuLabel: 'Texto del menú Contact', cvMenuLabel: 'Texto del menú Bio', instagramUrl: 'Enlace de Instagram',
+  artistName: 'Nombre de la artista', artistDiscipline: 'Disciplina', workMenuLabel: 'Work · Inglés',
+  exhibitionsMenuLabel: 'Exhibitions · Inglés', statementMenuLabel: 'Statement · Inglés',
+  contactMenuLabel: 'Contact · Inglés', cvMenuLabel: 'CV · Inglés', workshopsMenuLabel: 'Workshops · Inglés',
+  workMenuLabelEs: 'Obra · Español', exhibitionsMenuLabelEs: 'Exposiciones · Español',
+  statementMenuLabelEs: 'Statement · Español', contactMenuLabelEs: 'Contacto · Español',
+  cvMenuLabelEs: 'CV · Español', workshopsMenuLabelEs: 'Talleres · Español', instagramUrl: 'Enlace de Instagram',
   footerText: 'Texto del pie', heroImageUrl: 'Imagen principal', heroImageAlt: 'Descripción de la imagen principal',
   startViewingLabel: 'Texto de iniciar recorrido', expandLabel: 'Texto de expandir', showLessLabel: 'Texto de contraer',
   pauseLabel: 'Texto de pausa', playLabel: 'Texto de reproducción', closeLabel: 'Texto de cerrar', noImagesLabel: 'Mensaje sin imágenes',
@@ -32,10 +37,12 @@ const labels = {
   detailCaption: 'Epígrafe de detalle', detailLabel: 'Etiqueta de detalle', detailTitle: 'Título de detalle',
   facts: 'Datos', label: 'Etiqueta', value: 'Texto visible', linkLabel: 'Texto del enlace', imageAlt: 'Descripción de imagen',
   subtitle: 'Bajada', links: 'Enlaces', url: 'Destino del enlace', introLabel: 'Título de introducción',
-  sections: 'Secciones de Bio', items: 'Entradas', href: 'Destino del enlace (href)', category: 'Categoría'
+  sections: 'Secciones de CV', items: 'Entradas', href: 'Destino del enlace (href)', category: 'Categoría',
+  rows: 'Filas', text: 'Texto · Inglés', textEs: 'Texto · Español', titleEs: 'Título · Español',
+  imageAltEs: 'Descripción de imagen · Español'
 };
 
-const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'mediaType', 'embedUrl', 'posterUrl', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion', 'statementVersion']);
+const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'mediaType', 'embedUrl', 'posterUrl', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion', 'statementVersion', 'menuLabelsVersion']);
 const imageKeys = new Set(['imageUrl', 'heroImageUrl', 'portraitImageUrl', 'detailImageUrl']);
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -288,7 +295,7 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
   const [dropTarget, setDropTarget] = useState(null);
   if (Array.isArray(value)) {
     const kind = path.at(-1);
-    const objectList = ['projects', 'images', 'links', 'sections', 'items'].includes(kind);
+    const objectList = ['projects', 'images', 'links', 'sections', 'items', 'rows'].includes(kind);
     const objectItems = objectList || value.some(item => item && typeof item === 'object');
     if (!objectItems) {
       const fieldName = path.at(-1);
@@ -305,16 +312,18 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
         </label>
       );
     }
-    const reorderable = ['projects', 'images', 'sections', 'items'].includes(kind);
-    const editableList = ['projects', 'images', 'links', 'sections', 'items'].includes(kind);
+    const reorderable = ['projects', 'images', 'links', 'sections', 'items', 'rows'].includes(kind);
+    const editableList = ['projects', 'images', 'links', 'sections', 'items', 'rows'].includes(kind);
     const addLabel = kind === 'projects'
       ? 'Agregar proyecto'
       : kind === 'links'
         ? 'Agregar enlace'
         : kind === 'sections'
           ? 'Agregar sección'
-          : kind === 'items'
+        : kind === 'items'
             ? 'Agregar entrada'
+            : kind === 'rows'
+              ? 'Agregar fila'
             : 'Agregar imagen';
     return (
       <div className={`admin-content-list ${dragIndex !== null ? 'is-reordering' : ''}`}>
@@ -334,8 +343,10 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
               }}
               onDrop={event => {
                 event.preventDefault();
-                if (reorderable && dragIndex !== null && dropTarget?.index === index) {
-                  let destination = index + (dropTarget.position === 'after' ? 1 : 0);
+                if (reorderable && dragIndex !== null && dragIndex !== index) {
+                  const rect = event.currentTarget.getBoundingClientRect();
+                  const position = event.clientY < rect.top + rect.height / 2 ? 'before' : 'after';
+                  let destination = index + (position === 'after' ? 1 : 0);
                   if (dragIndex < destination) destination -= 1;
                   if (dragIndex !== destination) onMove(path, dragIndex, destination);
                 }
@@ -346,7 +357,12 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
               <summary
                 className={thumbnailForItem(item) ? 'has-thumbnail' : ''}
                 draggable={reorderable}
-                onDragStart={event => { setDragIndex(index); setDropTarget(null); event.dataTransfer.effectAllowed = 'move'; }}
+                onDragStart={event => {
+                  setDragIndex(index);
+                  setDropTarget(null);
+                  event.dataTransfer.effectAllowed = 'move';
+                  event.dataTransfer.setData('text/plain', String(index));
+                }}
                 onDragEnd={() => { setDragIndex(null); setDropTarget(null); }}
               >
                 <span>{String(index + 1).padStart(2, '0')}</span>
@@ -402,7 +418,7 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
             </select>
           </label>
         );
-        const long = String(fieldValue ?? '').length > 90 || ['intro', 'introEs', 'description', 'subtitle'].includes(key);
+        const long = String(fieldValue ?? '').length > 90 || ['intro', 'introEs', 'description', 'subtitle', 'text', 'textEs'].includes(key);
         const statementField = ['intro', 'introEs'].includes(key);
         return (
           <label className={`admin-content-field ${long ? 'field-wide' : ''}`} key={key}>
@@ -431,6 +447,18 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
     <ContentFields value={draft} includeKeys={keys} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />
   );
 
+  if (active === 'global') return (
+    <AdminFieldGroup title="Nombres del menú" description="Editá cada nombre en inglés y español. Las rutas internas no cambian, por lo que la navegación sigue funcionando aunque cambie el texto visible.">
+      {fields([
+        'workMenuLabel', 'workMenuLabelEs',
+        'exhibitionsMenuLabel', 'exhibitionsMenuLabelEs',
+        'statementMenuLabel', 'statementMenuLabelEs',
+        'cvMenuLabel', 'cvMenuLabelEs',
+        'workshopsMenuLabel', 'workshopsMenuLabelEs',
+        'contactMenuLabel', 'contactMenuLabelEs'
+      ])}
+    </AdminFieldGroup>
+  );
   if (active === 'home') return (
     <AdminFieldGroup title="Portada" description="La imagen que ocupa la pantalla principal del sitio.">
       {fields(['heroImageUrl'])}
@@ -455,8 +483,14 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
   );
   if (active === 'cv') return (
     <>
-      <AdminFieldGroup title="Presentación" description="Retrato y texto introductorio de Bio.">{fields(['imageUrl', 'imageAlt', 'introLabel', 'intro'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Presentación" description="Retrato y texto introductorio de CV.">{fields(['imageUrl', 'imageAlt', 'introLabel', 'intro'])}</AdminFieldGroup>
       <AdminFieldGroup title="Trayectoria" description="Secciones y entradas del currículum.">{fields(['sections'])}</AdminFieldGroup>
+    </>
+  );
+  if (active === 'workshops') return (
+    <>
+      <AdminFieldGroup title="Encabezado" description="Título de la página en ambos idiomas.">{fields(['title', 'titleEs'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Filas de talleres" description="Cada fila tiene una imagen y su texto en inglés y español. Podés arrastrarlas para cambiar el orden.">{fields(['rows'])}</AdminFieldGroup>
     </>
   );
   return fields(Object.keys(draft || {}));
@@ -545,6 +579,17 @@ export default function Admin() {
         list.push({ title: 'Nueva sección', items: [{ title: 'Nueva entrada', href: '' }] });
       } else if (kind === 'items') {
         list.push({ title: 'Nueva entrada', href: '' });
+      } else if (kind === 'rows') {
+        const number = String(list.length + 1).padStart(2, '0');
+        list.push({
+          title: `Workshop ${number}`,
+          titleEs: `Taller ${number}`,
+          imageUrl: '/contact/Andrea-Alkalay.jpg.avif',
+          imageAlt: 'Andrea Alkalay',
+          imageAltEs: 'Andrea Alkalay',
+          text: 'Workshop information.',
+          textEs: 'Información del taller.'
+        });
       } else {
         const base = {
           id: uniqueId(mediaType), mediaType, series: project?.title || '', technique: '', description: '', alt: ''
@@ -569,9 +614,11 @@ export default function Admin() {
       : kind === 'links'
         ? '¿Eliminar este enlace?'
       : kind === 'sections'
-          ? '¿Eliminar esta sección de Bio?'
+          ? '¿Eliminar esta sección de CV?'
           : kind === 'items'
-            ? '¿Eliminar esta entrada de Bio?'
+            ? '¿Eliminar esta entrada de CV?'
+            : kind === 'rows'
+              ? '¿Eliminar esta fila de Workshops?'
             : '¿Eliminar esta imagen?';
     if (!window.confirm(message)) return;
     setDraft(current => {
@@ -586,6 +633,21 @@ export default function Admin() {
 
   const save = async event => {
     event.preventDefault();
+    if (active === 'global') {
+      const menuKeys = [
+        'workMenuLabel', 'workMenuLabelEs', 'exhibitionsMenuLabel', 'exhibitionsMenuLabelEs',
+        'statementMenuLabel', 'statementMenuLabelEs', 'cvMenuLabel', 'cvMenuLabelEs',
+        'workshopsMenuLabel', 'workshopsMenuLabelEs', 'contactMenuLabel', 'contactMenuLabelEs'
+      ];
+      if (menuKeys.some(key => !String(draft[key] || '').trim())) {
+        setStatus('Completá todos los nombres del menú antes de guardar.');
+        return;
+      }
+      if (menuKeys.some(key => String(draft[key]).trim().length > 32)) {
+        setStatus('Los nombres del menú pueden tener hasta 32 caracteres.');
+        return;
+      }
+    }
     if (active === 'work' || active === 'exhibitions') {
       for (const project of draft.projects || []) {
         const invalidItem = (project.images || []).find(item => mediaValidationError(item));

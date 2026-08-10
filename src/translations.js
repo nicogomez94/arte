@@ -208,7 +208,8 @@ const spanishGlobal = {
   exhibitionsMenuLabel: 'Exposiciones',
   statementMenuLabel: 'Statement',
   contactMenuLabel: 'Contacto',
-  cvMenuLabel: 'Biografía',
+  cvMenuLabel: 'CV',
+  workshopsMenuLabel: 'Talleres',
   startViewingLabel: 'Comenzar recorrido',
   expandLabel: 'Ver más',
   showLessLabel: 'Ver menos',
@@ -249,7 +250,16 @@ export function translateSiteContent(content, language) {
 
   return {
     ...content,
-    global: { ...content.global, ...spanishGlobal },
+    global: {
+      ...content.global,
+      ...spanishGlobal,
+      workMenuLabel: content.global.workMenuLabelEs || spanishGlobal.workMenuLabel,
+      exhibitionsMenuLabel: content.global.exhibitionsMenuLabelEs || spanishGlobal.exhibitionsMenuLabel,
+      statementMenuLabel: content.global.statementMenuLabelEs || spanishGlobal.statementMenuLabel,
+      contactMenuLabel: content.global.contactMenuLabelEs || spanishGlobal.contactMenuLabel,
+      cvMenuLabel: content.global.cvMenuLabelEs || spanishGlobal.cvMenuLabel,
+      workshopsMenuLabel: content.global.workshopsMenuLabelEs || spanishGlobal.workshopsMenuLabel
+    },
     home: {
       ...content.home,
       heroImageAlt: 'Instalación de Andrea Alkalay en Soulangh Cultural Park',
@@ -304,6 +314,16 @@ export function translateSiteContent(content, language) {
         items: (section.items || []).map(item => typeof item === 'string'
           ? translateCvText(item)
           : { ...item, title: translateCvText(item.title) })
+      }))
+    },
+    workshops: {
+      ...content.workshops,
+      title: content.workshops.titleEs || content.workshops.title,
+      rows: (content.workshops.rows || []).map(row => ({
+        ...row,
+        title: row.titleEs || row.title,
+        imageAlt: row.imageAltEs || row.imageAlt,
+        text: row.textEs || row.text
       }))
     }
   };

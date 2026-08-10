@@ -64,15 +64,35 @@ const exhibitions = exhibitionProjects.map(project => ({
   statementVersion: 1
 }));
 
+const parsedCvContent = parseCv();
+const workshopIntroEs = 'Artista visual y diseñadora industrial argentina, graduada de la Universidad de Buenos Aires. Su práctica se desarrolla en la intersección expandida de la fotografía, la materialidad y la investigación, y aborda el paisaje y el territorio como archivos sensibles de la memoria.';
+const workshopRows = Array.from({ length: 4 }, (_, index) => ({
+  title: `Workshop ${String(index + 1).padStart(2, '0')}`,
+  titleEs: `Taller ${String(index + 1).padStart(2, '0')}`,
+  imageUrl: '/contact/Andrea-Alkalay.jpg.avif',
+  imageAlt: 'Andrea Alkalay',
+  imageAltEs: 'Andrea Alkalay',
+  text: parsedCvContent.intro,
+  textEs: workshopIntroEs
+}));
+
 export const defaultSiteContent = {
   global: {
+    menuLabelsVersion: 1,
     artistName: 'andrea alkalay',
     artistDiscipline: 'Art Photography',
     workMenuLabel: 'Work',
     exhibitionsMenuLabel: 'Exhibitions',
     statementMenuLabel: 'Statement',
     contactMenuLabel: 'Contact',
-    cvMenuLabel: 'Bio',
+    cvMenuLabel: 'CV',
+    workshopsMenuLabel: 'Workshops',
+    workMenuLabelEs: 'Obra',
+    exhibitionsMenuLabelEs: 'Exposiciones',
+    statementMenuLabelEs: 'Statement',
+    contactMenuLabelEs: 'Contacto',
+    cvMenuLabelEs: 'CV',
+    workshopsMenuLabelEs: 'Talleres',
     instagramUrl: 'https://instagram.com/andrealkalay',
     facebookUrl: 'https://www.facebook.com/andrea.alkalay.7',
     linkedinUrl: 'https://www.linkedin.com/in/andreaalkalay/',
@@ -135,7 +155,12 @@ export const defaultSiteContent = {
   cv: {
     imageUrl: '/contact/Andrea-Alkalay.jpg.avif', imageAlt: 'Andrea Alkalay',
     introLabel: 'About Andrea,',
-    ...parseCv()
+    ...parsedCvContent
+  },
+  workshops: {
+    title: 'Workshops',
+    titleEs: 'Talleres',
+    rows: workshopRows
   }
 };
 
@@ -146,8 +171,15 @@ export const mergeSiteContent = (stored = {}) => {
       ? { ...value, ...(stored?.[key] || {}) }
       : (stored?.[key] ?? value)
   ]));
-  if (merged.global.cvMenuLabel?.trim().toLowerCase() === 'cv') {
-    merged.global.cvMenuLabel = 'Bio';
+  if (Number(stored.global?.menuLabelsVersion || 0) < 1) {
+    merged.global = {
+      ...merged.global,
+      menuLabelsVersion: 1,
+      cvMenuLabel: 'CV',
+      cvMenuLabelEs: 'CV',
+      workshopsMenuLabel: 'Workshops',
+      workshopsMenuLabelEs: 'Talleres'
+    };
   }
   merged.contact.links = (merged.contact.links || []).filter(link => link.url !== 'https://www.andrealkalay.com/');
   if (Number(stored.contact?.contentVersion || 0) < 1) {

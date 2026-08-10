@@ -122,6 +122,7 @@ export function Header() {
           </div>
           <NavLink to="/statement" onClick={() => setOpen(false)}>{global.statementMenuLabel}</NavLink>
           <NavLink to="/cv" onClick={() => setOpen(false)}>{global.cvMenuLabel}</NavLink>
+          <NavLink to="/workshops" onClick={() => setOpen(false)}>{global.workshopsMenuLabel}</NavLink>
           <NavLink to="/contacto" onClick={() => setOpen(false)}>{global.contactMenuLabel}</NavLink>
           <div className="mobile-nav-foot" aria-hidden="true">
             <span>Buenos Aires</span>

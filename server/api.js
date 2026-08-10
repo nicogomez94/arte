@@ -4,7 +4,7 @@ import { createStore } from './store.js';
 import { MAX_VIDEO_BYTES, parseByteRange, validateVideoUpload } from './media.js';
 
 const SESSION_DURATION = 12 * 60 * 60 * 1000;
-const CONTENT_SECTIONS = new Set(['global', 'home', 'work', 'exhibitions', 'statement', 'about', 'contact', 'cv']);
+const CONTENT_SECTIONS = new Set(['global', 'home', 'work', 'exhibitions', 'statement', 'about', 'contact', 'cv', 'workshops']);
 const MEDIA_ID = /^[a-f0-9-]{36}$/;
 
 const safeEqual = (left = '', right = '') => {

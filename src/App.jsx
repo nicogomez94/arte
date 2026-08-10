@@ -10,6 +10,7 @@ import ExhibitionsIndex from './pages/ExhibitionsIndex';
 import WorkIndex from './pages/WorkIndex';
 import WorkProject from './pages/WorkProject';
 import Statement from './pages/Statement';
+import Workshops from './pages/Workshops';
 import { LanguageProvider } from './i18n';
 import { SiteContentProvider } from './siteContent';
 
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/acerca-de-mi" element={<About />} />
           <Route path="/contacto" element={<Contact />} />
           <Route path="/cv" element={<Cv />} />
+          <Route path="/workshops" element={<Workshops />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
