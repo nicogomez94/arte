@@ -488,10 +488,7 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
     </>
   );
   if (active === 'workshops') return (
-    <>
-      <AdminFieldGroup title="Encabezado" description="Título de la página en ambos idiomas.">{fields(['title', 'titleEs'])}</AdminFieldGroup>
-      <AdminFieldGroup title="Filas de talleres" description="Cada fila tiene una imagen y su texto en inglés y español. Podés arrastrarlas para cambiar el orden.">{fields(['rows'])}</AdminFieldGroup>
-    </>
+    <AdminFieldGroup title="Filas de talleres" description="Cada fila tiene una imagen y su texto en inglés y español. Podés arrastrarlas para cambiar el orden.">{fields(['rows'])}</AdminFieldGroup>
   );
   return fields(Object.keys(draft || {}));
 }
@@ -709,9 +706,7 @@ export default function Admin() {
         </header>
         <form className="admin-content-editor" onSubmit={save}>
           {active === 'exhibitions' && <ProjectCovers projects={draft.projects} onChange={updateAtPath} category={exhibitionCategory} />}
-          {/* Editor de portadas de Work oculto temporalmente. Conservar para reactivarlo más adelante.
           {active === 'work' && <ProjectCovers projects={draft.projects} onChange={updateAtPath} />}
-          */}
           <SectionEditor active={active} draft={draft} onChange={updateAtPath} onMove={moveAtPath} onAdd={addAtPath} onRemove={removeAtPath} projectCategory={active === 'exhibitions' ? exhibitionCategory : null} />
           <div className="admin-content-savebar"><p role="status">{status}</p><button type="submit" disabled={busy || !dirty}>{busy ? 'Guardando…' : 'Guardar cambios →'}</button></div>
         </form>
