@@ -2517,6 +2517,37 @@ body,
   }
 }
 
+/* Client feedback: tighter project intro and stronger statement contrast. */
+.project-detail-intro {
+  padding-top: 120px;
+  padding-bottom: 84px;
+}
+
+.project-detail-grid .editorial-intro-copy h3,
+.project-detail-meta h1,
+.project-detail-grid .editorial-intro-copy p {
+  color: #000;
+}
+
+.project-detail-meta h1 {
+  font-size: 18px;
+}
+
+.project-detail-grid .editorial-intro-copy p {
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .project-detail-intro {
+    padding-top: 92px;
+    padding-bottom: 40px;
+  }
+
+  .project-detail-grid .editorial-intro-copy p {
+    font-size: 12px;
+  }
+}
+
 /* Stronger controls on the expanded image viewer */
 .slideshow-header {
   border-bottom-color: #cacaca;
