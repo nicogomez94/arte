@@ -453,9 +453,9 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
   );
 }
 
-function AdminFieldGroup({ title, description, children }) {
+function AdminFieldGroup({ title, description, children, className = '' }) {
   return (
-    <section className="admin-page-group">
+    <section className={`admin-page-group ${className}`.trim()}>
       <header><h2>{title}</h2><p>{description}</p></header>
       {children}
     </section>
@@ -468,16 +468,17 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
   );
 
   if (active === 'global') return (
-    <AdminFieldGroup title="Nombres del menú" description="Editá cada nombre en inglés y español. Las rutas internas no cambian, por lo que la navegación sigue funcionando aunque cambie el texto visible.">
-      {fields([
-        'workMenuLabel', 'workMenuLabelEs',
-        'exhibitionsMenuLabel', 'exhibitionsMenuLabelEs',
-        'statementMenuLabel', 'statementMenuLabelEs',
-        'cvMenuLabel', 'cvMenuLabelEs',
-        'workshopsMenuLabel', 'workshopsMenuLabelEs',
-        'contactMenuLabel', 'contactMenuLabelEs'
-      ])}
-    </AdminFieldGroup>
+    <>
+      <AdminFieldGroup title="Nombres del menú" description="Editá cada nombre en inglés y español. Las rutas internas no cambian, por lo que la navegación sigue funcionando aunque cambie el texto visible." />
+      <div className="admin-language-columns">
+        <AdminFieldGroup className="admin-language-panel" title="English" description="Nombres visibles cuando el sitio está en inglés.">
+          {fields(['workMenuLabel', 'exhibitionsMenuLabel', 'statementMenuLabel', 'cvMenuLabel', 'workshopsMenuLabel', 'contactMenuLabel'])}
+        </AdminFieldGroup>
+        <AdminFieldGroup className="admin-language-panel" title="Español" description="Nombres visibles cuando el sitio está en español.">
+          {fields(['workMenuLabelEs', 'exhibitionsMenuLabelEs', 'statementMenuLabelEs', 'cvMenuLabelEs', 'workshopsMenuLabelEs', 'contactMenuLabelEs'])}
+        </AdminFieldGroup>
+      </div>
+    </>
   );
   if (active === 'home') return (
     <AdminFieldGroup title="Portada" description="La imagen que ocupa la pantalla principal del sitio.">
@@ -492,7 +493,11 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
   if (active === 'statement') return (
     <>
       <AdminFieldGroup title="Imagen" description="Imagen editorial que acompaña el Statement.">{fields(['imageUrl', 'imageAlt'])}</AdminFieldGroup>
-      <AdminFieldGroup title="Textos" description="Título y contenido en inglés y español.">{fields(['title', 'paragraphs', 'paragraphsEs'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Encabezado" description="Título visible del Statement.">{fields(['title'])}</AdminFieldGroup>
+      <div className="admin-language-columns">
+        <AdminFieldGroup className="admin-language-panel" title="Texto · English" description="Contenido que se muestra en inglés.">{fields(['paragraphs'])}</AdminFieldGroup>
+        <AdminFieldGroup className="admin-language-panel" title="Texto · Español" description="Contenido que se muestra en español.">{fields(['paragraphsEs'])}</AdminFieldGroup>
+      </div>
     </>
   );
   if (active === 'contact') return (
