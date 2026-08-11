@@ -1,6 +1,14 @@
 import { Footer, Header } from '../components/SiteChrome';
 import { useSiteContent } from '../siteContent';
 
+const normalizeContactHref = url => {
+  const value = String(url || '').trim();
+  if (!value) return '';
+  if (/^[a-z][a-z0-9+.-]*:/i.test(value)) return value;
+  if (value.includes('@')) return `mailto:${value}`;
+  return value;
+};
+
 export default function Contact() {
   const content = useSiteContent('contact');
   return (
@@ -19,7 +27,12 @@ export default function Contact() {
             </div>
             <div className="contact-directory">
               {content.links.map((link, index) => (
-                <a href={link.url} key={index} target={link.url.startsWith('http') ? '_blank' : undefined} rel={link.url.startsWith('http') ? 'noopener noreferrer' : undefined}>
+                <a
+                  href={normalizeContactHref(link.url)}
+                  key={index}
+                  target={String(link.url || '').startsWith('http') ? '_blank' : undefined}
+                  rel={String(link.url || '').startsWith('http') ? 'noopener noreferrer' : undefined}
+                >
                   <span>{link.label}</span><strong>{link.value}</strong><b>↗</b>
                 </a>
               ))}

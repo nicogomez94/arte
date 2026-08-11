@@ -38,7 +38,7 @@ img { display: block; max-width: 100%; }
 .site-nav a:hover::after, .site-nav a.active::after { right: 0; }
 .header-actions { justify-self: end; display: flex; align-items: center; gap: 22px; font-size: 12px; text-transform: uppercase; }
 .menu-button { display: none; width: 32px; height: 32px; border: 0; background: none; padding: 6px; margin-bottom: 2px;}
-.menu-button span { display: block; height: 1px; background: var(--ink); margin: 6px 0; }
+.menu-button span { display: block; height: 1px; background: #000; margin: 6px 0; }
 .eyebrow { display: block; color: var(--gold); font-size: 10px; font-weight: 500; letter-spacing: .19em; text-transform: uppercase; }
 .text-link { display: inline-flex; align-items: center; gap: 55px; padding: 12px 0; border-bottom: 1px solid var(--ink); font-size: 13px; }
 .text-link span { font-size: 17px; }
@@ -528,11 +528,11 @@ body { background: #fff; font-weight: 400; }
 .site-header.is-scrolled { background: rgba(255,255,255,.96); border-color: var(--line); }
 .wordmark { font-size: 23px; letter-spacing: -.035em; }
 .site-nav { gap: clamp(22px,3vw,44px); }
-.site-nav a { color: var(--ink); font-size: 11px; letter-spacing: .06em; }
+.site-nav a { color: #000; font-size: 11px; letter-spacing: .06em; }
 .site-nav a::after { bottom: -6px; }
 .header-actions { gap: 17px; font-size: 10px; letter-spacing: .08em; }
-.language-toggle { display: flex; gap: 4px; padding: 0; border: 0; background: transparent; color: #aaa; font-size: 12px; letter-spacing: .08em; cursor: pointer; }
-.language-toggle .is-active { color: var(--ink); }
+.language-toggle { display: flex; gap: 4px; padding: 0; border: 0; background: transparent; color: #000; font-size: 12px; letter-spacing: .08em; cursor: pointer; }
+.language-toggle .is-active { color: #000; }
 .eyebrow { color: var(--ink); font-size: 9px; font-weight: 400; letter-spacing: .16em; }
 .text-link { gap: 42px; padding: 10px 0; font-size: 11px; }
 .outline-link { border-color: var(--ink); }
@@ -1650,7 +1650,7 @@ body.home-screen-active { overflow: hidden; }
   .site-nav > a,
   .nav-section-heading > a {
     padding: 0;
-    color: var(--ink);
+    color: #000;
     font: 100 clamp(25px,4.2vw,31px)/1 var(--display);
     letter-spacing: -.025em;
   }
@@ -1676,7 +1676,7 @@ body.home-screen-active { overflow: hidden; }
     width: 13px;
     height: 1px;
     display: block;
-    background: var(--ink);
+    background: #000;
     transition: transform .28s ease;
   }
 
@@ -2046,7 +2046,7 @@ body,
 
 .project-detail-grid {
   display: grid;
-  grid-template-columns: minmax(220px, .64fr) minmax(360px, 1.32fr);
+  grid-template-columns: minmax(220px, .64fr) minmax(360px, 1.46fr);
   gap: 0;
   align-items: start;
 }
@@ -2758,7 +2758,7 @@ body,
 
 /* Keep the Work title and Statement copy on the same horizontal axis. */
 .project-detail-grid {
-  grid-template-columns: minmax(220px, .64fr) minmax(360px, 1.32fr);
+  grid-template-columns: minmax(220px, .64fr) minmax(360px, 1.46fr);
   gap: 0;
   align-items: start;
 }
