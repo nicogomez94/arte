@@ -531,7 +531,7 @@ body { background: #fff; font-weight: 400; }
 .site-nav a { color: #000; font-size: 11px; letter-spacing: .06em; }
 .site-nav a::after { bottom: -6px; }
 .header-actions { gap: 17px; font-size: 10px; letter-spacing: .08em; }
-.language-toggle { display: flex; gap: 4px; padding: 0; border: 0; background: transparent; color: #000; font-size: 12px; letter-spacing: .08em; cursor: pointer; }
+.language-toggle { display: flex; gap: 4px; padding: 0; border: 0; background: transparent; color: #a6a19a; font-size: 12px; letter-spacing: .08em; cursor: pointer; transition: color .2s ease; }
 .language-toggle .is-active { color: #000; }
 .eyebrow { color: var(--ink); font-size: 9px; font-weight: 400; letter-spacing: .16em; }
 .text-link { gap: 42px; padding: 10px 0; font-size: 11px; }
