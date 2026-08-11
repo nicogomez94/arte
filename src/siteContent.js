@@ -10,6 +10,7 @@ import { statementParagraphsEs, translateSiteContent } from './translations';
 import { normalizeProjectMedia } from './mediaContent';
 import { normalizeCvItem, normalizeCvSections } from './cvItems';
 import { mergeContentSections, normalizeStoredContent } from './contentMerge';
+import { DEFAULT_NAVIGATION_ORDER, normalizeNavigationOrder } from './navigation';
 
 const cleanLine = line => line
   .replace(/[\u200B-\u200D\uFEFF]/g, '')
@@ -80,6 +81,7 @@ const workshopRows = Array.from({ length: 4 }, (_, index) => ({
 export const defaultSiteContent = {
   global: {
     menuLabelsVersion: 1,
+    menuOrder: [...DEFAULT_NAVIGATION_ORDER],
     artistName: 'andrea alkalay',
     artistDiscipline: 'Art Photography',
     workMenuLabel: 'Work',
@@ -178,6 +180,7 @@ export const mergeSiteContent = (stored = {}) => {
       workshopsMenuLabelEs: 'Talleres'
     };
   }
+  merged.global.menuOrder = normalizeNavigationOrder(merged.global.menuOrder);
   merged.contact.links = (merged.contact.links || []).filter(link => link.url !== 'https://www.andrealkalay.com/');
   if (Number(normalizedStored.contact?.contentVersion || 0) < 1) {
     defaultSiteContent.contact.links.slice(-2).forEach(socialLink => {

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
+import { normalizeNavigationOrder } from '../navigation';
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -17,6 +18,7 @@ export function Header() {
     { key: 'solo', label: t('soloShow') },
     { key: 'group', label: t('groupShow') }
   ];
+  const menuOrder = normalizeNavigationOrder(global.menuOrder);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 28);
@@ -58,6 +60,73 @@ export function Header() {
     }
   });
 
+  const renderNavigationItem = item => {
+    if (item === 'work') return (
+      <div
+        className={`work-menu ${openSection === 'work' ? 'is-mobile-expanded' : ''} ${desktopSection === 'work' ? 'is-desktop-open' : ''}`}
+        key={item}
+        {...desktopMenuProps('work')}
+      >
+        <div className="nav-section-heading">
+          <NavLink className={pathname.startsWith('/work') ? 'active' : ''} to="/work" aria-haspopup="true">{global.workMenuLabel}</NavLink>
+          <button className="mobile-submenu-toggle" type="button" onClick={() => toggleSection('work')} aria-expanded={openSection === 'work'} aria-controls="work-navigation-list" aria-label={t('toggleWork')}>
+            <span />
+          </button>
+        </div>
+        <div id="work-navigation-list" className="work-dropdown">
+          <div className="work-dropdown-inner">
+            {projects.map(project => (
+              <Link key={project.slug} to={`/work/${project.slug}`} onClick={() => setOpen(false)}>{project.title}</Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+
+    if (item === 'exhibitions') return (
+      <div
+        className={`work-menu exhibitions-menu ${openSection === 'exhibitions' ? 'is-mobile-expanded' : ''} ${desktopSection === 'exhibitions' ? 'is-desktop-open' : ''}`}
+        key={item}
+        {...desktopMenuProps('exhibitions')}
+      >
+        <div className="nav-section-heading">
+          <NavLink className={pathname.startsWith('/exhibitions') ? 'active' : ''} to="/exhibitions" aria-haspopup="true">{global.exhibitionsMenuLabel}</NavLink>
+          <button className="mobile-submenu-toggle" type="button" onClick={() => toggleSection('exhibitions')} aria-expanded={openSection === 'exhibitions'} aria-controls="exhibitions-navigation-list" aria-label={t('toggleExhibitions')}>
+            <span />
+          </button>
+        </div>
+        <div id="exhibitions-navigation-list" className="work-dropdown">
+          <div className="work-dropdown-inner exhibition-dropdown-inner">
+            {exhibitionGroups.map(group => (
+              <details className="exhibition-dropdown-group" key={group.key}>
+                <summary>
+                  <span>{group.label}</span>
+                  <svg viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" /></svg>
+                </summary>
+                <div>
+                  {exhibitionProjects.filter(project => project.category === group.key).map(project => (
+                    <Link key={project.slug} to={`/exhibitions/${project.slug}`} onClick={() => setOpen(false)}>{project.title}</Link>
+                  ))}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+
+    const simpleItems = {
+      statement: { to: '/statement', label: global.statementMenuLabel },
+      workshops: { to: '/workshops', label: global.workshopsMenuLabel },
+      cv: { to: '/cv', label: global.cvMenuLabel },
+      contact: { to: '/contacto', label: global.contactMenuLabel }
+    };
+    const simpleItem = simpleItems[item];
+    return simpleItem
+      ? <NavLink key={item} to={simpleItem.to} onClick={() => setOpen(false)}>{simpleItem.label}</NavLink>
+      : null;
+  };
+
   return (
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="header-inner">
@@ -68,62 +137,7 @@ export function Header() {
           <div className="mobile-nav-heading" aria-hidden="true">
             <span>{t('menu')}</span>
           </div>
-          <div
-            className={`work-menu ${openSection === 'work' ? 'is-mobile-expanded' : ''} ${desktopSection === 'work' ? 'is-desktop-open' : ''}`}
-            {...desktopMenuProps('work')}
-          >
-            <div className="nav-section-heading">
-              <NavLink className={pathname.startsWith('/work') ? 'active' : ''} to="/work" aria-haspopup="true">{global.workMenuLabel}</NavLink>
-              <button className="mobile-submenu-toggle" type="button" onClick={() => toggleSection('work')} aria-expanded={openSection === 'work'} aria-controls="work-navigation-list" aria-label={t('toggleWork')}>
-                <span />
-              </button>
-            </div>
-            <div id="work-navigation-list" className="work-dropdown">
-              <div className="work-dropdown-inner">
-                {projects.map(project => (
-                  <Link
-                    key={project.slug}
-                    to={`/work/${project.slug}`}
-                    onClick={() => setOpen(false)}
-                  >
-                    {project.title}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div
-            className={`work-menu exhibitions-menu ${openSection === 'exhibitions' ? 'is-mobile-expanded' : ''} ${desktopSection === 'exhibitions' ? 'is-desktop-open' : ''}`}
-            {...desktopMenuProps('exhibitions')}
-          >
-            <div className="nav-section-heading">
-              <NavLink className={pathname.startsWith('/exhibitions') ? 'active' : ''} to="/exhibitions" aria-haspopup="true">{global.exhibitionsMenuLabel}</NavLink>
-              <button className="mobile-submenu-toggle" type="button" onClick={() => toggleSection('exhibitions')} aria-expanded={openSection === 'exhibitions'} aria-controls="exhibitions-navigation-list" aria-label={t('toggleExhibitions')}>
-                <span />
-              </button>
-            </div>
-            <div id="exhibitions-navigation-list" className="work-dropdown">
-              <div className="work-dropdown-inner exhibition-dropdown-inner">
-                {exhibitionGroups.map(group => (
-                  <details className="exhibition-dropdown-group" key={group.key}>
-                    <summary>
-                      <span>{group.label}</span>
-                      <svg viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" /></svg>
-                    </summary>
-                    <div>
-                      {exhibitionProjects.filter(project => project.category === group.key).map(project => (
-                        <Link key={project.slug} to={`/exhibitions/${project.slug}`} onClick={() => setOpen(false)}>{project.title}</Link>
-                      ))}
-                    </div>
-                  </details>
-                ))}
-              </div>
-            </div>
-          </div>
-          <NavLink to="/statement" onClick={() => setOpen(false)}>{global.statementMenuLabel}</NavLink>
-          <NavLink to="/cv" onClick={() => setOpen(false)}>{global.cvMenuLabel}</NavLink>
-          <NavLink to="/workshops" onClick={() => setOpen(false)}>{global.workshopsMenuLabel}</NavLink>
-          <NavLink to="/contacto" onClick={() => setOpen(false)}>{global.contactMenuLabel}</NavLink>
+          {menuOrder.map(renderNavigationItem)}
           <div className="mobile-nav-foot" aria-hidden="true">
             <span>Buenos Aires</span>
           </div>

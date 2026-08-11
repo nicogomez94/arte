@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { mediaTypeFor, mediaValidationError, youtubeMediaFromUrl } from '../mediaContent';
 import { defaultSiteContent, mergeSiteContent, SITE_CONTENT_UPDATED_EVENT } from '../siteContent';
+import { NAVIGATION_ITEMS, normalizeNavigationOrder } from '../navigation';
 
 const sections = [
   { key: 'global', label: 'Navegación', route: '/' },
@@ -42,7 +43,7 @@ const labels = {
   imageAltEs: 'Descripción de imagen · Español'
 };
 
-const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'mediaType', 'embedUrl', 'posterUrl', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion', 'statementVersion', 'menuLabelsVersion']);
+const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'mediaType', 'embedUrl', 'posterUrl', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion', 'statementVersion', 'menuLabelsVersion', 'menuOrder']);
 const imageKeys = new Set(['imageUrl', 'heroImageUrl', 'portraitImageUrl', 'detailImageUrl']);
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -462,23 +463,91 @@ function AdminFieldGroup({ title, description, children, className = '' }) {
   );
 }
 
+function MenuLanguageEditor({ title, language, draft, onChange, onMove }) {
+  const [dragIndex, setDragIndex] = useState(null);
+  const [dropTarget, setDropTarget] = useState(null);
+  const order = normalizeNavigationOrder(draft.menuOrder);
+  const itemsById = new Map(NAVIGATION_ITEMS.map(item => [item.id, item]));
+
+  const moveItem = (from, to) => {
+    if (to < 0 || to >= order.length || from === to) return;
+    onMove(['menuOrder'], from, to);
+  };
+
+  return (
+    <details className="admin-menu-language">
+      <summary>
+        <span>{title}</span>
+        <small>{order.length} elementos</small>
+        <svg viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" /></svg>
+      </summary>
+      <div className="admin-menu-language-body">
+        <p>Arrastrá los elementos o usá las flechas para cambiar su posición. El orden es el mismo para los dos idiomas.</p>
+        <div className="admin-menu-items">
+          {order.map((id, index) => {
+            const item = itemsById.get(id);
+            const labelKey = language === 'es' ? item.labelKeyEs : item.labelKey;
+            return (
+              <div
+                className={`admin-menu-item ${dragIndex === index ? 'is-dragging' : ''} ${dropTarget === index ? 'is-drop-target' : ''}`}
+                key={id}
+                onDragOver={event => {
+                  if (dragIndex === null || dragIndex === index) return;
+                  event.preventDefault();
+                  setDropTarget(index);
+                  event.dataTransfer.dropEffect = 'move';
+                }}
+                onDrop={event => {
+                  event.preventDefault();
+                  if (dragIndex !== null) moveItem(dragIndex, index);
+                  setDragIndex(null);
+                  setDropTarget(null);
+                }}
+              >
+                <span
+                  className="admin-menu-drag"
+                  draggable
+                  title="Arrastrar para reordenar"
+                  onDragStart={event => {
+                    setDragIndex(index);
+                    event.dataTransfer.effectAllowed = 'move';
+                    event.dataTransfer.setData('text/plain', id);
+                  }}
+                  onDragEnd={() => { setDragIndex(null); setDropTarget(null); }}
+                >
+                  <i>{String(index + 1).padStart(2, '0')}</i>
+                  <b aria-hidden="true">↕</b>
+                </span>
+                <label>
+                  <span>Texto visible</span>
+                  <input type="text" value={draft[labelKey] || ''} onChange={event => onChange([labelKey], event.target.value)} />
+                </label>
+                <small>{item.route}</small>
+                <div className="admin-menu-position-actions">
+                  <button type="button" onClick={() => moveItem(index, index - 1)} disabled={index === 0} aria-label={`Subir ${draft[labelKey] || id}`}>↑</button>
+                  <button type="button" onClick={() => moveItem(index, index + 1)} disabled={index === order.length - 1} aria-label={`Bajar ${draft[labelKey] || id}`}>↓</button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </details>
+  );
+}
+
 function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, projectCategory }) {
   const fields = keys => (
     <ContentFields value={draft} includeKeys={keys} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />
   );
 
   if (active === 'global') return (
-    <>
-      <AdminFieldGroup title="Nombres del menú" description="Editá cada nombre en inglés y español. Las rutas internas no cambian, por lo que la navegación sigue funcionando aunque cambie el texto visible." />
-      <div className="admin-language-columns">
-        <AdminFieldGroup className="admin-language-panel" title="English" description="Nombres visibles cuando el sitio está en inglés.">
-          {fields(['workMenuLabel', 'exhibitionsMenuLabel', 'statementMenuLabel', 'cvMenuLabel', 'workshopsMenuLabel', 'contactMenuLabel'])}
-        </AdminFieldGroup>
-        <AdminFieldGroup className="admin-language-panel" title="Español" description="Nombres visibles cuando el sitio está en español.">
-          {fields(['workMenuLabelEs', 'exhibitionsMenuLabelEs', 'statementMenuLabelEs', 'cvMenuLabelEs', 'workshopsMenuLabelEs', 'contactMenuLabelEs'])}
-        </AdminFieldGroup>
+    <AdminFieldGroup title="Menú de navegación" description="Abrí un idioma para editar los nombres y el orden de los enlaces del encabezado.">
+      <div className="admin-menu-languages">
+        <MenuLanguageEditor title="Español" language="es" draft={draft} onChange={onChange} onMove={onMove} />
+        <MenuLanguageEditor title="English" language="en" draft={draft} onChange={onChange} onMove={onMove} />
       </div>
-    </>
+    </AdminFieldGroup>
   );
   if (active === 'home') return (
     <AdminFieldGroup title="Portada" description="La imagen que ocupa la pantalla principal del sitio.">
@@ -675,11 +744,7 @@ export default function Admin() {
       return;
     }
     if (active === 'global') {
-      const menuKeys = [
-        'workMenuLabel', 'workMenuLabelEs', 'exhibitionsMenuLabel', 'exhibitionsMenuLabelEs',
-        'statementMenuLabel', 'statementMenuLabelEs', 'cvMenuLabel', 'cvMenuLabelEs',
-        'workshopsMenuLabel', 'workshopsMenuLabelEs', 'contactMenuLabel', 'contactMenuLabelEs'
-      ];
+      const menuKeys = NAVIGATION_ITEMS.flatMap(item => [item.labelKey, item.labelKeyEs]);
       if (menuKeys.some(key => !String(draft[key] || '').trim())) {
         setStatus('Completá todos los nombres del menú antes de guardar.');
         return;
