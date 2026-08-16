@@ -2896,7 +2896,7 @@ body,
 }
 
 .cv-page .cv-section h2 {
-  color: #000;
+  color: var(--bordo);
 }
 
 .cv-page .cv-section li {
