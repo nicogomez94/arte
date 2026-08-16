@@ -306,8 +306,8 @@ export function translateSiteContent(content, language) {
     },
     cv: {
       ...content.cv,
-      introLabel: 'Acerca de Andrea,',
-      intro: translateCvText(content.cv.intro),
+      introLabel: '',
+      intro: content.cv.introEs?.trim() || translateCvText(content.cv.intro),
       sections: (content.cv.sections || []).map(section => ({
         ...section,
         title: translateCvText(section.title),

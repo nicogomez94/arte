@@ -2827,6 +2827,109 @@ body,
   }
 }
 
+/* CV editorial masonry */
+.cv-page {
+  color: #000;
+}
+
+.cv-page .site-header,
+.cv-page .site-header a,
+.cv-page .site-header button,
+.cv-page .site-footer,
+.cv-page .site-footer a,
+.cv-page .cv-intro p,
+.cv-page .cv-section h2,
+.cv-page .cv-section li,
+.cv-page .cv-section li a,
+.cv-page .cv-external-mark {
+  color: #000;
+}
+
+.cv-page .cv-masonry-grid {
+  width: var(--page);
+  margin: 0 auto;
+  padding: 58px 0 120px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(38px, 6vw, 90px);
+  align-items: start;
+}
+
+.cv-page .cv-masonry-column {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 52px;
+}
+
+.cv-page .cv-profile,
+.cv-page .cv-section {
+  order: var(--cv-flow-order, 0);
+}
+
+.cv-page .cv-profile {
+  min-width: 0;
+  display: block;
+}
+
+.cv-page .cv-intro {
+  margin-top: 20px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.cv-page .cv-intro p {
+  max-width: 640px;
+  margin: 0;
+}
+
+.cv-page .cv-section {
+  width: 100%;
+  margin: 0;
+  padding-top: 14px;
+  break-inside: avoid;
+}
+
+.cv-page .cv-honors {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.cv-page .cv-section h2 {
+  color: #000;
+}
+
+.cv-page .cv-section li {
+  color: #000;
+}
+
+@media (max-width: 980px) {
+  .cv-page .cv-masonry-grid {
+    column-gap: 38px;
+  }
+}
+
+@media (max-width: 680px) {
+  .cv-page .cv-masonry-grid {
+    padding: 104px 0 82px;
+    display: flex;
+    flex-direction: column;
+    gap: 38px;
+  }
+
+  .cv-page .cv-masonry-column {
+    display: contents;
+  }
+
+  .cv-page .cv-intro {
+    margin-top: 18px;
+  }
+
+  .cv-page .cv-section {
+    margin: 0;
+  }
+}
+
 @media (max-width: 980px) {
   .site-nav a,
   .nav-section-heading > a,

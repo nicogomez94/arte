@@ -68,6 +68,7 @@ const exhibitions = exhibitionProjects.map(project => ({
 
 const parsedCvContent = parseCv();
 const workshopIntroEs = 'Artista visual y diseñadora industrial argentina, graduada de la Universidad de Buenos Aires. Su práctica se desarrolla en la intersección expandida de la fotografía, la materialidad y la investigación, y aborda el paisaje y el territorio como archivos sensibles de la memoria.';
+const cvIntroEs = workshopIntroEs;
 const workshopRows = Array.from({ length: 4 }, (_, index) => ({
   title: `Workshop ${String(index + 1).padStart(2, '0')}`,
   titleEs: `Taller ${String(index + 1).padStart(2, '0')}`,
@@ -157,7 +158,8 @@ export const defaultSiteContent = {
   },
   cv: {
     imageUrl: '/contact/Andrea-Alkalay.jpg.avif', imageAlt: 'Andrea Alkalay',
-    introLabel: 'About Andrea,',
+    introLabel: '',
+    introEs: cvIntroEs,
     ...parsedCvContent
   },
   workshops: {

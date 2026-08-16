@@ -577,7 +577,11 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
   );
   if (active === 'cv') return (
     <>
-      <AdminFieldGroup title="Presentación" description="Retrato y texto introductorio de CV.">{fields(['imageUrl', 'imageAlt', 'introLabel', 'intro'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Presentación" description="Retrato y statement del CV.">{fields(['imageUrl', 'imageAlt'])}</AdminFieldGroup>
+      <div className="admin-language-columns">
+        <AdminFieldGroup className="admin-language-panel" title="Statement · English" description="Texto que se muestra en inglés.">{fields(['intro'])}</AdminFieldGroup>
+        <AdminFieldGroup className="admin-language-panel" title="Statement · Español" description="Texto que se muestra en español.">{fields(['introEs'])}</AdminFieldGroup>
+      </div>
       <AdminFieldGroup title="Trayectoria" description="Secciones y entradas del currículum.">{fields(['sections'])}</AdminFieldGroup>
     </>
   );
