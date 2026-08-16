@@ -34,7 +34,7 @@ export default function EditorialIntroCopy({ title, children, text }) {
 
   return (
     <div className="editorial-intro-copy">
-      <h3>{title}</h3>
+      {title ? <h3>{title}</h3> : null}
       <div className={`intro-text-shell ${canExpand && !expanded ? 'is-faded' : ''}`}>
         <p
           ref={textRef}

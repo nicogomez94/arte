@@ -27,7 +27,6 @@ export default function ExhibitionProject() {
               <h1 id="exhibition-title">{project.title}</h1>
             </div>
             <EditorialIntroCopy
-              title={t('aboutExhibition')}
               text={project.intro || t('exhibitionFallback')}
             />
           </div>
