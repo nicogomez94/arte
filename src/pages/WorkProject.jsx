@@ -28,7 +28,6 @@ export default function WorkProject() {
               <h1 id="project-title">{project.title}</h1>
             </div>
             <EditorialIntroCopy
-              title={t('statement')}
               text={project.intro || t('projectFallback')}
             />
           </div>
@@ -46,7 +45,7 @@ export default function WorkProject() {
         ) : <p className="empty-state">{global.noImagesLabel}</p>}
       </main>
       <Footer />
-      <FullscreenSlideshow artworks={slides} open={open} initialIndex={startIndex} onClose={() => setOpen(false)} label={`${project.title}: ${t('slideshow')}`} caption={project.title} />
+      <FullscreenSlideshow artworks={slides} open={open} initialIndex={startIndex} onClose={() => setOpen(false)} label={`${project.title}: ${t('slideshow')}`} context={project.title} />
     </div>
   );
 }

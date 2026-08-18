@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
@@ -9,6 +9,7 @@ export function Header() {
   const [openSection, setOpenSection] = useState(null);
   const [desktopSection, setDesktopSection] = useState(null);
   const [scrolled, setScrolled] = useState(false);
+  const desktopCloseTimer = useRef(null);
   const { pathname } = useLocation();
   const global = useSiteContent('global');
   const { projects } = useSiteContent('work');
@@ -47,16 +48,34 @@ export function Header() {
     };
   }, [open]);
 
+  useEffect(() => () => window.clearTimeout(desktopCloseTimer.current), []);
+
   const toggleSection = section => {
     setOpenSection(current => current === section ? null : section);
   };
 
+  const cancelDesktopClose = () => window.clearTimeout(desktopCloseTimer.current);
+  const openDesktopSection = section => {
+    cancelDesktopClose();
+    setDesktopSection(section);
+  };
+  const scheduleDesktopClose = section => {
+    cancelDesktopClose();
+    desktopCloseTimer.current = window.setTimeout(() => {
+      setDesktopSection(current => current === section ? null : current);
+    }, 220);
+  };
+
   const desktopMenuProps = section => ({
-    onMouseEnter: () => setDesktopSection(section),
-    onMouseLeave: () => setDesktopSection(null),
-    onFocus: () => setDesktopSection(section),
+    onMouseEnter: () => openDesktopSection(section),
+    onMouseLeave: () => scheduleDesktopClose(section),
+    onPointerDownCapture: () => openDesktopSection(section),
+    onFocus: () => openDesktopSection(section),
     onBlur: event => {
-      if (!event.currentTarget.contains(event.relatedTarget)) setDesktopSection(null);
+      const menu = event.currentTarget;
+      window.setTimeout(() => {
+        if (!menu.contains(document.activeElement) && !menu.matches(':hover')) scheduleDesktopClose(section);
+      }, 0);
     }
   });
 
