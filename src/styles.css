@@ -2058,7 +2058,7 @@ body,
   align-items: start;
 }
 #project-title{
-  padding-top: 20px;
+  /* padding-top: 20px; */
 }
 
 .project-detail-meta h1 {
