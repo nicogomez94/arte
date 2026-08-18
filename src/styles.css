@@ -3403,16 +3403,21 @@ body,
 
 @media (max-width: 760px) {
   .project-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
-      "back"
-      "meta"
-      "next"
-      "copy";
+      "back next"
+      "meta meta"
+      "copy copy";
+    column-gap: 16px;
     row-gap: 0;
   }
 
-  .project-detail-back { margin-bottom: 24px; }
-  .project-detail-next { margin: 38px 0 20px; }
+  .project-detail-back,
+  .project-detail-next { margin-bottom: 44px; }
+
+  .project-detail-next { text-align: right; }
+  .project-detail-next a { margin-left: auto; }
+  .project-detail-grid > .editorial-intro-copy { margin-top: 42px; }
   .project-detail-nav a { max-width: 100%; }
 }
 
