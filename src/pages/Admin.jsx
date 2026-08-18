@@ -20,7 +20,7 @@ const labels = {
   artistName: 'Nombre de la artista', artistDiscipline: 'Disciplina', workMenuLabel: 'Work · Inglés',
   exhibitionsMenuLabel: 'Exhibitions · Inglés', statementMenuLabel: 'Statement · Inglés',
   contactMenuLabel: 'Contact · Inglés', cvMenuLabel: 'CV · Inglés', workshopsMenuLabel: 'Workshops · Inglés',
-  workMenuLabelEs: 'Obra · Español', exhibitionsMenuLabelEs: 'Exposiciones · Español',
+  workMenuLabelEs: 'Obra · Español', exhibitionsMenuLabelEs: 'Exhibiciones · Español',
   statementMenuLabelEs: 'Statement · Español', contactMenuLabelEs: 'Contacto · Español',
   cvMenuLabelEs: 'CV · Español', workshopsMenuLabelEs: 'Talleres · Español', instagramUrl: 'Enlace de Instagram',
   footerText: 'Texto del pie', heroImageUrl: 'Imagen principal', heroImageAlt: 'Descripción de la imagen principal',

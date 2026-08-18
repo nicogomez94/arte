@@ -3097,21 +3097,96 @@ body,
 }
 
 .admin-content-app .admin-sidebar {
-  overflow: hidden;
-}
-
-.admin-content-app .admin-sidebar nav {
-  min-height: 0;
-  flex: 1 1 auto;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
 
-.admin-content-app .admin-sidebar-foot {
-  flex: 0 0 auto;
-  padding-top: 18px;
+.admin-content-app .admin-sidebar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Admin workspace: black typography with a clearer editorial hierarchy. */
+.admin-content-app .admin-main,
+.admin-content-app .admin-topbar h1,
+.admin-content-app .admin-preview-link,
+.admin-page-group > header h2,
+.admin-field-section > header h4,
+.admin-page-group > header p,
+.admin-field-section > header p,
+.admin-content-field > span,
+.admin-content-image-field > span,
+.admin-content-group > h3,
+.admin-content-card summary > span,
+.admin-content-card summary strong,
+.admin-content-app .admin-card-actions,
+.admin-project-covers h3,
+.admin-project-covers header p,
+.admin-content-savebar p,
+.admin-menu-language > summary,
+.admin-menu-language > summary small,
+.admin-menu-language-body > p,
+.admin-menu-drag,
+.admin-menu-drag b,
+.admin-menu-item label span,
+.admin-menu-item input,
+.admin-menu-item > small,
+.admin-editor-subheading,
+.admin-media-source-heading span,
+.admin-media-source-heading small,
+.admin-video-placeholder,
+.admin-image-placeholder,
+.admin-add-item,
+.admin-media-add-actions button {
+  color: #000;
+}
+
+.admin-content-app .admin-card-actions {
+  color: #000 !important;
+}
+
+.admin-menu-position-actions button,
+.admin-content-field select {
+  color: #000;
+}
+
+.admin-login label,
+.admin-login section > small,
+.admin-credit {
+  color: #000;
+}
+
+.admin-login label,
+.admin-login form button {
+  font-weight: 600;
+}
+
+.admin-login figcaption {
+  color: #fff;
+}
+
+.admin-content-app .admin-topbar h1,
+.admin-page-group > header h2,
+.admin-field-section > header h4,
+.admin-content-group > h3,
+.admin-project-covers h3,
+.admin-content-card summary strong,
+.admin-menu-language > summary > span,
+.admin-editor-subheading,
+.admin-content-field > span,
+.admin-content-image-field > span {
+  font-weight: 600;
+}
+
+.admin-page-group > header p,
+.admin-field-section > header p,
+.admin-project-covers header p,
+.admin-menu-language-body > p,
+.admin-content-savebar p,
+.admin-media-source-heading small {
+  font-weight: 400;
 }
 
 @media (max-width: 980px) {
@@ -3130,12 +3205,5 @@ body,
 @media (max-width: 680px) {
   .admin-content-app .admin-sidebar {
     overflow: visible;
-  }
-
-  .admin-content-app .admin-sidebar nav {
-    min-height: auto;
-    flex: none;
-    overflow-x: auto;
-    overflow-y: visible;
   }
 }

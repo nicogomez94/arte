@@ -39,4 +39,5 @@ test('Spanish translation preserves Contact and CV image URLs', () => {
   const translated = translateSiteContent(content, 'es');
   assert.equal(translated.contact.imageUrl, content.contact.imageUrl);
   assert.equal(translated.cv.imageUrl, content.cv.imageUrl);
+  assert.equal(translated.global.exhibitionsMenuLabel, 'Exhibiciones');
 });

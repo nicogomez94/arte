@@ -64,7 +64,7 @@ const messages = {
     homeHeroAlt: 'Instalación de Andrea Alkalay en exposición',
     openExhibitionsSlideshow: 'Abrir la presentación de exposiciones',
     exhibitionView: 'Vista de exposición',
-    exhibitions: 'Exposiciones',
+    exhibitions: 'Exhibiciones',
     galleryIntro: 'Vistas de instalación, investigación visual y fragmentos de exposiciones reunidos como un índice sereno de la obra en el espacio. Este archivo sigue cómo cambia cada proyecto al encontrarse con una sala, un recorrido, una pared o un paisaje exterior. Las imágenes no son solo registros del montaje: muestran la escala, la distancia, la luz y la relación entre las obras. En conjunto, trazan cómo la práctica se expande más allá de la pieza individual y se convierte en una experiencia espacial.',
     startViewing: 'Comenzar recorrido',
     noPublishedWorks: 'Todavía no hay obras publicadas.',

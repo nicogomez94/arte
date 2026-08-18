@@ -81,7 +81,7 @@ const workshopRows = Array.from({ length: 4 }, (_, index) => ({
 
 export const defaultSiteContent = {
   global: {
-    menuLabelsVersion: 1,
+    menuLabelsVersion: 2,
     menuOrder: [...DEFAULT_NAVIGATION_ORDER],
     artistName: 'andrea alkalay',
     artistDiscipline: 'Art Photography',
@@ -92,7 +92,7 @@ export const defaultSiteContent = {
     cvMenuLabel: 'CV',
     workshopsMenuLabel: 'Workshops',
     workMenuLabelEs: 'Obra',
-    exhibitionsMenuLabelEs: 'Exposiciones',
+    exhibitionsMenuLabelEs: 'Exhibiciones',
     statementMenuLabelEs: 'Statement',
     contactMenuLabelEs: 'Contacto',
     cvMenuLabelEs: 'CV',
@@ -180,6 +180,13 @@ export const mergeSiteContent = (stored = {}) => {
       cvMenuLabelEs: 'CV',
       workshopsMenuLabel: 'Workshops',
       workshopsMenuLabelEs: 'Talleres'
+    };
+  }
+  if (Number(normalizedStored.global?.menuLabelsVersion || 0) < 2) {
+    merged.global = {
+      ...merged.global,
+      menuLabelsVersion: 2,
+      exhibitionsMenuLabelEs: 'Exhibiciones'
     };
   }
   merged.global.menuOrder = normalizeNavigationOrder(merged.global.menuOrder);

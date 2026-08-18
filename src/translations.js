@@ -139,7 +139,7 @@ const cvReplacements = [
   ['Art Residencies & Grants', 'Residencias artísticas y becas'],
   ['Publications', 'Publicaciones'],
   ['Artist Book', 'Libro de artista'],
-  ['Solo Exhibitions', 'Exposiciones individuales'],
+  ['Solo Exhibitions', 'Exhibiciones individuales'],
   ['Honors (selected)', 'Premios y distinciones (selección)'],
   ['Argentine visual artist and industrial designer, graduated from the University of Buenos Aires. Her practice unfolds at an expanded intersection of photography, materiality, and research, engaging landscape and territory as sensitive archives of memory.', 'Artista visual y diseñadora industrial argentina, graduada de la Universidad de Buenos Aires. Su práctica se desarrolla en la intersección expandida de la fotografía, la materialidad y la investigación, y aborda el paisaje y el territorio como archivos sensibles de la memoria.'],
   ['grant Program', 'programa de becas'],
@@ -205,7 +205,7 @@ const spanishAbout = {
 const spanishGlobal = {
   artistDiscipline: 'Fotografía artística',
   workMenuLabel: 'Obra',
-  exhibitionsMenuLabel: 'Exposiciones',
+  exhibitionsMenuLabel: 'Exhibiciones',
   statementMenuLabel: 'Statement',
   contactMenuLabel: 'Contacto',
   cvMenuLabel: 'CV',
@@ -298,7 +298,7 @@ export function translateSiteContent(content, language) {
       ...content.contact,
       imageAlt: 'Detalle de una exposición de Andrea Alkalay',
       title: 'Conversemos.',
-      subtitle: 'Exposiciones, colaboraciones y prensa.',
+      subtitle: 'Exhibiciones, colaboraciones y prensa.',
       links: (content.contact.links || []).map(link => ({
         ...link,
         label: link.label === 'Email' ? 'Correo electrónico' : link.label
