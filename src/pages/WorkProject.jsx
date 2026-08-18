@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import EditorialIntroCopy from '../components/EditorialIntroCopy';
 import FullscreenSlideshow from '../components/FullscreenSlideshow';
 import MasonryThumbGrid from '../components/MasonryThumbGrid';
 import { Footer, Header } from '../components/SiteChrome';
 import { useLanguage } from '../i18n';
+import { nextProjectInSequence } from '../projectNavigation';
 import { useSiteContent } from '../siteContent';
 
 export default function WorkProject() {
@@ -13,6 +14,7 @@ export default function WorkProject() {
   const global = useSiteContent('global');
   const { t } = useLanguage();
   const project = projects.find(item => item.slug === slug);
+  const nextProject = nextProjectInSequence(projects, slug);
   const [open, setOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const slides = project?.images || [];
@@ -24,6 +26,12 @@ export default function WorkProject() {
       <main className="project-main">
         <section className="project-detail-intro" aria-labelledby="project-title">
           <div className="project-detail-grid">
+            <nav className="project-detail-nav project-detail-back" aria-label={t('projectNavigation')}>
+              <Link to="/work">← {t('backToWork')}</Link>
+            </nav>
+            <nav className="project-detail-nav project-detail-next" aria-label={t('nextProject')}>
+              {nextProject && <Link to={`/work/${nextProject.slug}`}>{t('nextProject')}: {nextProject.title} →</Link>}
+            </nav>
             <div className="project-detail-meta">
               <h1 id="project-title">{project.title}</h1>
             </div>

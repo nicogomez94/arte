@@ -34,7 +34,13 @@ const messages = {
     startViewing: 'Start viewing',
     noPublishedWorks: 'No works published yet.',
     biography: 'Andrea Alkalay CV',
-    biographyDetails: 'CV details'
+    biographyDetails: 'CV details',
+    projectNavigation: 'Project navigation',
+    backToWork: 'Back to Work',
+    backToExhibitions: 'Back to Exhibitions',
+    nextProject: 'Next',
+    copyEmail: 'Copy e-mail',
+    emailCopied: 'Copied'
   },
   es: {
     mainNavigation: 'Navegación principal',
@@ -69,7 +75,13 @@ const messages = {
     startViewing: 'Comenzar recorrido',
     noPublishedWorks: 'Todavía no hay obras publicadas.',
     biography: 'CV de Andrea Alkalay',
-    biographyDetails: 'Detalles del CV'
+    biographyDetails: 'Detalles del CV',
+    projectNavigation: 'Navegación del proyecto',
+    backToWork: 'Volver a Obra',
+    backToExhibitions: 'Volver a Exhibiciones',
+    nextProject: 'Siguiente',
+    copyEmail: 'Copiar e-mail',
+    emailCopied: 'Copiado'
   }
 };
 

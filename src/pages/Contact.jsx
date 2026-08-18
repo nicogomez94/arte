@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Footer, Header } from '../components/SiteChrome';
+import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
 
 const normalizeContactHref = url => {
@@ -19,6 +20,7 @@ const getEmailAddress = link => {
 
 export default function Contact() {
   const content = useSiteContent('contact');
+  const { t } = useLanguage();
   const [copiedIndex, setCopiedIndex] = useState(null);
 
   const copyEmail = async (email, index) => {
@@ -61,13 +63,14 @@ export default function Contact() {
               {content.links.map((link, index) => (
                 getEmailAddress(link) ? (
                   <button
-                    className="contact-link"
+                    className={`contact-link ${copiedIndex === index ? 'is-copied' : ''}`}
                     type="button"
                     key={index}
                     onClick={() => copyEmail(getEmailAddress(link), index)}
-                    aria-label={copiedIndex === index ? `${link.value} copied` : `Copy ${link.value}`}
+                    aria-label={copiedIndex === index ? `${link.value}. ${t('emailCopied')}` : `${t('copyEmail')}: ${link.value}`}
                   >
-                    <span>{link.label}</span><strong>{link.value}</strong><b aria-hidden="true">{copiedIndex === index ? '✓' : '↗'}</b>
+                    <span>{link.label}</span><strong>{link.value}</strong>
+                    <b className="contact-link-status" aria-hidden="true">{copiedIndex === index ? <><span>{t('emailCopied')}</span> ✓</> : '↗'}</b>
                   </button>
                 ) : (
                   <a
@@ -81,6 +84,7 @@ export default function Contact() {
                   </a>
                 )
               ))}
+              <span className="visually-hidden" role="status" aria-live="polite">{copiedIndex !== null ? t('emailCopied') : ''}</span>
             </div>
           </div>
         </section>

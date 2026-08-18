@@ -1,17 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Footer, Header } from '../components/SiteChrome';
 import { useLanguage } from '../i18n';
+import { toMasonryColumns } from '../projectNavigation';
 import { useSiteContent } from '../siteContent';
-
-const toColumns = items => items.reduce((columns, item, index) => {
-  columns[index % 4].push(item);
-  return columns;
-}, [[], [], [], []]);
 
 export default function WorkIndex() {
   const { projects } = useSiteContent('work');
   const { t } = useLanguage();
-  const columns = toColumns(projects);
+  const columns = toMasonryColumns(projects);
 
   return (
     <div className="site-page index-page">
@@ -20,8 +16,8 @@ export default function WorkIndex() {
         <div className="visual-index-grid">
           {columns.map((column, columnIndex) => (
             <div className="visual-index-column" key={columnIndex}>
-              {column.map((item, itemIndex) => (
-                <Link className={`visual-index-card visual-index-card-${(columnIndex + itemIndex) % 6}`} to={`/work/${item.slug}`} key={item.slug}>
+              {column.map(({ item, sourceIndex }, itemIndex) => (
+                <Link className={`visual-index-card visual-index-card-${(columnIndex + itemIndex) % 6}`} style={{ '--mobile-order': sourceIndex }} to={`/work/${item.slug}`} key={item.slug}>
                   <img src={item.imageUrl} alt="" />
                   <h2>{item.title}</h2>
                 </Link>

@@ -3321,6 +3321,101 @@ body,
   text-decoration: none;
 }
 
+/* Preserve the desktop masonry reading order when the index becomes linear. */
+@media (max-width: 680px) {
+  .visual-index-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 38px;
+  }
+
+  .visual-index-column {
+    display: contents;
+  }
+
+  .visual-index-card {
+    order: var(--mobile-order, 0);
+  }
+}
+
+/* Quiet navigation aligned with the two columns of project introductions. */
+.project-detail-grid {
+  grid-template-areas:
+    "back next"
+    "meta copy";
+  row-gap: 30px;
+}
+
+.project-detail-back { grid-area: back; }
+.project-detail-next { grid-area: next; }
+.project-detail-meta { grid-area: meta; }
+.project-detail-grid > .editorial-intro-copy { grid-area: copy; }
+
+.project-detail-nav {
+  min-width: 0;
+  font: 500 9px/1.3 var(--sans);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.project-detail-nav a {
+  width: fit-content;
+  max-width: 92%;
+  padding-bottom: 4px;
+  display: block;
+  overflow: hidden;
+  border-bottom: 1px solid transparent;
+  color: #000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color .2s ease, border-color .2s ease;
+}
+
+.project-detail-nav a:hover,
+.project-detail-nav a:focus-visible {
+  border-bottom-color: var(--bordo);
+  color: var(--bordo);
+}
+
+.contact-directory .contact-link.is-copied {
+  padding-inline: 12px;
+  background: rgba(128, 24, 34, .055);
+  box-shadow: inset 2px 0 0 var(--bordo);
+}
+
+.contact-directory .contact-link.is-copied strong,
+.contact-directory .contact-link.is-copied .contact-link-status {
+  color: var(--bordo);
+}
+
+.contact-link-status {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.contact-link-status span {
+  font: 600 8px/1 var(--sans);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  .project-detail-grid {
+    grid-template-areas:
+      "back"
+      "meta"
+      "next"
+      "copy";
+    row-gap: 0;
+  }
+
+  .project-detail-back { margin-bottom: 24px; }
+  .project-detail-next { margin: 38px 0 20px; }
+  .project-detail-nav a { max-width: 100%; }
+}
+
 .admin-cv-section-fields {
   gap: 22px;
 }

@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import EditorialIntroCopy from '../components/EditorialIntroCopy';
 import FullscreenSlideshow from '../components/FullscreenSlideshow';
 import MasonryThumbGrid from '../components/MasonryThumbGrid';
 import { Footer, Header } from '../components/SiteChrome';
 import { useLanguage } from '../i18n';
+import { nextProjectInSequence } from '../projectNavigation';
 import { useSiteContent } from '../siteContent';
 
 export default function ExhibitionProject() {
@@ -12,6 +13,8 @@ export default function ExhibitionProject() {
   const { projects: exhibitionProjects } = useSiteContent('exhibitions');
   const { t } = useLanguage();
   const project = exhibitionProjects.find(item => item.slug === slug);
+  const projectGroup = project ? exhibitionProjects.filter(item => item.category === project.category) : [];
+  const nextProject = nextProjectInSequence(projectGroup, slug);
   const slides = project?.images || [];
   const [open, setOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
@@ -23,6 +26,12 @@ export default function ExhibitionProject() {
       <main className="project-main">
         <section className="project-detail-intro" aria-labelledby="exhibition-title">
           <div className="project-detail-grid">
+            <nav className="project-detail-nav project-detail-back" aria-label={t('projectNavigation')}>
+              <Link to={`/exhibitions#${project.category}-show`}>← {t('backToExhibitions')}</Link>
+            </nav>
+            <nav className="project-detail-nav project-detail-next" aria-label={t('nextProject')}>
+              {nextProject && <Link to={`/exhibitions/${nextProject.slug}`}>{t('nextProject')}: {nextProject.title} →</Link>}
+            </nav>
             <div className="project-detail-meta">
               <h1 id="exhibition-title">{project.title}</h1>
             </div>
