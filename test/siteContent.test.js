@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { mergeContentSections, normalizeStoredContent } from '../src/contentMerge.js';
-import { translateSiteContent } from '../src/translations.js';
+import { translateCvRichText, translateSiteContent } from '../src/translations.js';
 
 test('stored Contact and CV image URLs take precedence over defaults', () => {
   const defaults = {
@@ -32,7 +32,7 @@ test('Spanish translation preserves Contact and CV image URLs', () => {
     exhibitions: { projects: [] },
     statement: { paragraphs: [] },
     about: {},
-    contact: { imageUrl: '/api/media/contact-uuid', links: [] },
+    contact: { imageUrl: '/api/media/contact-uuid', links: [{ label: 'Email', value: 'info@example.com', url: 'mailto:info@example.com' }] },
     cv: { imageUrl: '/api/media/cv-uuid', intro: '', sections: [] },
     workshops: { title: 'Workshops', rows: [] }
   };
@@ -40,4 +40,13 @@ test('Spanish translation preserves Contact and CV image URLs', () => {
   assert.equal(translated.contact.imageUrl, content.contact.imageUrl);
   assert.equal(translated.cv.imageUrl, content.cv.imageUrl);
   assert.equal(translated.global.exhibitionsMenuLabel, 'Exhibiciones');
+  assert.equal(translated.contact.links[0].label, 'E-mail');
+});
+
+test('CV rich-text translation changes visible copy without touching link destinations', () => {
+  const html = '<ul><li><a href="https://example.com/Page">Photography magazine interview</a></li></ul>';
+  assert.equal(
+    translateCvRichText(html),
+    '<ul><li><a href="https://example.com/Page">revista de fotografía entrevista</a></li></ul>'
+  );
 });

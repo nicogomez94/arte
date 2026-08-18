@@ -3207,3 +3207,120 @@ body,
     overflow: visible;
   }
 }
+
+/* Local rich-text editing for CV statements and entries. */
+.admin-rich-text-field {
+  min-width: 0;
+  grid-column: 1 / -1;
+}
+
+.admin-rich-text-field > span {
+  margin-bottom: 8px;
+  display: block;
+  color: #000;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.admin-rich-text-toolbar {
+  min-height: 38px;
+  padding: 5px;
+  border: 1px solid #a9a9a9;
+  border-bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  background: #efede7;
+}
+
+.admin-rich-text-toolbar button {
+  min-height: 27px;
+  padding: 3px 9px;
+  border: 1px solid #bcbcbc;
+  background: #fff;
+  color: #000;
+  font-size: 9px;
+}
+
+.admin-rich-text-toolbar button:hover,
+.admin-rich-text-toolbar button:focus-visible {
+  border-color: #000;
+}
+
+.admin-rich-text-editor {
+  min-height: 150px;
+  padding: 13px;
+  border: 1px solid #a9a9a9;
+  background: #fff;
+  color: #000;
+  font-size: 12px;
+  line-height: 1.6;
+  outline: 0;
+}
+
+.admin-rich-text-editor:focus {
+  border-color: #000;
+  box-shadow: inset 0 0 0 1px #000;
+}
+
+.admin-rich-text-editor p,
+.cv-rich-text p {
+  margin: 0 0 .75em;
+}
+
+.admin-rich-text-editor p:last-child,
+.cv-rich-text p:last-child {
+  margin-bottom: 0;
+}
+
+.admin-rich-text-editor ul,
+.admin-rich-text-editor ol,
+.cv-rich-text ul,
+.cv-rich-text ol {
+  margin: .45em 0 .8em;
+  padding-left: 1.4em;
+}
+
+.admin-rich-text-field > small {
+  margin-top: 7px;
+  display: block;
+  color: #000;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.cv-rich-text {
+  min-width: 0;
+  display: block;
+  color: #000;
+}
+
+.cv-intro > .cv-rich-text {
+  max-width: 640px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.admin-rich-text-editor a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.cv-section-entries ul {
+  margin-left: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.cv-section-entries a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.admin-cv-section-fields {
+  gap: 22px;
+}

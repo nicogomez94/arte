@@ -159,6 +159,8 @@ export const defaultSiteContent = {
   cv: {
     imageUrl: '/contact/Andrea-Alkalay.jpg.avif', imageAlt: 'Andrea Alkalay',
     introLabel: '',
+    introHtml: '',
+    introHtmlEs: '',
     introEs: cvIntroEs,
     ...parsedCvContent
   },

@@ -170,10 +170,15 @@ const cvReplacements = [
   ['Gallery', 'Galería']
 ];
 
-const translateCvText = value => {
+export const translateCvText = value => {
   if (typeof value !== 'string') return value;
   return cvReplacements.reduce((text, [english, spanish]) => text.replaceAll(english, spanish), value);
 };
+
+export const translateCvRichText = value => String(value || '')
+  .split(/(<[^>]+>)/g)
+  .map(fragment => fragment.startsWith('<') ? fragment : translateCvText(fragment))
+  .join('');
 
 export const statementParagraphsEs = [
   'Mi práctica se desarrolla en la intersección expandida de la fotografía, la materialidad y la investigación, y aborda el paisaje y el territorio como archivos sensibles de la memoria.',
@@ -301,16 +306,18 @@ export function translateSiteContent(content, language) {
       subtitle: 'Exhibiciones, colaboraciones y prensa.',
       links: (content.contact.links || []).map(link => ({
         ...link,
-        label: link.label === 'Email' ? 'Correo electrónico' : link.label
+        label: link.label === 'Email' ? 'E-mail' : link.label
       }))
     },
     cv: {
       ...content.cv,
       introLabel: '',
       intro: content.cv.introEs?.trim() || translateCvText(content.cv.intro),
+      introHtml: content.cv.introHtmlEs?.trim() || content.cv.introHtml,
       sections: (content.cv.sections || []).map(section => ({
         ...section,
-        title: translateCvText(section.title),
+        title: section.titleEs?.trim() || translateCvText(section.title),
+        contentHtml: section.contentHtmlEs?.trim() || translateCvRichText(section.contentHtml),
         items: (section.items || []).map(item => typeof item === 'string'
           ? translateCvText(item)
           : { ...item, title: translateCvText(item.title) })

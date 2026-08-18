@@ -1,5 +1,5 @@
 import { Footer, Header } from '../components/SiteChrome';
-import { normalizeCvItem, safeCvHref } from '../cvItems';
+import { cvItemsToRichText, plainTextToCvHtml, sanitizeCvRichText } from '../cvItems';
 import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
 
@@ -11,24 +11,6 @@ export default function Cv() {
   const leftSections = remainingSections.filter((_, index) => index % 2 === 0);
   const rightSections = remainingSections.filter((_, index) => index % 2 === 1);
 
-  const renderItems = section => (
-    <ul>
-      {section.items.map((item, index) => {
-        const entry = normalizeCvItem(item);
-        const itemLink = safeCvHref(entry.href);
-        return (
-          <li key={`${section.title}-${index}`}>
-            {itemLink ? (
-              <a href={itemLink} target="_blank" rel="noopener noreferrer">
-                <span>{entry.title}</span><span className="cv-external-mark" aria-hidden="true">↗</span>
-              </a>
-            ) : entry.title}
-          </li>
-        );
-      })}
-    </ul>
-  );
-
   const renderSection = (section, flowOrder, className = '') => (
     <article
       className={`cv-section ${className}`.trim()}
@@ -36,7 +18,10 @@ export default function Cv() {
       style={{ '--cv-flow-order': flowOrder }}
     >
       <h2>{section.title}</h2>
-      {renderItems(section)}
+      <div
+        className="cv-rich-text cv-section-entries"
+        dangerouslySetInnerHTML={{ __html: sanitizeCvRichText(section.contentHtml || cvItemsToRichText(section.items)) }}
+      />
     </article>
   );
 
@@ -51,7 +36,10 @@ export default function Cv() {
                 <img src={content.imageUrl} alt={content.imageAlt} />
               </figure>
               <div className="cv-intro">
-                <p>{content.intro}</p>
+                <div
+                  className="cv-rich-text"
+                  dangerouslySetInnerHTML={{ __html: sanitizeCvRichText(content.introHtml || plainTextToCvHtml(content.intro)) }}
+                />
               </div>
             </div>
             {leftSections.map((section, index) => renderSection(section, (index * 2) + 2))}

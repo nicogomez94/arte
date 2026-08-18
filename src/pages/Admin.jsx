@@ -1,9 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
+import { cvItemsToRichText, plainTextToCvHtml, safeCvHref, sanitizeCvRichText } from '../cvItems';
 import { mediaTypeFor, mediaValidationError, youtubeMediaFromUrl } from '../mediaContent';
 import { defaultSiteContent, mergeSiteContent, SITE_CONTENT_UPDATED_EVENT } from '../siteContent';
 import { NAVIGATION_ITEMS, normalizeNavigationOrder } from '../navigation';
+import { translateCvRichText } from '../translations';
 
 const sections = [
   { key: 'global', label: 'Navegación', route: '/' },
@@ -27,7 +29,7 @@ const labels = {
   startViewingLabel: 'Texto de iniciar recorrido', expandLabel: 'Texto de expandir', showLessLabel: 'Texto de contraer',
   pauseLabel: 'Texto de pausa', playLabel: 'Texto de reproducción', closeLabel: 'Texto de cerrar', noImagesLabel: 'Mensaje sin imágenes',
   heroCaption: 'Epígrafe', selectedWorkLabel: 'Título de la sección', viewWorkLabel: 'Texto del botón',
-  viewMoreLabel: 'Texto de ver más', projects: 'Proyectos', title: 'Título', year: 'Año', imageUrl: 'Imagen',
+  viewMoreLabel: 'Texto de ver más', projects: 'Proyectos', title: 'Título · Inglés', year: 'Año', imageUrl: 'Imagen',
   alt: 'Descripción de imagen', intro: 'Statement · Inglés', introEs: 'Statement · Español',
   images: 'Galería de imágenes', series: 'Serie', technique: 'Técnica', description: 'Descripción',
   gridImages: 'Imágenes de la grilla', paragraphs: 'Statement · Inglés', paragraphsEs: 'Statement · Español',
@@ -296,17 +298,106 @@ function ProjectFields({ project, path, onChange, onMove, onAdd, onRemove, proje
   );
 }
 
-function CvItemFields({ item, path, onChange }) {
+function RichTextEditor({ label, value, onChange }) {
+  const editorRef = useRef(null);
+
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor || document.activeElement === editor) return;
+    const next = sanitizeCvRichText(value);
+    if (editor.innerHTML !== next) editor.innerHTML = next;
+  }, [value]);
+
+  const emit = () => {
+    const editor = editorRef.current;
+    if (editor) onChange(sanitizeCvRichText(editor.innerHTML));
+  };
+
+  const format = (command, argument = null) => {
+    editorRef.current?.focus();
+    document.execCommand(command, false, argument);
+    emit();
+  };
+
+  const editLink = () => {
+    const editor = editorRef.current;
+    const selection = window.getSelection();
+    if (!editor || !selection?.rangeCount || !editor.contains(selection.anchorNode)) {
+      window.alert('Seleccioná dentro del texto lo que querés enlazar.');
+      return;
+    }
+    const selectedRange = selection.getRangeAt(0).cloneRange();
+    const origin = selection.anchorNode.nodeType === Node.ELEMENT_NODE ? selection.anchorNode : selection.anchorNode.parentElement;
+    const currentLink = origin?.closest?.('a');
+    if (selection.isCollapsed && !currentLink) {
+      window.alert('Seleccioná el texto que querés convertir en link.');
+      return;
+    }
+    const entered = window.prompt('Pegá el destino del link. Dejalo vacío para quitarlo.', currentLink?.getAttribute('href') || 'https://');
+    if (entered === null) return;
+    editor.focus();
+    selection.removeAllRanges();
+    selection.addRange(selectedRange);
+    if (!entered.trim()) {
+      if (currentLink) currentLink.replaceWith(...currentLink.childNodes);
+      else document.execCommand('unlink');
+      emit();
+      return;
+    }
+    const href = safeCvHref(entered);
+    if (!href) {
+      window.alert('Usá un link que empiece con https://, http://, mailto:, tel:, / o #.');
+      return;
+    }
+    if (currentLink) currentLink.setAttribute('href', href);
+    else document.execCommand('createLink', false, href);
+    editor.querySelectorAll('a').forEach(link => {
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    });
+    emit();
+  };
+
   return (
-    <div className="admin-content-fields admin-cv-item-fields">
-      <label className="admin-content-field field-wide">
-        <span>Título visible</span>
-        <input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} />
-      </label>
-      <label className="admin-content-field field-wide">
-        <span>Link (href)</span>
-        <input type="text" inputMode="url" placeholder="https://…" value={item.href || ''} onChange={event => onChange([...path, 'href'], event.target.value)} />
-      </label>
+    <div className="admin-rich-text-field">
+      <span>{label}</span>
+      <div className="admin-rich-text-toolbar" aria-label={`Formato de ${label}`}>
+        <button type="button" onMouseDown={event => event.preventDefault()} onClick={() => format('formatBlock', 'p')}>Párrafo</button>
+        <button type="button" onMouseDown={event => event.preventDefault()} onClick={() => format('bold')}><strong>N</strong></button>
+        <button type="button" onMouseDown={event => event.preventDefault()} onClick={() => format('italic')}><em>C</em></button>
+        <button type="button" onMouseDown={event => event.preventDefault()} onClick={() => format('insertUnorderedList')}>• Lista</button>
+        <button type="button" onMouseDown={event => event.preventDefault()} onClick={editLink}>Link</button>
+        <button type="button" onMouseDown={event => event.preventDefault()} onClick={() => format('unlink')}>Quitar link</button>
+      </div>
+      <div
+        ref={editorRef}
+        className="admin-rich-text-editor"
+        contentEditable
+        role="textbox"
+        aria-label={label}
+        aria-multiline="true"
+        suppressContentEditableWarning
+        onInput={emit}
+        onBlur={() => {
+          const editor = editorRef.current;
+          if (!editor) return;
+          editor.innerHTML = sanitizeCvRichText(editor.innerHTML);
+          emit();
+        }}
+      />
+      <small>Enter crea un párrafo. Para agregar o editar un link, seleccioná el texto y tocá “Link”.</small>
+    </div>
+  );
+}
+
+function CvSectionFields({ section, path, onChange }) {
+  const englishContent = section.contentHtml || cvItemsToRichText(section.items);
+  return (
+    <div className="admin-content-fields admin-cv-section-fields">
+      <label className="admin-content-field field-wide"><span>Título · Inglés</span><input type="text" value={section.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} /></label>
+      <label className="admin-content-field field-wide"><span>Título · Español</span><input type="text" value={section.titleEs || ''} onChange={event => onChange([...path, 'titleEs'], event.target.value)} /></label>
+      <RichTextEditor label="Entradas · Inglés" value={englishContent} onChange={value => onChange([...path, 'contentHtml'], value)} />
+      <RichTextEditor label="Entradas · Español" value={section.contentHtmlEs || translateCvRichText(englishContent)} onChange={value => onChange([...path, 'contentHtmlEs'], value)} />
     </div>
   );
 }
@@ -415,8 +506,8 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
   if (isProject) return <ProjectFields project={value} path={path} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />;
   const isMediaItem = path.at(-2) === 'images' && typeof path.at(-1) === 'number';
   if (isMediaItem) return <MediaItemFields item={value} path={path} onChange={onChange} />;
-  const isCvItem = path.at(-2) === 'items' && typeof path.at(-1) === 'number';
-  if (isCvItem) return <CvItemFields item={value} path={path} onChange={onChange} />;
+  const isCvSection = path.at(-2) === 'sections' && typeof path.at(-1) === 'number';
+  if (isCvSection) return <CvSectionFields section={value} path={path} onChange={onChange} />;
 
   return (
     <div className="admin-content-fields">
@@ -579,10 +670,14 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
     <>
       <AdminFieldGroup title="Presentación" description="Retrato y statement del CV.">{fields(['imageUrl', 'imageAlt'])}</AdminFieldGroup>
       <div className="admin-language-columns">
-        <AdminFieldGroup className="admin-language-panel" title="Statement · English" description="Texto que se muestra en inglés.">{fields(['intro'])}</AdminFieldGroup>
-        <AdminFieldGroup className="admin-language-panel" title="Statement · Español" description="Texto que se muestra en español.">{fields(['introEs'])}</AdminFieldGroup>
+        <AdminFieldGroup className="admin-language-panel" title="Statement · English" description="Texto que se muestra en inglés.">
+          <RichTextEditor label="Contenido · Inglés" value={draft.introHtml || plainTextToCvHtml(draft.intro)} onChange={value => onChange(['introHtml'], value)} />
+        </AdminFieldGroup>
+        <AdminFieldGroup className="admin-language-panel" title="Statement · Español" description="Texto que se muestra en español.">
+          <RichTextEditor label="Contenido · Español" value={draft.introHtmlEs || plainTextToCvHtml(draft.introEs)} onChange={value => onChange(['introHtmlEs'], value)} />
+        </AdminFieldGroup>
       </div>
-      <AdminFieldGroup title="Trayectoria" description="Secciones y entradas del currículum.">{fields(['sections'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Trayectoria" description="Cada sección reúne todas sus entradas en un único editor de texto con links editables.">{fields(['sections'])}</AdminFieldGroup>
     </>
   );
   if (active === 'workshops') return (
@@ -686,9 +781,9 @@ export default function Admin() {
       } else if (kind === 'links') {
         list.push({ label: 'Nuevo enlace', value: '', url: '' });
       } else if (kind === 'sections') {
-        list.push({ title: 'Nueva sección', items: [{ title: 'Nueva entrada', href: '' }] });
+        list.push({ title: 'New section', titleEs: 'Nueva sección', contentHtml: '<ul><li>New entry</li></ul>', contentHtmlEs: '<ul><li>Nueva entrada</li></ul>', items: [] });
       } else if (kind === 'items') {
-        list.push({ title: 'Nueva entrada', href: '' });
+        list.push({ title: 'Nueva entrada', contentHtml: '', href: '' });
       } else if (kind === 'rows') {
         const number = String(list.length + 1).padStart(2, '0');
         list.push({
