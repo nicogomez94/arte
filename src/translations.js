@@ -115,9 +115,9 @@ const phraseTranslations = [
   ['Ongoing research', 'Investigación en curso'],
   ['Artist book', 'Libro de artista'],
   ['Installation view', 'Vista de instalación'],
-  ['Exhibition view', 'Vista de exposición'],
+  ['Exhibition view', 'Vista de exhibición'],
   ['Photography', 'Fotografía'],
-  ['exhibition view', 'vista de exposición']
+  ['exhibition view', 'vista de exhibición']
 ];
 
 const translatePhrases = value => {
@@ -130,7 +130,7 @@ const translateArtwork = artwork => ({
   technique: translatePhrases(artwork.technique),
   alt: typeof artwork.alt === 'string'
     ? artwork.alt
-      .replaceAll('exhibition view', 'vista de exposición')
+      .replaceAll('exhibition view', 'vista de exhibición')
       .replaceAll('installation view', 'vista de instalación')
     : artwork.alt
 });
@@ -152,7 +152,7 @@ const cvReplacements = [
   ['Page', 'Página'],
   ['interview', 'entrevista'],
   ['Photography magazine', 'revista de fotografía'],
-  ['Retrospective exhibition', 'Exposición retrospectiva'],
+  ['Retrospective exhibition', 'Exhibición retrospectiva'],
   ['Museum of Fine Arts', 'Museo de Bellas Artes'],
   ['Cultural Center', 'Centro Cultural'],
   ['Museum of Arts', 'Museo de Artes'],
@@ -187,7 +187,7 @@ export const statementParagraphsEs = [
 const spanishAbout = {
   eyebrow: 'Acerca de',
   role: 'Artista visual · Buenos Aires, Argentina',
-  portraitImageAlt: 'Obra de Andrea Alkalay en un espacio de exposición',
+  portraitImageAlt: 'Obra de Andrea Alkalay en un espacio de exhibición',
   practiceLabel: 'Práctica',
   practiceTitle: 'El paisaje como archivo vivo.',
   practiceParagraphs: ['Su práctica se mueve entre la fotografía, la investigación material y la instalación.', 'Las imágenes se convierten en objetos, espacios y huellas de la memoria.'],
@@ -296,7 +296,7 @@ export function translateSiteContent(content, language) {
     about: { ...content.about, ...spanishAbout },
     contact: {
       ...content.contact,
-      imageAlt: 'Detalle de una exposición de Andrea Alkalay',
+      imageAlt: 'Detalle de una exhibición de Andrea Alkalay',
       title: 'Conversemos.',
       subtitle: 'Exhibiciones, colaboraciones y prensa.',
       links: (content.contact.links || []).map(link => ({
