@@ -2,7 +2,7 @@ const asset = path => encodeURI(path);
 
 const exhibitionDefinitions = [
   {
-    slug: "recoleta-cultural-center", title: "Recoleta Cultural Center", year: 2023, category: "group",
+    slug: "recoleta-cultural-center", title: "Recoleta Cultural Center", titleEs: "Centro Cultural Recoleta", year: 2023, category: "group",
     directory: "group show/1- Recoleta Cultural Center",
     files: [
           "Centro Cultural Recoleta_ Breve Historia de la Eternidad_ Paisaje sobre Paisaje  _Alkalay 1.JPG",
@@ -16,7 +16,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "bienal-sur", title: "Bienal Sur", year: 2023, category: "group",
+    slug: "bienal-sur", title: "Bienal Sur", titleEs: "Bienal Sur", year: 2023, category: "group",
     directory: "group show/2 bienal sur",
     files: [
           "Bienal Sur _Rompecabezas_the Rock Cycle .jpg",
@@ -27,7 +27,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "hafez-gallery", title: "Hafez Gallery", year: 2024, category: "group",
+    slug: "hafez-gallery", title: "Hafez Gallery", titleEs: "Galería Hafez", year: 2024, category: "group",
     directory: "group show/3 Hafez Gallery",
     files: [
           "Hafez gallery_Andrea Alkalay 1.jpg",
@@ -43,7 +43,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "oda-arte", title: "OdA Arte", year: 2023, category: "group",
+    slug: "oda-arte", title: "OdA Arte", titleEs: "OdA Arte", year: 2023, category: "group",
     directory: "group show/ 4 OdA Arte",
     files: [
           "OdA Arte  Paisajes Desvelados_Curaduria Laura Casanovas_.jpg",
@@ -58,7 +58,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "espacio-dar", title: "Espacio DAR", year: 2025, category: "group",
+    slug: "espacio-dar", title: "Espacio DAR", titleEs: "Espacio DAR", year: 2025, category: "group",
     directory: "group show/5 Espacio DAR",
     files: [
           "Hall Espacio Dar 1.JPG",
@@ -69,7 +69,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "art-fairs", title: "Art Fairs", year: "2021–2024", category: "group",
+    slug: "art-fairs", title: "Art Fairs", titleEs: "Ferias de arte", year: "2021–2024", category: "group",
     directory: "group show/6 Ferias de ARte",
     files: [
           "BA Photo OdA Arte_Paisaje sobre Paisaje.jpg",
@@ -87,7 +87,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "palacio-libertad", title: "Palacio Libertad", year: 2019, category: "group",
+    slug: "palacio-libertad", title: "Palacio Libertad", titleEs: "Palacio Libertad", year: 2019, category: "group",
     directory: "group show/7 Palacio Libertad",
     files: [
           "Andrea Alkalay - Fronteras.jpg",
@@ -98,7 +98,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "museo-larreta", title: "Museo Larreta Buenos Aires", year: 2024, category: "group",
+    slug: "museo-larreta", title: "Museo Larreta Buenos Aires", titleEs: "Museo Larreta Buenos Aires", year: 2024, category: "group",
     directory: "group show/8 Museo Larreta Bs As",
     files: [
           "Intervenciones Minimas .JPG",
@@ -108,7 +108,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "unfixed-landscapes-taiwan", title: "Unfixed Landscapes, Wounded Systems", year: 2026, category: "solo",
+    slug: "unfixed-landscapes-taiwan", title: "Unfixed Landscapes, Wounded Systems", titleEs: "Paisajes inestables, sistemas heridos", year: 2026, category: "solo",
     directory: "solo show/1 Unfixed Landsacpes",
     files: [
           "Unfixed Landscape_Solo Show taiwan Andrea Alkalay 1.jpg",
@@ -130,7 +130,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "park-pecno-slovenia", title: "The Rock Cycle · Park Pečno", year: 2024, category: "solo",
+    slug: "park-pecno-slovenia", title: "The Rock Cycle · Park Pečno", titleEs: "El ciclo de la roca · Park Pečno", year: 2024, category: "solo",
     directory: "solo show/2 Park Pecno Slovenia",
     files: [
           "Park Pecno Gallery_ RockCycle_Slovenia 1  .jpg",
@@ -143,7 +143,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "museo-franklin-rawson", title: "Urban Territories · Museo Franklin Rawson", year: 2018, category: "solo",
+    slug: "museo-franklin-rawson", title: "Urban Territories · Museo Franklin Rawson", titleEs: "Territorios urbanos · Museo Franklin Rawson", year: 2018, category: "solo",
     directory: "solo show/3 Museo Bellas Artes San Juan",
     files: [
           "IMG_2821.JPG",
@@ -162,7 +162,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "sofitel-recoleta", title: "Retrospective · Sofitel Recoleta", year: 2024, category: "solo",
+    slug: "sofitel-recoleta", title: "Retrospective · Sofitel Recoleta", titleEs: "Retrospectiva · Sofitel Recoleta", year: 2024, category: "solo",
     directory: "solo show/4 Sofitel Recoleta",
     files: [
           "Sofitel recoleta Alkalay Solo show 1.JPG",
@@ -177,7 +177,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "kingdom-photo-awards", title: "The Kingdom Photography Award", year: 2022, category: "solo",
+    slug: "kingdom-photo-awards", title: "The Kingdom Photography Award", titleEs: "Premio de Fotografía del Reino", year: 2022, category: "solo",
     directory: "solo show/5 The Kingdom Photo Awards",
     files: [
           "Th Kingdom Award_ ARt JAmeer 1.jpg",
@@ -193,7 +193,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "mundo-nuevo-gallery", title: "Borders and Territories · Mundo Nuevo Gallery", year: 2019, category: "solo",
+    slug: "mundo-nuevo-gallery", title: "Borders and Territories · Mundo Nuevo Gallery", titleEs: "Fronteras y territorios · Galería Mundo Nuevo", year: 2019, category: "solo",
     directory: "solo show/6 Mundo Nuevo GAllery",
     files: [
           "CG4A5736.JPG",
@@ -211,7 +211,7 @@ const exhibitionDefinitions = [
     ]
   },
   {
-    slug: "estacion-mapocho-chile", title: "Urban Territories · Estación Mapocho", year: 2018, category: "solo",
+    slug: "estacion-mapocho-chile", title: "Urban Territories · Estación Mapocho", titleEs: "Territorios urbanos · Estación Mapocho", year: 2018, category: "solo",
     directory: "solo show/7 Estacion Mapocho Chile",
     files: [
           "Territorios urbanos-Cultural Mapocho_Chile_.jpeg",
@@ -249,6 +249,7 @@ export const exhibitionProjects = exhibitionDefinitions.map(definition => {
   return {
     slug: definition.slug,
     title: definition.title,
+    titleEs: definition.titleEs,
     year: definition.year,
     category: definition.category,
     imageUrl: images[0]?.imageUrl || '',

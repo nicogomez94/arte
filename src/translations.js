@@ -285,7 +285,7 @@ export function translateSiteContent(content, language) {
       ...content.exhibitions,
       projects: (content.exhibitions.projects || []).map(project => ({
         ...project,
-        title: project.title,
+        title: project.titleEs?.trim() || project.title,
         intro: project.introEs?.trim() || exhibitionStatementsEs[project.slug] || project.intro,
         images: (project.images || []).map(translateArtwork)
       }))

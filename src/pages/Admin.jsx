@@ -279,12 +279,16 @@ function MediaItemFields({ item, path, onChange, isExhibition = false }) {
 }
 
 function ProjectFields({ project, path, onChange, onMove, onAdd, onRemove, projectCategory }) {
+  const isExhibition = Boolean(projectCategory);
   return (
     <div className="admin-project-editor">
       <section className="admin-field-section">
         <header><h4>Datos del proyecto</h4><p>Información principal que identifica esta entrada.</p></header>
         <div className="admin-content-fields">
-          <label className="admin-content-field field-wide"><span>Título</span><input type="text" value={project.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} /></label>
+          <label className="admin-content-field field-wide"><span>{isExhibition ? 'Título · Inglés' : 'Título'}</span><input type="text" value={project.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} /></label>
+          {isExhibition ? (
+            <label className="admin-content-field field-wide"><span>Título · Español</span><input type="text" value={project.titleEs || ''} onChange={event => onChange([...path, 'titleEs'], event.target.value)} /></label>
+          ) : null}
         </div>
       </section>
       <section className="admin-field-section">
@@ -775,10 +779,10 @@ export default function Admin() {
       const project = path[0] === 'projects' && Number.isInteger(path[1]) ? next.projects[path[1]] : null;
       if (kind === 'projects') {
         const slug = uniqueId(active === 'work' ? 'nuevo-work' : 'nueva-exhibition');
-        const title = active === 'work' ? 'Nuevo work' : 'Nueva exhibition';
+        const title = active === 'work' ? 'Nuevo work' : 'New exhibition';
         const image = { id: uniqueId('imagen'), mediaType: 'image', title: 'Nueva imagen', series: title, technique: '', description: '', imageUrl: '/exhibicion-01.png', alt: 'Nueva imagen' };
         list.push({
-          slug, title, imageUrl: '/exhibicion-01.png',
+          slug, title, ...(active === 'exhibitions' ? { titleEs: 'Nueva exposición' } : {}), imageUrl: '/exhibicion-01.png',
           intro: '', introEs: '', statementVersion: 1,
           images: [image], ...(active === 'exhibitions' ? { category: exhibitionCategory } : {})
         });

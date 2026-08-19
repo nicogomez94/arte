@@ -271,14 +271,18 @@ export const mergeSiteContent = (stored = {}) => {
       images
     };
   });
-  merged.exhibitions.projects = (merged.exhibitions.projects || []).map(project => normalizeProjectMedia({
-    ...project,
-    intro: typeof project.intro === 'string' ? project.intro : '',
-    introEs: typeof project.introEs === 'string'
-      ? project.introEs
-      : (exhibitionStatementsEs[project.slug] || ''),
-    statementVersion: 1
-  }));
+  merged.exhibitions.projects = (merged.exhibitions.projects || []).map(project => {
+    const sourceProject = exhibitions.find(item => item.slug === project.slug);
+    return normalizeProjectMedia({
+      ...project,
+      titleEs: project.titleEs?.trim() || sourceProject?.titleEs || '',
+      intro: typeof project.intro === 'string' ? project.intro : '',
+      introEs: typeof project.introEs === 'string'
+        ? project.introEs
+        : (exhibitionStatementsEs[project.slug] || ''),
+      statementVersion: 1
+    });
+  });
   return merged;
 };
 

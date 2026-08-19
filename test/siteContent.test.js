@@ -43,6 +43,31 @@ test('Spanish translation preserves Contact and CV image URLs', () => {
   assert.equal(translated.contact.links[0].label, 'E-mail');
 });
 
+test('Spanish translation uses the editable Exhibition title', () => {
+  const content = {
+    global: {},
+    home: {},
+    work: { projects: [] },
+    exhibitions: {
+      projects: [{
+        slug: 'art-fairs',
+        title: 'Art Fairs',
+        titleEs: 'Ferias de arte',
+        intro: '',
+        images: []
+      }]
+    },
+    statement: { paragraphs: [] },
+    about: {},
+    contact: { links: [] },
+    cv: { intro: '', sections: [] },
+    workshops: { title: 'Workshops', rows: [] }
+  };
+
+  const translated = translateSiteContent(content, 'es');
+  assert.equal(translated.exhibitions.projects[0].title, 'Ferias de arte');
+});
+
 test('CV rich-text translation changes visible copy without touching link destinations', () => {
   const html = '<ul><li><a href="https://example.com/Page">Photography magazine interview</a></li></ul>';
   assert.equal(
