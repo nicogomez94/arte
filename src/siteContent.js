@@ -273,9 +273,20 @@ export const mergeSiteContent = (stored = {}) => {
   });
   merged.exhibitions.projects = (merged.exhibitions.projects || []).map(project => {
     const sourceProject = exhibitions.find(item => item.slug === project.slug);
+    const projectImages = Array.isArray(project.images) ? project.images : (project.gridImages || []);
+    const images = projectImages.map((image, index) => {
+      const sourceImage = sourceProject?.images?.find(item => (
+        item.id === image.id || item.imageUrl === image.imageUrl
+      )) || sourceProject?.images?.[index];
+      return {
+        ...image,
+        titleEs: image.titleEs?.trim() || sourceImage?.titleEs || image.title || ''
+      };
+    });
     return normalizeProjectMedia({
       ...project,
       titleEs: project.titleEs?.trim() || sourceProject?.titleEs || '',
+      images,
       intro: typeof project.intro === 'string' ? project.intro : '',
       introEs: typeof project.introEs === 'string'
         ? project.introEs

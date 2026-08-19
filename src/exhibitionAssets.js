@@ -237,6 +237,7 @@ export const exhibitionProjects = exhibitionDefinitions.map(definition => {
   const images = definition.files.map((file, index) => ({
     id: `${definition.slug}-${index + 1}`,
     title: `${definition.title} ${String(index + 1).padStart(2, '0')}`,
+    titleEs: `${definition.titleEs} ${String(index + 1).padStart(2, '0')}`,
     series: definition.title,
     year: definition.year,
     technique: 'Exhibition view',

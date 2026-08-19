@@ -266,11 +266,24 @@ function MediaItemFields({ item, path, onChange, isExhibition = false }) {
   return (
     <div className="admin-media-editor">
       <header className="admin-editor-subheading"><span>Fuente</span><b>{type === 'image' ? 'Imagen' : type === 'video' ? 'Video' : 'YouTube'}</b></header>
-      <label className="admin-content-field admin-media-title-field">
-        <span>{isExhibition ? 'Texto al pie' : 'Título'}</span>
-        <input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} />
-        {isExhibition ? <small>Se muestra debajo de la imagen y en la galería ampliada.</small> : null}
-      </label>
+      {isExhibition ? (
+        <>
+          <label className="admin-content-field admin-media-title-field">
+            <span>Texto al pie · Inglés</span>
+            <input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} />
+          </label>
+          <label className="admin-content-field admin-media-title-field">
+            <span>Texto al pie · Español</span>
+            <input type="text" value={item.titleEs || ''} onChange={event => onChange([...path, 'titleEs'], event.target.value)} />
+            <small>Se muestra debajo de la imagen y en la galería ampliada.</small>
+          </label>
+        </>
+      ) : (
+        <label className="admin-content-field admin-media-title-field">
+          <span>Título</span>
+          <input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} />
+        </label>
+      )}
       {type === 'image' && <ImageField label="Imagen" value={item.imageUrl} onChange={imageUrl => onChange(path, { ...item, mediaType: 'image', imageUrl })} />}
       {type === 'video' && <VideoField item={item} path={path} onChange={onChange} />}
       {type === 'youtube' && <YouTubeField item={item} path={path} onChange={onChange} />}
@@ -807,9 +820,10 @@ export default function Admin() {
         const base = {
           id: uniqueId(mediaType), mediaType, series: project?.title || '', technique: '', description: '', alt: ''
         };
-        if (mediaType === 'video') list.push({ ...base, title: 'Nuevo video', imageUrl: '', posterUrl: '' });
-        else if (mediaType === 'youtube') list.push({ ...base, title: 'Nuevo video de YouTube', imageUrl: '', posterUrl: '', embedUrl: '' });
-        else list.push({ ...base, title: 'Nueva imagen', imageUrl: project?.imageUrl || '/exhibicion-01.png', alt: 'Nueva imagen' });
+        const bilingualTitle = (title, titleEs) => active === 'exhibitions' ? { title, titleEs } : { title: titleEs };
+        if (mediaType === 'video') list.push({ ...base, ...bilingualTitle('New video', 'Nuevo video'), imageUrl: '', posterUrl: '' });
+        else if (mediaType === 'youtube') list.push({ ...base, ...bilingualTitle('New YouTube video', 'Nuevo video de YouTube'), imageUrl: '', posterUrl: '', embedUrl: '' });
+        else list.push({ ...base, ...bilingualTitle('New image', 'Nueva imagen'), imageUrl: project?.imageUrl || '/exhibicion-01.png', alt: 'Nueva imagen' });
       }
       return next;
     });

@@ -54,7 +54,7 @@ test('Spanish translation uses the editable Exhibition title', () => {
         title: 'Art Fairs',
         titleEs: 'Ferias de arte',
         intro: '',
-        images: []
+        images: [{ title: 'Art Fairs 01', titleEs: 'Ferias de arte 01' }]
       }]
     },
     statement: { paragraphs: [] },
@@ -66,6 +66,7 @@ test('Spanish translation uses the editable Exhibition title', () => {
 
   const translated = translateSiteContent(content, 'es');
   assert.equal(translated.exhibitions.projects[0].title, 'Ferias de arte');
+  assert.equal(translated.exhibitions.projects[0].images[0].title, 'Ferias de arte 01');
 });
 
 test('CV rich-text translation changes visible copy without touching link destinations', () => {
