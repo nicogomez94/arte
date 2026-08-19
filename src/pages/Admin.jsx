@@ -546,8 +546,8 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
           <label className="admin-content-field" key={key}>
             <span>{label}</span>
             <select value={fieldValue} onChange={event => onChange(fieldPath, event.target.value)}>
-              <option value="group">Group Show</option>
-              <option value="solo">Solo Show</option>
+              <option value="group">Group</option>
+              <option value="solo">Individual</option>
             </select>
           </label>
         );
@@ -896,7 +896,7 @@ export default function Admin() {
 
   const logout = async () => { await api.logout(); setAuth(false); };
   const current = sections.find(section => section.key === active);
-  const currentLabel = active === 'exhibitions' ? (exhibitionCategory === 'group' ? 'Exhibitions · Group Show' : 'Exhibitions · Solo Show') : current.label;
+  const currentLabel = active === 'exhibitions' ? (exhibitionCategory === 'group' ? 'Exhibitions · Group' : 'Exhibitions · Individual') : current.label;
   const previewRoute = active === 'exhibitions' ? `/exhibitions#${exhibitionCategory}-show` : current.route;
   if (auth === null) return <div className="admin-boot">abriendo editor…</div>;
   if (!auth) return <Login onSuccess={async () => { setAuth(true); await loadContent(); }} />;
@@ -909,7 +909,7 @@ export default function Admin() {
           {sections.map(section => section.key === 'exhibitions' ? (
             <div className={`admin-nav-group ${active === 'exhibitions' ? 'is-active' : ''}`} key={section.key}>
               <span>Exhibitions</span>
-              {[{ key: 'group', label: 'Group Show' }, { key: 'solo', label: 'Solo Show' }].map(group => (
+              {[{ key: 'group', label: 'Group' }, { key: 'solo', label: 'Individual' }].map(group => (
                 <details className="admin-nav-category" key={group.key} defaultOpen={active === 'exhibitions' && exhibitionCategory === group.key}>
                   <summary onClick={() => selectSection('exhibitions', group.key)}>
                     <span>{group.label}</span>
