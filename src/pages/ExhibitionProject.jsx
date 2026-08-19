@@ -27,10 +27,18 @@ export default function ExhibitionProject() {
         <section className="project-detail-intro" aria-labelledby="exhibition-title">
           <div className="project-detail-grid">
             <nav className="project-detail-nav project-detail-back" aria-label={t('projectNavigation')}>
-              <Link to={`/exhibitions#${project.category}-show`}>← {t('backToExhibitions')}</Link>
+              <Link to={`/exhibitions#${project.category}-show`} aria-label={t('backToExhibitions')}>
+                <span className="project-arrow" aria-hidden="true">←</span>
+                <span className="visually-hidden">{t('backToExhibitions')}</span>
+              </Link>
             </nav>
             <nav className="project-detail-nav project-detail-next" aria-label={t('nextProject')}>
-              {nextProject && <Link to={`/exhibitions/${nextProject.slug}`}>{t('nextProject')}: {nextProject.title} →</Link>}
+              {nextProject && (
+                <Link to={`/exhibitions/${nextProject.slug}`} aria-label={`${t('nextProject')}: ${nextProject.title}`}>
+                  <span className="project-arrow" aria-hidden="true">→</span>
+                  <span className="visually-hidden">{t('nextProject')}: {nextProject.title}</span>
+                </Link>
+              )}
             </nav>
             <div className="project-detail-meta">
               <h1 id="exhibition-title">{project.title}</h1>

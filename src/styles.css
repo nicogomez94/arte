@@ -3365,7 +3365,7 @@ body,
   display: block;
   overflow: hidden;
   border-bottom: 1px solid transparent;
-  color: #000;
+  color: #9c9c9c;
   text-overflow: ellipsis;
   white-space: nowrap;
   transition: color .2s ease, border-color .2s ease;
@@ -3377,28 +3377,12 @@ body,
   color: var(--bordo);
 }
 
-.contact-directory .contact-link.is-copied {
-  padding-inline: 12px;
-  background: rgba(128, 24, 34, .055);
-  box-shadow: inset 2px 0 0 var(--bordo);
-}
-
-.contact-directory .contact-link.is-copied strong,
-.contact-directory .contact-link.is-copied .contact-link-status {
-  color: var(--bordo);
-}
-
-.contact-link-status {
-  display: inline-flex;
-  gap: 7px;
-  align-items: center;
-  white-space: nowrap;
-}
-
-.contact-link-status span {
-  font: 600 8px/1 var(--sans);
-  letter-spacing: .1em;
-  text-transform: uppercase;
+.project-detail-nav .project-arrow {
+  display: block;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
 }
 
 @media (max-width: 760px) {

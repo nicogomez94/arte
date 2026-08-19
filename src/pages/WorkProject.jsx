@@ -27,10 +27,18 @@ export default function WorkProject() {
         <section className="project-detail-intro" aria-labelledby="project-title">
           <div className="project-detail-grid">
             <nav className="project-detail-nav project-detail-back" aria-label={t('projectNavigation')}>
-              <Link to="/work">← {t('backToWork')}</Link>
+              <Link to="/work" aria-label={t('backToWork')}>
+                <span className="project-arrow" aria-hidden="true">←</span>
+                <span className="visually-hidden">{t('backToWork')}</span>
+              </Link>
             </nav>
             <nav className="project-detail-nav project-detail-next" aria-label={t('nextProject')}>
-              {nextProject && <Link to={`/work/${nextProject.slug}`}>{t('nextProject')}: {nextProject.title} →</Link>}
+              {nextProject && (
+                <Link to={`/work/${nextProject.slug}`} aria-label={`${t('nextProject')}: ${nextProject.title}`}>
+                  <span className="project-arrow" aria-hidden="true">→</span>
+                  <span className="visually-hidden">{t('nextProject')}: {nextProject.title}</span>
+                </Link>
+              )}
             </nav>
             <div className="project-detail-meta">
               <h1 id="project-title">{project.title}</h1>

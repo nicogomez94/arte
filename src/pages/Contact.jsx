@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { Footer, Header } from '../components/SiteChrome';
-import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
 
 const normalizeContactHref = url => {
@@ -18,32 +16,10 @@ const getEmailAddress = link => {
   return value.includes('@') ? value : '';
 };
 
+const getGmailComposeHref = email => `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+
 export default function Contact() {
   const content = useSiteContent('contact');
-  const { t } = useLanguage();
-  const [copiedIndex, setCopiedIndex] = useState(null);
-
-  const copyEmail = async (email, index) => {
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(email);
-      } else {
-        const textarea = document.createElement('textarea');
-        textarea.value = email;
-        textarea.setAttribute('readonly', '');
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        textarea.remove();
-      }
-      setCopiedIndex(index);
-      window.setTimeout(() => setCopiedIndex(current => current === index ? null : current), 1800);
-    } catch {
-      setCopiedIndex(null);
-    }
-  };
 
   return (
     <div className="site-page contact-page">
@@ -62,16 +38,17 @@ export default function Contact() {
             <div className="contact-directory">
               {content.links.map((link, index) => (
                 getEmailAddress(link) ? (
-                  <button
-                    className={`contact-link ${copiedIndex === index ? 'is-copied' : ''}`}
-                    type="button"
+                  <a
+                    className="contact-link"
+                    href={getGmailComposeHref(getEmailAddress(link))}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     key={index}
-                    onClick={() => copyEmail(getEmailAddress(link), index)}
-                    aria-label={copiedIndex === index ? `${link.value}. ${t('emailCopied')}` : `${t('copyEmail')}: ${link.value}`}
+                    aria-label={`${link.label}: ${link.value}`}
                   >
                     <span>{link.label}</span><strong>{link.value}</strong>
-                    <b className="contact-link-status" aria-hidden="true">{copiedIndex === index ? <><span>{t('emailCopied')}</span> ✓</> : '↗'}</b>
-                  </button>
+                    <b aria-hidden="true">↗</b>
+                  </a>
                 ) : (
                   <a
                     className="contact-link"
@@ -84,7 +61,6 @@ export default function Contact() {
                   </a>
                 )
               ))}
-              <span className="visually-hidden" role="status" aria-live="polite">{copiedIndex !== null ? t('emailCopied') : ''}</span>
             </div>
           </div>
         </section>

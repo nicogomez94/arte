@@ -20,6 +20,11 @@ export function Header() {
     { key: 'group', label: t('groupShow') }
   ];
   const menuOrder = normalizeNavigationOrder(global.menuOrder);
+  const wordmarkTarget = pathname === '/work' || pathname.startsWith('/work/')
+    ? '/work'
+    : pathname === '/exhibitions' || pathname.startsWith('/exhibitions/')
+      ? '/exhibitions'
+      : '/';
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 28);
@@ -149,7 +154,7 @@ export function Header() {
   return (
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="header-inner">
-        <Link className="wordmark" to="/">
+        <Link className="wordmark" to={wordmarkTarget}>
           <span>{global.artistName}</span>
         </Link>
         <nav id="main-navigation" className={open ? 'site-nav is-open' : 'site-nav'} aria-label={t('mainNavigation')}>
