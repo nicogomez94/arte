@@ -387,7 +387,7 @@ img { display: block; max-width: 100%; }
   .slideshow-stage { padding: 12px; }
   .slideshow-stage figure { inset: 12px; }
   .slideshow-footer { padding: 14px 16px 20px; grid-template-columns: 1fr auto; }
-  .slide-caption h2 { font-size: 22px; }
+  .slide-caption h2 { font-size: 14px; }
   .slide-progress { position: absolute; bottom: 0; left: 16px; right: 16px; width: auto; }
   .slide-navigation { gap: 10px; }
   .slide-navigation button { width: 35px; height: 35px; }
@@ -1221,6 +1221,17 @@ h1, h2, h3, strong, b { font-weight: 100; }
   height: auto;
   aspect-ratio: auto;
   object-fit: contain;
+}
+
+.artwork-thumb-column .artwork-thumb-caption {
+  margin-top: 10px;
+  display: block;
+  color: #000;
+  font-size: 11px;
+  line-height: 1.45;
+  letter-spacing: .035em;
+  text-align: left;
+  text-transform: none;
 }
 
 @media (max-width: 680px) {
@@ -3340,10 +3351,7 @@ body,
 
 /* Quiet navigation aligned with the two columns of project introductions. */
 .project-detail-grid {
-  grid-template-areas:
-    "back next"
-    "meta copy";
-  row-gap: 30px;
+  grid-template-areas: "meta copy";
 }
 
 .project-detail-back { grid-area: back; }
@@ -3389,7 +3397,6 @@ body,
   .project-detail-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
-      "back next"
       "meta meta"
       "copy copy";
     column-gap: 16px;

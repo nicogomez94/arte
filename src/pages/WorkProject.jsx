@@ -26,6 +26,7 @@ export default function WorkProject() {
       <main className="project-main">
         <section className="project-detail-intro" aria-labelledby="project-title">
           <div className="project-detail-grid">
+            {/* Project navigation intentionally hidden. Keep this markup ready in case it returns.
             <nav className="project-detail-nav project-detail-back" aria-label={t('projectNavigation')}>
               <Link to="/work" aria-label={t('backToWork')}>
                 <span className="project-arrow" aria-hidden="true">←</span>
@@ -39,7 +40,7 @@ export default function WorkProject() {
                   <span className="visually-hidden">{t('nextProject')}: {nextProject.title}</span>
                 </Link>
               )}
-            </nav>
+            </nav> */}
             <div className="project-detail-meta">
               <h1 id="project-title">{project.title}</h1>
             </div>

@@ -261,12 +261,16 @@ function ProjectCovers({ projects, onChange, category = null }) {
   );
 }
 
-function MediaItemFields({ item, path, onChange }) {
+function MediaItemFields({ item, path, onChange, isExhibition = false }) {
   const type = mediaTypeFor(item);
   return (
     <div className="admin-media-editor">
       <header className="admin-editor-subheading"><span>Fuente</span><b>{type === 'image' ? 'Imagen' : type === 'video' ? 'Video' : 'YouTube'}</b></header>
-      <label className="admin-content-field admin-media-title-field"><span>Título</span><input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} /></label>
+      <label className="admin-content-field admin-media-title-field">
+        <span>{isExhibition ? 'Texto al pie' : 'Título'}</span>
+        <input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} />
+        {isExhibition ? <small>Se muestra debajo de la imagen y en la galería ampliada.</small> : null}
+      </label>
       {type === 'image' && <ImageField label="Imagen" value={item.imageUrl} onChange={imageUrl => onChange(path, { ...item, mediaType: 'image', imageUrl })} />}
       {type === 'video' && <VideoField item={item} path={path} onChange={onChange} />}
       {type === 'youtube' && <YouTubeField item={item} path={path} onChange={onChange} />}
@@ -505,7 +509,7 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
   const isProject = path[0] === 'projects' && path.length === 2;
   if (isProject) return <ProjectFields project={value} path={path} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />;
   const isMediaItem = path.at(-2) === 'images' && typeof path.at(-1) === 'number';
-  if (isMediaItem) return <MediaItemFields item={value} path={path} onChange={onChange} />;
+  if (isMediaItem) return <MediaItemFields item={value} path={path} onChange={onChange} isExhibition={Boolean(projectCategory)} />;
   const isCvSection = path.at(-2) === 'sections' && typeof path.at(-1) === 'number';
   if (isCvSection) return <CvSectionFields section={value} path={path} onChange={onChange} />;
 

@@ -7,7 +7,7 @@ const getColumnCount = () => {
   return 3;
 };
 
-export default function MasonryThumbGrid({ items, getKey, onOpen, keyPrefix = 'masonry' }) {
+export default function MasonryThumbGrid({ items, getKey, onOpen, keyPrefix = 'masonry', showCaptions = false }) {
   const [columnCount, setColumnCount] = useState(getColumnCount);
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export default function MasonryThumbGrid({ items, getKey, onOpen, keyPrefix = 'm
                   </span>
                 </>
               ) : <img src={item.imageUrl} alt="" />}
+              {showCaptions && item.title ? <span className="artwork-thumb-caption">{item.title}</span> : null}
             </button>
           ))}
         </div>
