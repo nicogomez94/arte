@@ -112,10 +112,9 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
           <h2>{context ? (artwork.title || artwork.series || context) : (caption || artwork.series || artwork.title)}</h2>
         </div>
         <div className="slide-navigation">
-          {/* Navigation arrows intentionally hidden. Keep these controls ready in case they return.
-          <button type="button" onClick={() => move(-1)} aria-label={t('previousArtwork')}>←</button> */}
+          <button type="button" onClick={() => move(-1)} aria-label={t('previousArtwork')}>←</button>
           <span>{String(index + 1).padStart(2, '0')} / {String(artworks.length).padStart(2, '0')}</span>
-          {/* <button type="button" onClick={() => move(1)} aria-label={t('nextArtwork')}>→</button> */}
+          <button type="button" onClick={() => move(1)} aria-label={t('nextArtwork')}>→</button>
         </div>
         <div className="slide-progress" aria-hidden="true"><span key={`${index}-${playing}`} className={playing ? 'is-playing' : ''} /></div>
       </footer>
