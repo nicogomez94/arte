@@ -381,16 +381,18 @@ img { display: block; max-width: 100%; }
   .contact-directory strong { font-size: 18px; }
   .contact-visual { padding: 90px 22px; display: flex; flex-direction: column; gap: 55px; align-items: stretch; }
   .contact-visual h2 { font-size: 50px; }
-  .fullscreen-gallery { grid-template-rows: 62px minmax(0,1fr) 154px; }
+  .fullscreen-gallery { grid-template-rows: 62px minmax(0,1fr) 118px; }
   .slideshow-header { padding: 0 16px; }
   .slideshow-header div { gap: 15px; }
   .slideshow-stage { padding: 12px; }
   .slideshow-stage figure { inset: 12px; }
-  .slideshow-footer { padding: 14px 16px 20px; grid-template-columns: 1fr auto; }
-  .slide-caption h2 { font-size: 14px; }
-  .slide-progress { position: absolute; bottom: 0; left: 16px; right: 16px; width: auto; }
-  .slide-navigation { gap: 10px; }
-  .slide-navigation button { width: 35px; height: 35px; }
+  .slideshow-footer { padding: 10px 12px 15px; grid-template-columns: minmax(0,1fr) auto; column-gap: 8px; }
+  .slide-caption span { font-size: 7px; letter-spacing: .08em; }
+  .slide-caption h2 { margin: 4px 0 2px; font-size: 12px; line-height: 1.15; }
+  .slide-progress { position: absolute; bottom: 0; left: 12px; right: 12px; width: auto; }
+  .slide-navigation { gap: 5px; }
+  .slide-navigation button { width: 28px; height: 28px; padding: 0; font-size: 16px; line-height: 1; }
+  .slide-navigation span { min-width: 40px; font-size: 8px; letter-spacing: .06em; }
   .admin-login { display: block; padding: 100px 0 50px; }
   .admin-login > section { padding: 40px 25px; }
   .admin-login figure { display: none; }
