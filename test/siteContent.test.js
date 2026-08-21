@@ -73,6 +73,31 @@ test('Spanish translation uses the editable Exhibition title', () => {
   assert.equal(translated.exhibitions.projects[0].images[1].title, '');
 });
 
+test('Spanish translation uses the editable Work title', () => {
+  const content = {
+    global: {},
+    home: {},
+    work: {
+      projects: [{
+        slug: 'the-rock-cycle',
+        title: 'The Rock Cycle',
+        titleEs: 'Ciclo geológico editable',
+        intro: '',
+        images: []
+      }]
+    },
+    exhibitions: { projects: [] },
+    statement: { paragraphs: [] },
+    about: {},
+    contact: { links: [] },
+    cv: { intro: '', sections: [] },
+    workshops: { title: 'Workshops', rows: [] }
+  };
+
+  const translated = translateSiteContent(content, 'es');
+  assert.equal(translated.work.projects[0].title, 'Ciclo geológico editable');
+});
+
 test('CV rich-text translation changes visible copy without touching link destinations', () => {
   const html = '<ul><li><a href="https://example.com/Page">Photography magazine interview</a></li></ul>';
   assert.equal(

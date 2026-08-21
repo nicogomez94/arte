@@ -228,15 +228,16 @@ const spanishGlobal = {
 // These titles are transcribed from the Spanish headings in the Word file
 // stored beside each project. Projects without a source document deliberately
 // keep their existing title until the missing copy is supplied.
-const spanishWorkTitles = {
+export const spanishWorkTitles = {
   'unfixed-landscapes': 'Paisajes inestables, sistemas heridos',
   'the-rock-cycle': 'El ciclo de la roca',
-  unearth: 'Desenterrar',
+  unearth: 'Desenterrar / en curso',
   'landscape-on-landscape': 'Paisaje sobre paisaje',
   kutho: 'Kutho',
   'brief-shape': 'Forma breve',
   'urban-territories': 'Territorios urbanos',
   borders: 'Frontera',
+  'about-india': 'Sobre India',
   'uncertain-nature-book': 'Naturaleza incierta'
 };
 
@@ -277,7 +278,7 @@ export function translateSiteContent(content, language) {
       ...content.work,
       projects: localizedWorkProjects.map(project => ({
         ...project,
-        title: spanishWorkTitles[project.slug] || project.title,
+        title: project.titleEs?.trim() || spanishWorkTitles[project.slug] || project.title,
         intro: project.introEs?.trim() || workStatementsEs[project.slug] || project.intro,
         images: (project.images || []).map(translateArtwork)
       }))

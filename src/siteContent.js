@@ -6,7 +6,7 @@ import { projects } from './projects';
 import { api } from './api';
 import { useLanguage } from './i18n';
 import { exhibitionStatementsEs, workStatementsEs } from './spanishStatements';
-import { statementParagraphsEs, translateSiteContent } from './translations';
+import { spanishWorkTitles, statementParagraphsEs, translateSiteContent } from './translations';
 import { normalizeProjectMedia } from './mediaContent';
 import { normalizeCvItem, normalizeCvSections } from './cvItems';
 import { mergeContentSections, normalizeStoredContent } from './contentMerge';
@@ -53,6 +53,7 @@ const workProjects = workIndexItems.map(item => {
   }];
   return {
     ...item,
+    titleEs: spanishWorkTitles[item.slug] || item.title,
     intro: project.intro || '',
     introEs: workStatementsEs[item.slug] || '',
     statementVersion: 1,
@@ -246,7 +247,12 @@ export const mergeSiteContent = (stored = {}) => {
       images: (Array.isArray(project.images) ? project.images : project.gridImages || []).filter(item => !isRemovedProjectMedia(item))
     });
     const sourceProject = projects.find(item => item.slug === project.slug);
+    const sourceWorkProject = workProjects.find(item => item.slug === project.slug);
     const savedProject = normalizedStored.work?.projects?.find(item => item.slug === project.slug);
+    const hasSavedSpanishTitle = Object.prototype.hasOwnProperty.call(savedProject || {}, 'titleEs');
+    const titleEs = hasSavedSpanishTitle
+      ? String(project.titleEs ?? '')
+      : (sourceWorkProject?.titleEs || spanishWorkTitles[project.slug] || project.title || '');
     const statementsWereSeeded = Number(savedProject?.statementVersion || 0) >= 1;
     const intro = statementsWereSeeded && typeof project.intro === 'string'
       ? project.intro
@@ -258,7 +264,7 @@ export const mergeSiteContent = (stored = {}) => {
       item.mediaType === 'video' || item.mediaType === 'youtube'
     ));
     if (!canonicalVideos.length) {
-      return { ...project, intro, introEs, statementVersion: 1 };
+      return { ...project, titleEs, intro, introEs, statementVersion: 1 };
     }
 
     const isObsoleteUncertainVideo = item => item.imageUrl?.endsWith('/IMG_3675.m4v');
@@ -267,6 +273,7 @@ export const mergeSiteContent = (stored = {}) => {
     const images = [...currentImages, ...canonicalVideos.filter(item => !currentImageUrls.has(item.imageUrl))];
     return {
       ...project,
+      titleEs,
       intro,
       introEs,
       statementVersion: 1,
