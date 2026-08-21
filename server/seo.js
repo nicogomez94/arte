@@ -184,8 +184,12 @@ const jsonLdFor = seo => {
 export const renderSeoHead = seo => {
   const canonical = `${SITE_URL}${seo.path === '/' ? '/' : seo.path}`;
   const image = absoluteUrl(seo.image);
+  const preload = seo.path === '/' && seo.image && !String(seo.image).startsWith('data:')
+    ? `<link rel="preload" as="image" href="${escapeHtml(image)}" fetchpriority="high" />`
+    : '';
   const robots = seo.noIndex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
   return `<!--seo:head:start-->
+    ${preload}
     <title>${escapeHtml(seo.title)}</title>
     <meta name="description" content="${escapeHtml(seo.description)}" />
     <meta name="robots" content="${robots}" />
