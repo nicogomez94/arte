@@ -25,14 +25,15 @@ export default function Contact() {
     <div className="site-page contact-page">
       <Header />
       <main className="contact-main">
+        <h1 className="visually-hidden">{content.title} · Andrea Alkalay</h1>
         <section className="contact-hero">
           <figure className="contact-portrait reveal">
-            <img src={content.imageUrl} alt={content.imageAlt} />
+            <img src={content.imageUrl} alt={content.imageAlt} loading="eager" decoding="async" fetchPriority="high" />
           </figure>
           <div className="contact-content reveal-delay">
             <div className="contact-heading">
               {/* <span className="eyebrow">Contact</span> */}
-              <h4>{content.title}</h4>
+              <div className="contact-display-title">{content.title}</div>
               <p>{content.subtitle}</p>
             </div>
             <div className="contact-directory">

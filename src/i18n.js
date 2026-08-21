@@ -1,4 +1,4 @@
-import { createContext, createElement, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, createElement, useContext, useMemo, useState } from 'react';
 
 const messages = {
   en: {
@@ -95,19 +95,6 @@ const LanguageContext = createContext({
 export function LanguageProvider({ children }) {
   // English intentionally remains the base language after every full page load.
   const [language, setLanguage] = useState('en');
-
-  useEffect(() => {
-    document.documentElement.lang = language;
-    const description = document.querySelector('meta[name="description"]');
-    document.title = language === 'es'
-      ? 'Andrea Alkalay · Artista visual'
-      : 'Andrea Alkalay · Visual artist';
-    if (description) {
-      description.content = language === 'es'
-        ? 'Andrea Alkalay — artista visual. Fotografía expandida, materia, paisaje y territorio.'
-        : 'Andrea Alkalay — visual artist. Expanded photography, matter, landscape and territory.';
-    }
-  }, [language]);
 
   const value = useMemo(() => ({
     language,

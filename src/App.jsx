@@ -11,6 +11,7 @@ import WorkIndex from './pages/WorkIndex';
 import WorkProject from './pages/WorkProject';
 import Statement from './pages/Statement';
 import Workshops from './pages/Workshops';
+import Seo from './components/Seo';
 import { LanguageProvider } from './i18n';
 import { SiteContentProvider } from './siteContent';
 
@@ -36,6 +37,7 @@ export default function App() {
   return (
     <LanguageProvider>
       <SiteContentProvider>
+        <Seo />
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />

@@ -253,7 +253,7 @@ export const exhibitionProjects = exhibitionDefinitions.map(definition => {
     titleEs: definition.titleEs,
     year: definition.year,
     category: definition.category,
-    imageUrl: images[0]?.imageUrl || '',
+    imageUrl: `/optimized/exhibition-${definition.slug}-cover.webp`,
     intro: introByCategory[definition.category],
     images
   };

@@ -227,6 +227,8 @@ export const mergeSiteContent = (stored = {}) => {
   // Statements kept beside each Work image archive are the canonical public
   // project texts. Seed both languages once, then preserve all admin edits.
   merged.work.projects = (merged.work.projects || []).map(project => {
+    const optimizedCover = workIndexItems.find(item => item.slug === project.slug)?.imageUrl;
+    const legacyDefaultCover = projectAssets[project.slug]?.[0]?.imageUrl;
     const isRemovedProjectMedia = item => (
       project.slug === 'uncertain-nature-book' && (
         item.mediaType === 'video' ||
@@ -238,8 +240,8 @@ export const mergeSiteContent = (stored = {}) => {
     );
     project = normalizeProjectMedia({
       ...project,
-      imageUrl: isRemovedProjectMedia({ imageUrl: project.imageUrl })
-        ? (projectAssets[project.slug]?.[0]?.imageUrl || '')
+      imageUrl: isRemovedProjectMedia({ imageUrl: project.imageUrl }) || project.imageUrl === legacyDefaultCover
+        ? (optimizedCover || legacyDefaultCover || '')
         : project.imageUrl,
       images: (Array.isArray(project.images) ? project.images : project.gridImages || []).filter(item => !isRemovedProjectMedia(item))
     });
@@ -286,6 +288,9 @@ export const mergeSiteContent = (stored = {}) => {
     });
     return normalizeProjectMedia({
       ...project,
+      imageUrl: project.imageUrl === sourceProject?.images?.[0]?.imageUrl
+        ? sourceProject.imageUrl
+        : project.imageUrl,
       titleEs: project.titleEs?.trim() || sourceProject?.titleEs || '',
       images,
       intro: typeof project.intro === 'string' ? project.intro : '',

@@ -13,12 +13,19 @@ export default function WorkIndex() {
     <div className="site-page index-page">
       <Header />
       <main className="visual-index-main" aria-label={t('workIndex')}>
+        <h1 className="visually-hidden">{t('workIndex')} · Andrea Alkalay</h1>
         <div className="visual-index-grid">
           {columns.map((column, columnIndex) => (
             <div className="visual-index-column" key={columnIndex}>
               {column.map(({ item, sourceIndex }, itemIndex) => (
                 <Link className={`visual-index-card visual-index-card-${(columnIndex + itemIndex) % 6}`} style={{ '--mobile-order': sourceIndex }} to={`/work/${item.slug}`} key={item.slug}>
-                  <img src={item.imageUrl} alt="" />
+                  <img
+                    src={item.imageUrl}
+                    alt={`${item.title} · Andrea Alkalay`}
+                    loading={sourceIndex < 3 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    fetchPriority={sourceIndex === 0 ? 'high' : 'auto'}
+                  />
                   <h2>{item.title}</h2>
                 </Link>
               ))}

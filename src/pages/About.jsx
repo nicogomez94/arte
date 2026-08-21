@@ -15,7 +15,7 @@ export default function About() {
             <p>{content.role}</p>
           </div>
           <figure className="about-portrait reveal-delay">
-            <img src={content.portraitImageUrl} alt={content.portraitImageAlt} />
+            <img src={content.portraitImageUrl} alt={content.portraitImageAlt} loading="eager" decoding="async" fetchPriority="high" />
           </figure>
         </section>
 
@@ -31,7 +31,7 @@ export default function About() {
 
         <section className="about-detail">
           <figure>
-            <img src={content.detailImageUrl} alt={content.detailImageAlt} />
+            <img src={content.detailImageUrl} alt={content.detailImageAlt} loading="lazy" decoding="async" />
             <figcaption>{content.detailCaption}</figcaption>
           </figure>
           <div className="about-detail-copy">

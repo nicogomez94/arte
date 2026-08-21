@@ -29,11 +29,12 @@ export default function Cv() {
     <div className="site-page cv-page">
       <Header />
       <main className="cv-main">
+        <h1 className="visually-hidden">{t('biography')}</h1>
         <section className="cv-masonry-grid" aria-label={t('biographyDetails')}>
           <div className="cv-masonry-column">
             <div className="cv-profile reveal" style={{ '--cv-flow-order': 0 }} aria-label={t('biography')}>
               <figure className="cv-portrait">
-                <img src={content.imageUrl} alt={content.imageAlt} />
+                <img src={content.imageUrl} alt={content.imageAlt} loading="eager" decoding="async" fetchPriority="high" />
               </figure>
               <div className="cv-intro">
                 <div

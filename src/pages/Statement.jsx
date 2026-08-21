@@ -9,7 +9,7 @@ export default function Statement() {
       <main className="statement-main">
         <section className="statement-layout" aria-labelledby="statement-title">
           <figure className="statement-image reveal">
-            <img src={content.imageUrl} alt={content.imageAlt} />
+            <img src={content.imageUrl} alt={content.imageAlt} loading="eager" decoding="async" fetchPriority="high" />
           </figure>
 
           <div className="statement-content reveal-delay">

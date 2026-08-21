@@ -338,6 +338,8 @@ export const projectAssets = Object.fromEntries(
   Object.entries(workFiles).map(([slug, project]) => [slug, makeWorkSlides(project)])
 );
 
+const optimizedWorkCover = slug => `/optimized/work-${slug}-cover.webp`;
+
 const fallbackSlide = ({ slug, title, series = title, year, file }, index = 0) => makeSlide({
   slug,
   title,
@@ -348,16 +350,16 @@ const fallbackSlide = ({ slug, title, series = title, year, file }, index = 0) =
 }, index);
 
 export const workIndexItems = [
-  { slug: 'unfixed-landscapes', title: 'Unfixed Landscapes', year: 2026, imageUrl: projectAssets['unfixed-landscapes'][0].imageUrl },
-  { slug: 'the-rock-cycle', title: 'The Rock Cycle', year: 2024, imageUrl: projectAssets['the-rock-cycle'][0].imageUrl },
-  { slug: 'unearth', title: 'Unearth / ongoing', year: 2026, imageUrl: projectAssets.unearth[0].imageUrl },
-  { slug: 'landscape-on-landscape', title: 'Landscape on Landscape', year: 2025, imageUrl: projectAssets['landscape-on-landscape'][0].imageUrl },
-  { slug: 'kutho', title: 'Kutho', year: 2021, imageUrl: projectAssets.kutho[0].imageUrl },
-  { slug: 'brief-shape', title: 'Brief Form', year: 2023, imageUrl: projectAssets['brief-shape'][0].imageUrl },
-  { slug: 'urban-territories', title: 'Urban Territories', year: 2018, imageUrl: projectAssets['urban-territories'][0].imageUrl },
-  { slug: 'borders', title: 'Borders', year: 2018, imageUrl: projectAssets.borders[0].imageUrl },
-  { slug: 'about-india', title: 'About India', year: 2021, imageUrl: projectAssets['about-india'][0].imageUrl },
-  { slug: 'uncertain-nature-book', title: 'Uncertain Nature Book', year: 2022, imageUrl: projectAssets['uncertain-nature-book'][0].imageUrl }
+  { slug: 'unfixed-landscapes', title: 'Unfixed Landscapes', year: 2026, imageUrl: optimizedWorkCover('unfixed-landscapes') },
+  { slug: 'the-rock-cycle', title: 'The Rock Cycle', year: 2024, imageUrl: optimizedWorkCover('the-rock-cycle') },
+  { slug: 'unearth', title: 'Unearth / ongoing', year: 2026, imageUrl: optimizedWorkCover('unearth') },
+  { slug: 'landscape-on-landscape', title: 'Landscape on Landscape', year: 2025, imageUrl: optimizedWorkCover('landscape-on-landscape') },
+  { slug: 'kutho', title: 'Kutho', year: 2021, imageUrl: optimizedWorkCover('kutho') },
+  { slug: 'brief-shape', title: 'Brief Form', year: 2023, imageUrl: optimizedWorkCover('brief-shape') },
+  { slug: 'urban-territories', title: 'Urban Territories', year: 2018, imageUrl: optimizedWorkCover('urban-territories') },
+  { slug: 'borders', title: 'Borders', year: 2018, imageUrl: optimizedWorkCover('borders') },
+  { slug: 'about-india', title: 'About India', year: 2021, imageUrl: optimizedWorkCover('about-india') },
+  { slug: 'uncertain-nature-book', title: 'Uncertain Nature Book', year: 2022, imageUrl: optimizedWorkCover('uncertain-nature-book') }
 ];
 
 export const exhibitionProjects = [

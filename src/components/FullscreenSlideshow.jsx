@@ -105,7 +105,7 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
                 aria-label={item.alt || item.title}
                 onPlay={() => setPlaying(false)}
               />
-            ) : <img src={item.imageUrl} alt={item.alt || item.title} />}
+            ) : <img src={item.imageUrl} alt={item.alt || item.title || 'Artwork by Andrea Alkalay'} loading={itemIndex === index ? 'eager' : 'lazy'} decoding="async" />}
           </figure>
         ))}
       </div>

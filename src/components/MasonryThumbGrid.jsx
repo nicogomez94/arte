@@ -40,12 +40,12 @@ export default function MasonryThumbGrid({ items, getKey, onOpen, keyPrefix = 'm
               >
                 {item.mediaType === 'video' || item.mediaType === 'youtube' ? (
                   <>
-                    <img src={item.posterUrl} alt="" />
+                    <img src={item.posterUrl} alt={item.alt || item.title || 'Video artwork by Andrea Alkalay'} loading="lazy" decoding="async" />
                     <span className="media-play-indicator" aria-hidden="true">
                       <svg viewBox="0 0 16 18"><path d="M15 9 1 17V1z" /></svg>
                     </span>
                   </>
-                ) : <img src={item.imageUrl} alt="" />}
+                ) : <img src={item.imageUrl} alt={item.alt || item.title || 'Artwork by Andrea Alkalay'} loading="lazy" decoding="async" />}
                 {showCaptions && visibleTitle ? <span className="artwork-thumb-caption">{visibleTitle}</span> : null}
               </button>
             );
