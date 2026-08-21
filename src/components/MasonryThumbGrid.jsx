@@ -29,24 +29,27 @@ export default function MasonryThumbGrid({ items, getKey, onOpen, keyPrefix = 'm
     <div className="artwork-thumb-grid artwork-thumb-masonry" style={{ '--masonry-columns': columnCount }}>
       {columns.map((column, columnIndex) => (
         <div className="artwork-thumb-column" key={`${keyPrefix}-column-${columnIndex}`}>
-          {column.map(({ item, index }) => (
-            <button
-              type="button"
-              key={getKey(item, index)}
-              onClick={() => onOpen(item, index)}
-              className="artwork-thumb"
-            >
-              {item.mediaType === 'video' || item.mediaType === 'youtube' ? (
-                <>
-                  <img src={item.posterUrl} alt="" />
-                  <span className="media-play-indicator" aria-hidden="true">
-                    <svg viewBox="0 0 16 18"><path d="M15 9 1 17V1z" /></svg>
-                  </span>
-                </>
-              ) : <img src={item.imageUrl} alt="" />}
-              {showCaptions && item.title ? <span className="artwork-thumb-caption">{item.title}</span> : null}
-            </button>
-          ))}
+          {column.map(({ item, index }) => {
+            const visibleTitle = String(item.title || '').trim();
+            return (
+              <button
+                type="button"
+                key={getKey(item, index)}
+                onClick={() => onOpen(item, index)}
+                className="artwork-thumb"
+              >
+                {item.mediaType === 'video' || item.mediaType === 'youtube' ? (
+                  <>
+                    <img src={item.posterUrl} alt="" />
+                    <span className="media-play-indicator" aria-hidden="true">
+                      <svg viewBox="0 0 16 18"><path d="M15 9 1 17V1z" /></svg>
+                    </span>
+                  </>
+                ) : <img src={item.imageUrl} alt="" />}
+                {showCaptions && visibleTitle ? <span className="artwork-thumb-caption">{visibleTitle}</span> : null}
+              </button>
+            );
+          })}
         </div>
       ))}
     </div>

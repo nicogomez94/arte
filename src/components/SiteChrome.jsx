@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
@@ -9,8 +9,9 @@ export function Header() {
   const [openSection, setOpenSection] = useState(null);
   const [desktopSection, setDesktopSection] = useState(null);
   const [scrolled, setScrolled] = useState(false);
+  const headerRef = useRef(null);
   const desktopCloseTimer = useRef(null);
-  const { pathname } = useLocation();
+  const { pathname, search, hash } = useLocation();
   const global = useSiteContent('global');
   const { projects } = useSiteContent('work');
   const { projects: exhibitionProjects } = useSiteContent('exhibitions');
@@ -26,6 +27,14 @@ export function Header() {
       ? '/exhibitions'
       : '/';
 
+  const cancelDesktopClose = useCallback(() => window.clearTimeout(desktopCloseTimer.current), []);
+  const closeNavigation = useCallback(() => {
+    cancelDesktopClose();
+    setOpen(false);
+    setOpenSection(null);
+    setDesktopSection(null);
+  }, [cancelDesktopClose]);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 28);
     onScroll();
@@ -33,17 +42,13 @@ export function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => {
-    setOpen(false);
-    setOpenSection(null);
-    setDesktopSection(null);
-  }, [pathname]);
+  useEffect(() => closeNavigation(), [pathname, search, hash, closeNavigation]);
 
   useEffect(() => {
     document.body.classList.toggle('mobile-menu-open', open);
 
     const closeOnEscape = event => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape') closeNavigation();
     };
 
     window.addEventListener('keydown', closeOnEscape);
@@ -51,16 +56,32 @@ export function Header() {
       document.body.classList.remove('mobile-menu-open');
       window.removeEventListener('keydown', closeOnEscape);
     };
-  }, [open]);
+  }, [open, closeNavigation]);
+
+  useEffect(() => {
+    const closeOnOutsidePointer = event => {
+      if (!headerRef.current?.contains(event.target)) closeNavigation();
+    };
+    const mobileBreakpoint = window.matchMedia('(max-width: 980px)');
+    const closeOnBreakpointChange = () => closeNavigation();
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    mobileBreakpoint.addEventListener('change', closeOnBreakpointChange);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+      mobileBreakpoint.removeEventListener('change', closeOnBreakpointChange);
+    };
+  }, [closeNavigation]);
 
   useEffect(() => () => window.clearTimeout(desktopCloseTimer.current), []);
 
   const toggleSection = section => {
+    setDesktopSection(null);
     setOpenSection(current => current === section ? null : section);
   };
 
-  const cancelDesktopClose = () => window.clearTimeout(desktopCloseTimer.current);
   const openDesktopSection = section => {
+    if (window.matchMedia('(max-width: 980px)').matches) return;
     cancelDesktopClose();
     setDesktopSection(section);
   };
@@ -74,7 +95,6 @@ export function Header() {
   const desktopMenuProps = section => ({
     onMouseEnter: () => openDesktopSection(section),
     onMouseLeave: () => scheduleDesktopClose(section),
-    onPointerDownCapture: () => openDesktopSection(section),
     onFocus: () => openDesktopSection(section),
     onBlur: event => {
       const menu = event.currentTarget;
@@ -84,6 +104,17 @@ export function Header() {
     }
   });
 
+  const toggleMobileMenu = () => {
+    if (open) {
+      closeNavigation();
+      return;
+    }
+    cancelDesktopClose();
+    setDesktopSection(null);
+    setOpenSection(null);
+    setOpen(true);
+  };
+
   const renderNavigationItem = item => {
     if (item === 'work') return (
       <div
@@ -92,7 +123,7 @@ export function Header() {
         {...desktopMenuProps('work')}
       >
         <div className="nav-section-heading">
-          <NavLink className={pathname.startsWith('/work') ? 'active' : ''} to="/work" aria-haspopup="true">{global.workMenuLabel}</NavLink>
+          <NavLink className={pathname === '/work' || pathname.startsWith('/work/') ? 'active' : ''} to="/work" aria-haspopup="true" onClick={closeNavigation}>{global.workMenuLabel}</NavLink>
           <button className="mobile-submenu-toggle" type="button" onClick={() => toggleSection('work')} aria-expanded={openSection === 'work'} aria-controls="work-navigation-list" aria-label={t('toggleWork')}>
             <span />
           </button>
@@ -100,7 +131,7 @@ export function Header() {
         <div id="work-navigation-list" className="work-dropdown">
           <div className="work-dropdown-inner">
             {projects.map(project => (
-              <Link key={project.slug} to={`/work/${project.slug}`} onClick={() => setOpen(false)}>{project.title}</Link>
+              <Link key={project.slug} to={`/work/${project.slug}`} onClick={closeNavigation}>{project.title}</Link>
             ))}
           </div>
         </div>
@@ -114,7 +145,7 @@ export function Header() {
         {...desktopMenuProps('exhibitions')}
       >
         <div className="nav-section-heading">
-          <NavLink className={pathname.startsWith('/exhibitions') ? 'active' : ''} to="/exhibitions" aria-haspopup="true">{global.exhibitionsMenuLabel}</NavLink>
+          <NavLink className={pathname === '/exhibitions' || pathname.startsWith('/exhibitions/') ? 'active' : ''} to="/exhibitions" aria-haspopup="true" onClick={closeNavigation}>{global.exhibitionsMenuLabel}</NavLink>
           <button className="mobile-submenu-toggle" type="button" onClick={() => toggleSection('exhibitions')} aria-expanded={openSection === 'exhibitions'} aria-controls="exhibitions-navigation-list" aria-label={t('toggleExhibitions')}>
             <span />
           </button>
@@ -122,17 +153,14 @@ export function Header() {
         <div id="exhibitions-navigation-list" className="work-dropdown">
           <div className="work-dropdown-inner exhibition-dropdown-inner">
             {exhibitionGroups.map(group => (
-              <details className="exhibition-dropdown-group" key={group.key}>
-                <summary>
-                  <span>{group.label}</span>
-                  <svg viewBox="0 0 12 8" aria-hidden="true"><path d="m1 1 5 5 5-5" /></svg>
-                </summary>
-                <div>
+              <section className="exhibition-dropdown-group" key={group.key}>
+                <div className="exhibition-dropdown-group-heading">{group.label}</div>
+                <div className="exhibition-dropdown-links">
                   {exhibitionProjects.filter(project => project.category === group.key).map(project => (
-                    <Link key={project.slug} to={`/exhibitions/${project.slug}`} onClick={() => setOpen(false)}>{project.title}</Link>
+                    <Link key={project.slug} to={`/exhibitions/${project.slug}`} onClick={closeNavigation}>{project.title}</Link>
                   ))}
                 </div>
-              </details>
+              </section>
             ))}
           </div>
         </div>
@@ -147,14 +175,14 @@ export function Header() {
     };
     const simpleItem = simpleItems[item];
     return simpleItem
-      ? <NavLink key={item} to={simpleItem.to} onClick={() => setOpen(false)}>{simpleItem.label}</NavLink>
+      ? <NavLink key={item} to={simpleItem.to} onClick={closeNavigation}>{simpleItem.label}</NavLink>
       : null;
   };
 
   return (
-    <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
+    <header ref={headerRef} className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="header-inner">
-        <Link className="wordmark" to={wordmarkTarget}>
+        <Link className="wordmark" to={wordmarkTarget} onClick={closeNavigation}>
           <span>{global.artistName}</span>
         </Link>
         <nav id="main-navigation" className={open ? 'site-nav is-open' : 'site-nav'} aria-label={t('mainNavigation')}>
@@ -167,7 +195,7 @@ export function Header() {
           </div>
         </nav>
         <div className="header-actions">
-          <button className="language-toggle" type="button" onClick={toggleLanguage} aria-label={t('languageSelector')}>
+          <button className="language-toggle" type="button" onClick={() => { toggleLanguage(); closeNavigation(); }} aria-label={t('languageSelector')}>
             <span className={language === 'en' ? 'is-active' : undefined}>EN</span>
             <span>/</span>
             <span className={language === 'es' ? 'is-active' : undefined}>ES</span>
@@ -185,7 +213,7 @@ export function Header() {
               <svg viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M100.28 448H7.4V148.9h92.88zm-46.49-340C24.09 108 0 83.5 0 53.8A53.79 53.79 0 0 1 107.58 53.8c0 29.7-24.1 54.2-53.79 54.2zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z" /></svg>
             </a>
           </div>
-          <button className="menu-button" type="button" onClick={() => setOpen(value => !value)} aria-expanded={open} aria-controls="main-navigation" aria-label={open ? t('closeMenu') : t('openMenu')}>
+          <button className="menu-button" type="button" onClick={toggleMobileMenu} aria-expanded={open} aria-controls="main-navigation" aria-label={open ? t('closeMenu') : t('openMenu')}>
             <span /><span />
           </button>
         </div>

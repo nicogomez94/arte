@@ -57,6 +57,7 @@ export default function WorkProject() {
               keyPrefix={slug}
               getKey={artwork => `${slug}-${artwork.id}`}
               onOpen={(_artwork, index) => { setStartIndex(index); setOpen(true); }}
+              showCaptions
             />
           </section>
         ) : <p className="empty-state">{global.noImagesLabel}</p>}

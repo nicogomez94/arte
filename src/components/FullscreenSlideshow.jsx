@@ -53,6 +53,9 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
 
   if (!open || !artworks.length) return null;
   const artwork = activeArtwork;
+  const slideTitle = String(context
+    ? (artwork.title || '')
+    : (caption || artwork.series || artwork.title || '')).trim();
 
   return (
     <div
@@ -109,7 +112,7 @@ export default function FullscreenSlideshow({ artworks, open, initialIndex = 0, 
       <footer className="slideshow-footer">
         <div className="slide-caption">
           {context ? <span>{context}</span> : null}
-          <h2>{context ? (artwork.title || artwork.series || context) : (caption || artwork.series || artwork.title)}</h2>
+          {slideTitle ? <h2>{slideTitle}</h2> : null}
         </div>
         <div className="slide-navigation">
           <button type="button" onClick={() => move(-1)} aria-label={t('previousArtwork')}>←</button>

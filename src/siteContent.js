@@ -278,9 +278,10 @@ export const mergeSiteContent = (stored = {}) => {
       const sourceImage = sourceProject?.images?.find(item => (
         item.id === image.id || item.imageUrl === image.imageUrl
       )) || sourceProject?.images?.[index];
+      const hasSavedSpanishTitle = Object.prototype.hasOwnProperty.call(image, 'titleEs');
       return {
         ...image,
-        titleEs: image.titleEs?.trim() || sourceImage?.titleEs || image.title || ''
+        titleEs: hasSavedSpanishTitle ? String(image.titleEs ?? '') : (sourceImage?.titleEs || '')
       };
     });
     return normalizeProjectMedia({

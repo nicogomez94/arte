@@ -261,29 +261,20 @@ function ProjectCovers({ projects, onChange, category = null }) {
   );
 }
 
-function MediaItemFields({ item, path, onChange, isExhibition = false }) {
+function MediaItemFields({ item, path, onChange }) {
   const type = mediaTypeFor(item);
   return (
     <div className="admin-media-editor">
       <header className="admin-editor-subheading"><span>Fuente</span><b>{type === 'image' ? 'Imagen' : type === 'video' ? 'Video' : 'YouTube'}</b></header>
-      {isExhibition ? (
-        <>
-          <label className="admin-content-field admin-media-title-field">
-            <span>Texto al pie · Inglés</span>
-            <input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} />
-          </label>
-          <label className="admin-content-field admin-media-title-field">
-            <span>Texto al pie · Español</span>
-            <input type="text" value={item.titleEs || ''} onChange={event => onChange([...path, 'titleEs'], event.target.value)} />
-            <small>Se muestra debajo de la imagen y en la galería ampliada.</small>
-          </label>
-        </>
-      ) : (
-        <label className="admin-content-field admin-media-title-field">
-          <span>Título</span>
-          <input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} />
-        </label>
-      )}
+      <label className="admin-content-field admin-media-title-field">
+        <span>Texto al pie · Inglés</span>
+        <input type="text" value={item.title || ''} onChange={event => onChange([...path, 'title'], event.target.value)} />
+      </label>
+      <label className="admin-content-field admin-media-title-field">
+        <span>Texto al pie · Español</span>
+        <input type="text" value={item.titleEs || ''} onChange={event => onChange([...path, 'titleEs'], event.target.value)} />
+        <small>Si el campo del idioma activo está vacío, no se muestra ningún texto al pie.</small>
+      </label>
       {type === 'image' && <ImageField label="Imagen" value={item.imageUrl} onChange={imageUrl => onChange(path, { ...item, mediaType: 'image', imageUrl })} />}
       {type === 'video' && <VideoField item={item} path={path} onChange={onChange} />}
       {type === 'youtube' && <YouTubeField item={item} path={path} onChange={onChange} />}
@@ -526,7 +517,7 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
   const isProject = path[0] === 'projects' && path.length === 2;
   if (isProject) return <ProjectFields project={value} path={path} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />;
   const isMediaItem = path.at(-2) === 'images' && typeof path.at(-1) === 'number';
-  if (isMediaItem) return <MediaItemFields item={value} path={path} onChange={onChange} isExhibition={Boolean(projectCategory)} />;
+  if (isMediaItem) return <MediaItemFields item={value} path={path} onChange={onChange} />;
   const isCvSection = path.at(-2) === 'sections' && typeof path.at(-1) === 'number';
   if (isCvSection) return <CvSectionFields section={value} path={path} onChange={onChange} />;
 
@@ -820,7 +811,7 @@ export default function Admin() {
         const base = {
           id: uniqueId(mediaType), mediaType, series: project?.title || '', technique: '', description: '', alt: ''
         };
-        const bilingualTitle = (title, titleEs) => active === 'exhibitions' ? { title, titleEs } : { title: titleEs };
+        const bilingualTitle = (title, titleEs) => ({ title, titleEs });
         if (mediaType === 'video') list.push({ ...base, ...bilingualTitle('New video', 'Nuevo video'), imageUrl: '', posterUrl: '' });
         else if (mediaType === 'youtube') list.push({ ...base, ...bilingualTitle('New YouTube video', 'Nuevo video de YouTube'), imageUrl: '', posterUrl: '', embedUrl: '' });
         else list.push({ ...base, ...bilingualTitle('New image', 'Nueva imagen'), imageUrl: project?.imageUrl || '/exhibicion-01.png', alt: 'Nueva imagen' });

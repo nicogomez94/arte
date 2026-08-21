@@ -127,7 +127,7 @@ const translatePhrases = value => {
 
 const translateArtwork = artwork => ({
   ...artwork,
-  title: artwork.titleEs?.trim() || artwork.title,
+  title: typeof artwork.titleEs === 'string' ? artwork.titleEs.trim() : '',
   technique: translatePhrases(artwork.technique),
   alt: typeof artwork.alt === 'string'
     ? artwork.alt
