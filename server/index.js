@@ -52,6 +52,7 @@ app.use(async (req, res, next) => {
     const storedContent = await store.publicContent();
     const seo = seoForPath(req.path, storedContent);
     if (seo.noIndex) res.set('X-Robots-Tag', 'noindex, nofollow');
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(seo.valid ? 200 : 404).type('html').send(injectSeoHead(await indexTemplate, seo));
   } catch (error) { next(error); }
 });
