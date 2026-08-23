@@ -1493,7 +1493,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
 .exhibition-dropdown-inner { width: 320px; gap: 0 !important; }
 .exhibition-dropdown-group { width: 100%; border-bottom: 1px solid var(--line); }
 .exhibition-dropdown-group:first-child { border-top: 1px solid var(--line); }
-.exhibition-dropdown-group-heading { min-height: 38px; display: flex; align-items: center; color: var(--ink); font-size: 13px; }
+.exhibition-dropdown-group-heading { min-height: 38px; display: flex; align-items: center; color: var(--ink); font-size: 13px; font-weight: 500; }
 .exhibition-dropdown-group > .exhibition-dropdown-links { padding: 1px 0 14px 13px; display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
 .exhibition-dropdown-group > .exhibition-dropdown-links a { color: #777; font-size: 11px; }
 .exhibition-dropdown-group > .exhibition-dropdown-links a:hover { color: var(--ink); }
@@ -3421,4 +3421,51 @@ body,
 
 .admin-cv-section-fields {
   gap: 22px;
+}
+
+/* Make exhibition categories read as headings on small screens. */
+@media (max-width: 680px) {
+  .site-nav .exhibition-dropdown-group-heading {
+    color: #111;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .02em;
+  }
+}
+
+/* Keep every mobile navigation level on the same left-hand axis. */
+@media (max-width: 980px) {
+  .site-nav {
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .site-nav > a,
+  .site-nav > .work-menu,
+  .site-nav > .mobile-nav-heading,
+  .site-nav > .mobile-nav-foot,
+  .nav-section-heading {
+    width: 100%;
+    align-self: stretch;
+    margin-inline: 0;
+    text-align: left;
+  }
+
+  .mobile-nav-heading,
+  .mobile-nav-foot,
+  .site-nav > a,
+  .nav-section-heading > a,
+  .site-nav .work-dropdown a,
+  .site-nav .exhibition-dropdown-group-heading,
+  .site-nav .exhibition-dropdown-group > .exhibition-dropdown-links a {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .site-nav .work-dropdown-inner,
+  .site-nav .exhibition-dropdown-group > .exhibition-dropdown-links {
+    padding-left: 0;
+    align-items: stretch;
+    text-align: left;
+  }
 }
