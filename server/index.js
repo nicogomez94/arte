@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
 import { createApi } from './api.js';
+import { legacyDestination } from './legacyRedirects.js';
 import { injectSeoHead, seoForPath, sitemapXml } from './seo.js';
 
 const app = express();
@@ -18,16 +19,17 @@ app.disable('x-powered-by');
 app.use((req, res, next) => {
   const host = String(req.get('host') || '').split(':')[0].toLowerCase();
   const protocol = String(req.get('x-forwarded-proto') || req.protocol).split(',')[0].trim();
+  const legacyPath = legacyDestination(req.path);
+  const query = req.originalUrl.slice(req.path.length);
   if ((host === 'www.andrealkalay.com' || host === 'andrealkalay.com') && (host !== 'andrealkalay.com' || protocol !== 'https')) {
-    return res.redirect(301, `https://andrealkalay.com${req.originalUrl}`);
+    return res.redirect(301, `https://andrealkalay.com${legacyPath || req.path}${query}`);
   }
+  if (legacyPath) return res.redirect(301, `${legacyPath}${query}`);
   if (!req.path.startsWith('/api/') && req.path.length > 1 && req.path.endsWith('/')) {
-    const query = req.originalUrl.slice(req.path.length);
     return res.redirect(301, `${req.path.replace(/\/+$/, '')}${query}`);
   }
   next();
 });
-app.get('/galeria', (_req, res) => res.redirect(301, '/exhibitions'));
 app.get('/robots.txt', (_req, res) => {
   res.type('text/plain').send('User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\n\nSitemap: https://andrealkalay.com/sitemap.xml\n');
 });
@@ -47,7 +49,7 @@ app.use(express.static(distPath, {
   }
 }));
 app.use(async (req, res, next) => {
-  if (req.method !== 'GET' || req.path.startsWith('/api/')) return next();
+  if (!['GET', 'HEAD'].includes(req.method) || req.path.startsWith('/api/')) return next();
   try {
     const storedContent = await store.publicContent();
     const seo = seoForPath(req.path, storedContent);

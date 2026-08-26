@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { injectSeoHead, publicProjects, seoForPath, sitemapXml } from '../server/seo.js';
+import { LEGACY_REDIRECTS, legacyDestination } from '../server/legacyRedirects.js';
 import { projectAssets } from '../src/projectAssets.js';
 
 const sitemapPaths = xml => [...xml.matchAll(/<loc>https:\/\/andrealkalay\.com([^<]*)<\/loc>/g)]
@@ -52,4 +53,31 @@ test('legacy default covers upgrade to clean WebP URLs without replacing custom 
 
   assert.equal(legacy.imageUrl, '/optimized/work-the-rock-cycle-cover.webp');
   assert.equal(custom.imageUrl, '/api/media/custom-cover');
+});
+
+test('legacy search-result URLs redirect to valid canonical pages', () => {
+  const expected = {
+    '/about': '/acerca-de-mi',
+    '/contact': '/contacto',
+    '/about-india-series': '/work/about-india',
+    '/therockcycle': '/work/the-rock-cycle',
+    '/landscapeonlandscape': '/work/landscape-on-landscape',
+    '/landscapeonlandscape-1': '/work/landscape-on-landscape',
+    '/uncertainnature-book': '/work/uncertain-nature-book',
+    '/copia-de-exhibitions-1': '/exhibitions/recoleta-cultural-center',
+    '/copia-de-recoleta-cultural-center': '/exhibitions/espacio-dar',
+    '/copia-de-exhibitions': '/exhibitions/park-pecno-slovenia',
+    '/museofranklingrawson': '/exhibitions/museo-franklin-rawson',
+    '/copia-de-oda-arte-art-fairs': '/exhibitions/art-fairs',
+    '/mundonuevogalleryart': '/exhibitions/mundo-nuevo-gallery',
+    '/centroculturalmapocho': '/exhibitions/estacion-mapocho-chile'
+  };
+
+  Object.entries(expected).forEach(([legacy, destination]) => {
+    assert.equal(legacyDestination(legacy), destination);
+    assert.equal(seoForPath(destination, {}).valid, true);
+  });
+  Object.values(LEGACY_REDIRECTS).forEach(destination => {
+    assert.equal(seoForPath(destination, {}).valid, true, `${destination} must be indexable`);
+  });
 });
