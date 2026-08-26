@@ -86,15 +86,14 @@ const messages = {
 };
 
 const LanguageContext = createContext({
-  language: 'en',
+  language: 'es',
   setLanguage: () => {},
   toggleLanguage: () => {},
-  t: key => messages.en[key] || key
+  t: key => messages.es[key] || key
 });
 
 export function LanguageProvider({ children }) {
-  // English intentionally remains the base language after every full page load.
-  const [language, setLanguage] = useState('en');
+  const [language, setLanguage] = useState('es');
 
   const value = useMemo(() => ({
     language,
