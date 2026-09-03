@@ -4,9 +4,8 @@ import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
 
 export default function Home() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const home = useSiteContent('home');
-  const global = useSiteContent('global');
   const usesDefaultHero = home.heroImageUrl === '/esta.jpg';
 
   useEffect(() => {
@@ -18,7 +17,9 @@ export default function Home() {
     <div className="site-page home-page">
       <Header />
       <main className="home-main">
-        <h1 className="visually-hidden">Andrea Alkalay · {global.artistDiscipline}</h1>
+        <h1 className="visually-hidden">
+          Andrea Alkalay · {language === 'es' ? 'Artista visual' : 'Visual artist'}
+        </h1>
         <section className="home-hero" aria-label={t('homeHero')}>
           <img
             src={home.heroImageUrl}
