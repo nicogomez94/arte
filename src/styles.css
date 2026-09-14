@@ -1287,7 +1287,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
 }
 
 .bio-cv {
-  margin-top: 46px;
+  margin-top: 51px;
 }
 
 .bio-cv-grid {
@@ -1432,7 +1432,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
   }
 
   .bio-cv {
-    margin-top: 42px;
+    margin-top: 47px;
   }
 
   .bio-cv-grid {
@@ -2483,6 +2483,16 @@ body,
   padding: 22px 22px 24px;
   border: 1px solid #c9c4b9;
   background: #fbfaf6;
+}
+
+.admin-bio-language-block + .admin-bio-language-block {
+  margin-top: 26px;
+}
+
+.admin-bio-language-block + .admin-page-group {
+  margin-top: 42px;
+  padding-top: 42px;
+  border-top: 1px solid #c9c4b9;
 }
 
 .admin-language-columns .admin-language-panel > header {

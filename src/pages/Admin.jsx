@@ -13,8 +13,7 @@ const sections = [
   { key: 'work', label: 'Work', route: '/work' },
   { key: 'exhibitions', label: 'Exhibitions', route: '/exhibitions' },
   { key: 'news', label: 'News', route: '/news' },
-  { key: 'statement', label: 'Statement', route: '/statement' },
-  { key: 'cv', label: 'CV', route: '/cv' },
+  { key: 'bio', label: 'Bio', route: '/bio' },
   { key: 'workshops', label: 'Workshops', route: '/workshops' },
   { key: 'contact', label: 'Contact', route: '/contacto' }
 ];
@@ -53,6 +52,9 @@ const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'mediaType',
 const imageKeys = new Set(['imageUrl', 'heroImageUrl', 'portraitImageUrl', 'detailImageUrl']);
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const clone = value => JSON.parse(JSON.stringify(value));
+const draftForSection = (content, key) => key === 'bio'
+  ? { statement: clone(content.statement), cv: clone(content.cv) }
+  : clone(content[key]);
 const titleForItem = (item, index) => item.title || item.caption || item.label || item.value || `Elemento ${index + 1}`;
 const thumbnailForItem = item => mediaTypeFor(item) === 'image' ? item.imageUrl : (item.posterUrl || item.imageUrl);
 const uniqueId = prefix => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -701,34 +703,39 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
       {fields(['projects'])}
     </AdminFieldGroup>
   );
-  if (active === 'statement') return (
+  if (active === 'bio') return (
     <>
-      <AdminFieldGroup title="Imagen" description="Imagen editorial que acompaña el Statement.">{fields(['imageUrl', 'imageAlt'])}</AdminFieldGroup>
-      <AdminFieldGroup title="Encabezado" description="Título visible del Statement.">{fields(['title'])}</AdminFieldGroup>
-      <div className="admin-language-columns">
-        <AdminFieldGroup className="admin-language-panel" title="Texto · English" description="Contenido que se muestra en inglés.">{fields(['paragraphs'])}</AdminFieldGroup>
-        <AdminFieldGroup className="admin-language-panel" title="Texto · Español" description="Contenido que se muestra en español.">{fields(['paragraphsEs'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Imagen" description="Retrato que acompaña la página de Bio.">
+        <ContentFields value={draft.statement} path={['statement']} includeKeys={['imageUrl', 'imageAlt']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+      </AdminFieldGroup>
+      <AdminFieldGroup title="Statement" description="Título y texto que abren la página de Bio.">
+        <ContentFields value={draft.statement} path={['statement']} includeKeys={['title']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+      </AdminFieldGroup>
+      <div className="admin-language-columns admin-bio-language-block">
+        <AdminFieldGroup className="admin-language-panel" title="Statement · English" description="Contenido que se muestra en inglés.">
+          <ContentFields value={draft.statement} path={['statement']} includeKeys={['paragraphs']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+        </AdminFieldGroup>
+        <AdminFieldGroup className="admin-language-panel" title="Statement · Español" description="Contenido que se muestra en español.">
+          <ContentFields value={draft.statement} path={['statement']} includeKeys={['paragraphsEs']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+        </AdminFieldGroup>
       </div>
+      <div className="admin-language-columns admin-bio-language-block">
+        <AdminFieldGroup className="admin-language-panel" title="Bio · English" description="Biografía que aparece debajo del Statement.">
+          <RichTextEditor label="Contenido · Inglés" value={draft.cv.introHtml || plainTextToCvHtml(draft.cv.intro)} onChange={value => onChange(['cv', 'introHtml'], value)} />
+        </AdminFieldGroup>
+        <AdminFieldGroup className="admin-language-panel" title="Bio · Español" description="Biografía que aparece debajo del Statement.">
+          <RichTextEditor label="Contenido · Español" value={draft.cv.introHtmlEs || plainTextToCvHtml(draft.cv.introEs)} onChange={value => onChange(['cv', 'introHtmlEs'], value)} />
+        </AdminFieldGroup>
+      </div>
+      <AdminFieldGroup title="Trayectoria" description="Libro de artista, residencias, publicaciones, exhibiciones y premios con sus links editables.">
+        <ContentFields value={draft.cv} path={['cv']} includeKeys={['sections']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+      </AdminFieldGroup>
     </>
   );
   if (active === 'contact') return (
     <>
       <AdminFieldGroup title="Presentación" description="Imagen y encabezado de la página de contacto.">{fields(['imageUrl', 'imageAlt', 'title', 'subtitle'])}</AdminFieldGroup>
       <AdminFieldGroup title="Enlaces" description="Canales de contacto y redes sociales visibles.">{fields(['links'])}</AdminFieldGroup>
-    </>
-  );
-  if (active === 'cv') return (
-    <>
-      <AdminFieldGroup title="Presentación" description="Retrato y statement del CV.">{fields(['imageUrl', 'imageAlt'])}</AdminFieldGroup>
-      <div className="admin-language-columns">
-        <AdminFieldGroup className="admin-language-panel" title="Statement · English" description="Texto que se muestra en inglés.">
-          <RichTextEditor label="Contenido · Inglés" value={draft.introHtml || plainTextToCvHtml(draft.intro)} onChange={value => onChange(['introHtml'], value)} />
-        </AdminFieldGroup>
-        <AdminFieldGroup className="admin-language-panel" title="Statement · Español" description="Texto que se muestra en español.">
-          <RichTextEditor label="Contenido · Español" value={draft.introHtmlEs || plainTextToCvHtml(draft.introEs)} onChange={value => onChange(['introHtmlEs'], value)} />
-        </AdminFieldGroup>
-      </div>
-      <AdminFieldGroup title="Trayectoria" description="Cada sección reúne todas sus entradas en un único editor de texto con links editables.">{fields(['sections'])}</AdminFieldGroup>
     </>
   );
   if (active === 'workshops') return (
@@ -762,7 +769,7 @@ export default function Admin() {
     const stored = await api.adminContent();
     const merged = mergeSiteContent(stored);
     setContent(merged);
-    setDraft(clone(merged[active]));
+    setDraft(draftForSection(merged, active));
   };
 
   useEffect(() => { api.session().then(async () => { setAuth(true); await loadContent(); }).catch(() => setAuth(false)); }, []);
@@ -775,7 +782,7 @@ export default function Admin() {
     }
     if (dirty && !window.confirm('Hay cambios sin guardar. ¿Querés salir de esta sección?')) return false;
     if (category) setExhibitionCategory(category);
-    setActive(key); setDraft(clone(content[key])); setDirty(false); setStatus('');
+    setActive(key); setDraft(draftForSection(content, key)); setDirty(false); setStatus('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return true;
   };
@@ -922,6 +929,17 @@ export default function Admin() {
     }
     setBusy(true); setStatus('Guardando…');
     try {
+      if (active === 'bio') {
+        const [statement, cv] = await Promise.all([
+          api.updateContent('statement', draft.statement),
+          api.updateContent('cv', draft.cv)
+        ]);
+        setContent(current => ({ ...current, statement, cv }));
+        setDraft({ statement: clone(statement), cv: clone(cv) });
+        setDirty(false); setStatus('Bio publicada correctamente.');
+        window.dispatchEvent(new Event(SITE_CONTENT_UPDATED_EVENT));
+        return;
+      }
       const saved = await api.updateContent(active, draft);
       setContent(current => ({ ...current, [active]: saved }));
       setDraft(clone(saved)); setDirty(false); setStatus('Cambios publicados correctamente.');
