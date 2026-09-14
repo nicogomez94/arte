@@ -80,21 +80,108 @@ const workshopRows = Array.from({ length: 4 }, (_, index) => ({
   textEs: workshopIntroEs
 }));
 
+const newsItems = [
+  {
+    id: 'talking-pictures-2025',
+    imageUrl: '/news/1 Talking Pictures. Andrea Alkalay.png', width: 1417, height: 1337,
+    imageAlt: 'Talking Pictures interview with Andrea Alkalay',
+    caption: 'Talking Pictures. Andrea Alkalay: Sediments of Time. Interview by Alasdair Foster. 2025.',
+    captionEs: 'Talking Pictures. Andrea Alkalay: Sediments of Time. Entrevista por Alasdair Foster. 2025.',
+    url: 'https://talking-pictures.online/2025/08/13/andrea-alkalay-sediments-of-time/'
+  },
+  {
+    id: 'aesthetica-107',
+    imageUrl: '/news/2 Aesthetica Magazine, Issue 107. .png', width: 1447, height: 1034,
+    imageAlt: 'Aesthetica Magazine issue 107 featuring Andrea Alkalay',
+    caption: 'Aesthetica Magazine, Issue 107. Distort and Reveal. Landscape on Landscape. UK, 2022.',
+    captionEs: 'Aesthetica Magazine, número 107. Distort and Reveal. Landscape on Landscape. Reino Unido, 2022.',
+    url: 'https://issuu.com/aesthetica_magazine/docs/aesthetica-issue107?fr=sMWQ3ODQ4NTY2MTM'
+  },
+  {
+    id: 'arte-al-limite-109',
+    imageUrl: '/news/3- Arte Al Límite, Issue 109. Interview by Felipe Forteza. Chile, 2025..JPG', width: 2012, height: 1417,
+    imageAlt: 'Arte Al Límite issue 109 featuring Andrea Alkalay',
+    caption: 'Arte Al Límite, Issue 109. Interview by Felipe Forteza. Chile, 2025.',
+    captionEs: 'Arte Al Límite, número 109. Entrevista por Felipe Forteza. Chile, 2025.',
+    url: 'https://www.instagram.com/p/DLa_jqEOAir/'
+  },
+  {
+    id: 'world-photography-2021',
+    imageUrl: '/news/4  World Photography Organisation. Interview.png', width: 1225, height: 1358,
+    imageAlt: 'World Photography Organisation interview with Andrea Alkalay',
+    caption: 'World Photography Organisation. Breaking Boundaries: Andrea Alkalay. Interview by Anna Bonita Evans. Landscape on Landscape, 2021.',
+    captionEs: 'World Photography Organisation. Breaking Boundaries: Andrea Alkalay. Entrevista por Anna Bonita Evans. Landscape on Landscape, 2021.',
+    url: 'https://www.worldphoto.org/blogs/06-08-21/breaking-boundaries-andrea-alkalay'
+  },
+  {
+    id: 'lenscratch-2022',
+    imageUrl: '/news/5 Lenscratch.. Interview .png', width: 1008, height: 1346,
+    imageAlt: 'Lenscratch interview with Andrea Alkalay',
+    caption: 'Lenscratch. Andrea Alkalay: Landscape on Landscape. Interview by Daniel George, 2022.',
+    captionEs: 'Lenscratch. Andrea Alkalay: Landscape on Landscape. Entrevista por Daniel George, 2022.',
+    url: 'https://lenscratch.com/2022/06/andrea-alkalay-landscape-on-landscape/'
+  },
+  {
+    id: 'f-stop-2023',
+    imageUrl: '/news/6 F-Stop Magazine, Portfolio 2023 Issue.png', width: 1057, height: 1417,
+    imageAlt: 'F-Stop Magazine interview with Andrea Alkalay',
+    caption: 'F-Stop Magazine, Portfolio 2023 Issue. The Rock Cycle. Featured Photographer Interview, 2023.',
+    captionEs: 'F-Stop Magazine, Portfolio 2023 Issue. The Rock Cycle. Entrevista como fotógrafa destacada, 2023.',
+    url: 'https://www.fstopmagazine.com/blog/2023/interview-with-featured-photographer-andrea-alkalay/'
+  },
+  {
+    id: 'arab-news-2023',
+    imageUrl: '/news/7 Arab News. AlBalad.png', width: 1410, height: 884,
+    imageAlt: 'Arab News coverage of the Al-Balad art residency',
+    caption: 'Arab News. Art Residency Al-Balad concludes 2022 edition with Jeddah art exhibition. By Afshan Aziz. Saudi Arabia, 2023.',
+    captionEs: 'Arab News. La residencia artística Al-Balad cierra su edición 2022 con una exhibición en Jeddah. Por Afshan Aziz. Arabia Saudita, 2023.',
+    url: ''
+  },
+  {
+    id: 'see-zeen-13',
+    imageUrl: '/news/8 see-zeen, Issue #13, The 10. Unearth. New York : Berlin, 2024..png', width: 1417, height: 1251,
+    imageAlt: 'see-zeen issue 13 featuring Unearth',
+    caption: 'see-zeen, Issue #13, The 10. Unearth. New York / Berlin, 2024.',
+    captionEs: 'see-zeen, número 13, The 10. Unearth. Nueva York / Berlín, 2024.',
+    url: 'https://see-zeen.com/andrea-alkalay'
+  },
+  {
+    id: 'al-tiba9-15',
+    imageUrl: '/news/9 AL-Tiba9 Art Mag . ISSUE 15 .png', width: 1874, height: 2404,
+    imageAlt: 'Al-Tiba9 Art Magazine issue 15 featuring Landscape on Landscape',
+    caption: 'Al-Tiba9 Art Magazine, Issue 15. Landscape on Landscape. London, UK, 2024.',
+    captionEs: 'Al-Tiba9 Art Magazine, número 15. Landscape on Landscape. Londres, Reino Unido, 2024.',
+    url: ''
+  },
+  {
+    id: 'fresh-eyes-2023',
+    imageUrl: '/news/10. Fresh Eyes 2023, Conceptual and Fashion. GUP Magazine, Ámsterdam, Países Bajos, 2023..png', width: 2752, height: 2248,
+    imageAlt: 'Fresh Eyes 2023 by GUP Magazine',
+    caption: 'Fresh Eyes 2023, Conceptual and Fashion. GUP Magazine, Amsterdam, The Netherlands, 2023.',
+    captionEs: 'Fresh Eyes 2023, Conceptual and Fashion. GUP Magazine, Ámsterdam, Países Bajos, 2023.',
+    url: ''
+  }
+];
+
 export const defaultSiteContent = {
   global: {
-    menuLabelsVersion: 2,
+    menuLabelsVersion: 3,
     menuOrder: [...DEFAULT_NAVIGATION_ORDER],
     artistName: 'andrea alkalay',
     artistDiscipline: 'Art Photography',
     workMenuLabel: 'Work',
     exhibitionsMenuLabel: 'Exhibitions',
     statementMenuLabel: 'Statement',
+    bioMenuLabel: 'Bio',
+    newsMenuLabel: 'News',
     contactMenuLabel: 'Contact',
     cvMenuLabel: 'CV',
     workshopsMenuLabel: 'Workshops',
     workMenuLabelEs: 'Obra',
     exhibitionsMenuLabelEs: 'Exhibiciones',
     statementMenuLabelEs: 'Statement',
+    bioMenuLabelEs: 'Bio',
+    newsMenuLabelEs: 'News',
     contactMenuLabelEs: 'Contacto',
     cvMenuLabelEs: 'CV',
     workshopsMenuLabelEs: 'Talleres',
@@ -117,6 +204,13 @@ export const defaultSiteContent = {
     selectedWorkLabel: 'selected work',
     viewWorkLabel: 'View work',
     viewMoreLabel: 'View more'
+  },
+  news: {
+    title: 'News / Press',
+    titleEs: 'News / Prensa',
+    intro: 'Selected interviews, features and publications.',
+    introEs: 'Entrevistas, notas y publicaciones seleccionadas.',
+    items: newsItems
   },
   work: { projects: workProjects },
   exhibitions: { projects: exhibitions },
@@ -190,6 +284,16 @@ export const mergeSiteContent = (stored = {}) => {
       ...merged.global,
       menuLabelsVersion: 2,
       exhibitionsMenuLabelEs: 'Exhibiciones'
+    };
+  }
+  if (Number(normalizedStored.global?.menuLabelsVersion || 0) < 3) {
+    merged.global = {
+      ...merged.global,
+      menuLabelsVersion: 3,
+      bioMenuLabel: 'Bio',
+      bioMenuLabelEs: 'Bio',
+      newsMenuLabel: 'News',
+      newsMenuLabelEs: 'News'
     };
   }
   merged.global.menuOrder = normalizeNavigationOrder(merged.global.menuOrder);

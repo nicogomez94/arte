@@ -213,6 +213,8 @@ const spanishGlobal = {
   workMenuLabel: 'Obra',
   exhibitionsMenuLabel: 'Exhibiciones',
   statementMenuLabel: 'Statement',
+  bioMenuLabel: 'Bio',
+  newsMenuLabel: 'News',
   contactMenuLabel: 'Contacto',
   cvMenuLabel: 'CV',
   workshopsMenuLabel: 'Talleres',
@@ -263,6 +265,8 @@ export function translateSiteContent(content, language) {
       workMenuLabel: content.global.workMenuLabelEs || spanishGlobal.workMenuLabel,
       exhibitionsMenuLabel: content.global.exhibitionsMenuLabelEs || spanishGlobal.exhibitionsMenuLabel,
       statementMenuLabel: content.global.statementMenuLabelEs || spanishGlobal.statementMenuLabel,
+      bioMenuLabel: content.global.bioMenuLabelEs || spanishGlobal.bioMenuLabel,
+      newsMenuLabel: content.global.newsMenuLabelEs || spanishGlobal.newsMenuLabel,
       contactMenuLabel: content.global.contactMenuLabelEs || spanishGlobal.contactMenuLabel,
       cvMenuLabel: content.global.cvMenuLabelEs || spanishGlobal.cvMenuLabel,
       workshopsMenuLabel: content.global.workshopsMenuLabelEs || spanishGlobal.workshopsMenuLabel

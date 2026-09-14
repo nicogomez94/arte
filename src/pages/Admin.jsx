@@ -12,6 +12,7 @@ const sections = [
   { key: 'home', label: 'Home', route: '/' },
   { key: 'work', label: 'Work', route: '/work' },
   { key: 'exhibitions', label: 'Exhibitions', route: '/exhibitions' },
+  { key: 'news', label: 'News', route: '/news' },
   { key: 'statement', label: 'Statement', route: '/statement' },
   { key: 'cv', label: 'CV', route: '/cv' },
   { key: 'workshops', label: 'Workshops', route: '/workshops' },
@@ -21,9 +22,11 @@ const sections = [
 const labels = {
   artistName: 'Nombre de la artista', artistDiscipline: 'Disciplina', workMenuLabel: 'Work · Inglés',
   exhibitionsMenuLabel: 'Exhibitions · Inglés', statementMenuLabel: 'Statement · Inglés',
+  bioMenuLabel: 'Bio · Inglés', newsMenuLabel: 'News · Inglés',
   contactMenuLabel: 'Contact · Inglés', cvMenuLabel: 'CV · Inglés', workshopsMenuLabel: 'Workshops · Inglés',
   workMenuLabelEs: 'Obra · Español', exhibitionsMenuLabelEs: 'Exhibiciones · Español',
   statementMenuLabelEs: 'Statement · Español', contactMenuLabelEs: 'Contacto · Español',
+  bioMenuLabelEs: 'Bio · Español', newsMenuLabelEs: 'News · Español',
   cvMenuLabelEs: 'CV · Español', workshopsMenuLabelEs: 'Talleres · Español', instagramUrl: 'Enlace de Instagram',
   footerText: 'Texto del pie', heroImageUrl: 'Imagen principal', heroImageAlt: 'Descripción de la imagen principal',
   startViewingLabel: 'Texto de iniciar recorrido', expandLabel: 'Texto de expandir', showLessLabel: 'Texto de contraer',
@@ -40,16 +43,17 @@ const labels = {
   detailCaption: 'Epígrafe de detalle', detailLabel: 'Etiqueta de detalle', detailTitle: 'Título de detalle',
   facts: 'Datos', label: 'Etiqueta', value: 'Texto visible', linkLabel: 'Texto del enlace', imageAlt: 'Descripción de imagen',
   subtitle: 'Bajada', links: 'Enlaces', url: 'Destino del enlace', introLabel: 'Título de introducción',
+  caption: 'Texto · Inglés', captionEs: 'Texto · Español',
   sections: 'Secciones de CV', items: 'Entradas', href: 'Destino del enlace (href)', category: 'Categoría',
   rows: 'Filas', text: 'Texto · Inglés', textEs: 'Texto · Español', titleEs: 'Título · Español',
   imageAltEs: 'Descripción de imagen · Español'
 };
 
-const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'mediaType', 'embedUrl', 'posterUrl', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion', 'statementVersion', 'menuLabelsVersion', 'menuOrder']);
+const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'mediaType', 'embedUrl', 'posterUrl', 'published', 'position', 'createdAt', 'updatedAt', 'contentVersion', 'statementVersion', 'menuLabelsVersion', 'menuOrder', 'width', 'height']);
 const imageKeys = new Set(['imageUrl', 'heroImageUrl', 'portraitImageUrl', 'detailImageUrl']);
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const clone = value => JSON.parse(JSON.stringify(value));
-const titleForItem = (item, index) => item.title || item.label || item.value || `Elemento ${index + 1}`;
+const titleForItem = (item, index) => item.title || item.caption || item.label || item.value || `Elemento ${index + 1}`;
 const thumbnailForItem = item => mediaTypeFor(item) === 'image' ? item.imageUrl : (item.posterUrl || item.imageUrl);
 const uniqueId = prefix => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 const MediaProcessingContext = createContext(() => {});
@@ -654,6 +658,12 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
       {fields(['heroImageUrl'])}
     </AdminFieldGroup>
   );
+  if (active === 'news') return (
+    <>
+      <AdminFieldGroup title="Encabezado" description="Título y presentación de la sección News.">{fields(['title', 'titleEs', 'intro', 'introEs'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Publicaciones" description="Cada publicación incluye imagen, texto bilingüe y un link opcional.">{fields(['items'])}</AdminFieldGroup>
+    </>
+  );
   if (active === 'work' || active === 'exhibitions') return (
     <AdminFieldGroup title="Proyectos" description="Abrí un proyecto para editar sus datos, textos y contenido multimedia.">
       {fields(['projects'])}
@@ -792,7 +802,11 @@ export default function Admin() {
       } else if (kind === 'sections') {
         list.push({ title: 'New section', titleEs: 'Nueva sección', contentHtml: '<ul><li>New entry</li></ul>', contentHtmlEs: '<ul><li>Nueva entrada</li></ul>', items: [] });
       } else if (kind === 'items') {
-        list.push({ title: 'Nueva entrada', contentHtml: '', href: '' });
+        if (active === 'news') {
+          list.push({ id: uniqueId('news'), imageUrl: '/exhibicion-01.png', imageAlt: 'Nueva publicación', caption: 'New publication', captionEs: 'Nueva publicación', url: '' });
+        } else {
+          list.push({ title: 'Nueva entrada', contentHtml: '', href: '' });
+        }
       } else if (kind === 'rows') {
         const number = String(list.length + 1).padStart(2, '0');
         list.push({

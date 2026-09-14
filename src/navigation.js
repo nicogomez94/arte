@@ -1,9 +1,9 @@
 export const NAVIGATION_ITEMS = [
   { id: 'work', route: '/work', labelKey: 'workMenuLabel', labelKeyEs: 'workMenuLabelEs' },
   { id: 'exhibitions', route: '/exhibitions', labelKey: 'exhibitionsMenuLabel', labelKeyEs: 'exhibitionsMenuLabelEs' },
-  { id: 'statement', route: '/statement', labelKey: 'statementMenuLabel', labelKeyEs: 'statementMenuLabelEs' },
+  { id: 'bio', route: '/cv', labelKey: 'bioMenuLabel', labelKeyEs: 'bioMenuLabelEs' },
+  { id: 'news', route: '/news', labelKey: 'newsMenuLabel', labelKeyEs: 'newsMenuLabelEs' },
   { id: 'workshops', route: '/workshops', labelKey: 'workshopsMenuLabel', labelKeyEs: 'workshopsMenuLabelEs' },
-  { id: 'cv', route: '/cv', labelKey: 'cvMenuLabel', labelKeyEs: 'cvMenuLabelEs' },
   { id: 'contact', route: '/contacto', labelKey: 'contactMenuLabel', labelKeyEs: 'contactMenuLabelEs' }
 ];
 

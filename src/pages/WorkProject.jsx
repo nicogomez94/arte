@@ -7,17 +7,20 @@ import { Footer, Header } from '../components/SiteChrome';
 import { useLanguage } from '../i18n';
 import { nextProjectInSequence } from '../projectNavigation';
 import { useSiteContent } from '../siteContent';
+import { exhibitionsForWork } from '../workExhibitions';
 
 export default function WorkProject() {
   const { slug } = useParams();
   const { projects } = useSiteContent('work');
+  const { projects: exhibitionProjects } = useSiteContent('exhibitions');
   const global = useSiteContent('global');
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const project = projects.find(item => item.slug === slug);
   const nextProject = nextProjectInSequence(projects, slug);
   const [open, setOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const slides = project?.images || [];
+  const relatedExhibitions = project ? exhibitionsForWork(project.slug, exhibitionProjects, language) : [];
 
   if (!project) return <Navigate to="/work/unfixed-landscapes" replace />;
   return (
@@ -43,6 +46,20 @@ export default function WorkProject() {
             </nav> */}
             <div className="project-detail-meta">
               <h1 id="project-title">{project.title}</h1>
+              {relatedExhibitions.length > 0 && (
+                <div className="work-exhibition-links" aria-label={t('relatedExhibitions')}>
+                  <span>{t('relatedExhibitions')}</span>
+                  <ul>
+                    {relatedExhibitions.map(exhibition => (
+                      <li key={exhibition.slug || exhibition.href}>
+                        {exhibition.href ? (
+                          <a href={exhibition.href} target="_blank" rel="noopener noreferrer">{exhibition.title}</a>
+                        ) : <Link to={`/exhibitions/${exhibition.slug}`}>{exhibition.title}</Link>}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
             <EditorialIntroCopy
               text={project.intro || t('projectFallback')}

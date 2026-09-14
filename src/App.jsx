@@ -2,15 +2,15 @@ import { lazy, Suspense, useEffect } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 const Home = lazy(() => import('./pages/Home'));
 const Admin = lazy(() => import('./pages/Admin'));
+const Bio = lazy(() => import('./pages/Bio'));
 const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
-const Cv = lazy(() => import('./pages/Cv'));
 const ExhibitionProject = lazy(() => import('./pages/ExhibitionProject'));
 const ExhibitionsIndex = lazy(() => import('./pages/ExhibitionsIndex'));
 const WorkIndex = lazy(() => import('./pages/WorkIndex'));
 const WorkProject = lazy(() => import('./pages/WorkProject'));
-const Statement = lazy(() => import('./pages/Statement'));
 const Workshops = lazy(() => import('./pages/Workshops'));
+const News = lazy(() => import('./pages/News'));
 import Seo from './components/Seo';
 import { LanguageProvider } from './i18n';
 import { SiteContentProvider } from './siteContent';
@@ -47,10 +47,11 @@ export default function App() {
             <Route path="/exhibitions/:slug" element={<ExhibitionProject />} />
             <Route path="/work" element={<WorkIndex />} />
             <Route path="/work/:slug" element={<WorkProject />} />
-            <Route path="/statement" element={<Statement />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/statement" element={<Navigate to="/cv#statement" replace />} />
             <Route path="/acerca-de-mi" element={<About />} />
             <Route path="/contacto" element={<Contact />} />
-            <Route path="/cv" element={<Cv />} />
+            <Route path="/cv" element={<Bio />} />
             <Route path="/workshops" element={<Workshops />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<Navigate to="/" replace />} />

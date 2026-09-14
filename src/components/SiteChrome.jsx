@@ -15,7 +15,7 @@ export function Header() {
   const global = useSiteContent('global');
   const { projects } = useSiteContent('work');
   const { projects: exhibitionProjects } = useSiteContent('exhibitions');
-  const { language, toggleLanguage, t } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const exhibitionGroups = [
     { key: 'solo', label: t('soloShow') },
     { key: 'group', label: t('groupShow') }
@@ -168,9 +168,9 @@ export function Header() {
     );
 
     const simpleItems = {
-      statement: { to: '/statement', label: global.statementMenuLabel },
+      bio: { to: '/cv', label: global.bioMenuLabel },
+      news: { to: '/news', label: global.newsMenuLabel },
       workshops: { to: '/workshops', label: global.workshopsMenuLabel },
-      cv: { to: '/cv', label: global.cvMenuLabel },
       contact: { to: '/contacto', label: global.contactMenuLabel }
     };
     const simpleItem = simpleItems[item];
@@ -195,11 +195,11 @@ export function Header() {
           </div>
         </nav>
         <div className="header-actions">
-          <button className="language-toggle" type="button" onClick={() => { toggleLanguage(); closeNavigation(); }} aria-label={t('languageSelector')}>
-            <span className={language === 'en' ? 'is-active' : undefined}>EN</span>
-            <span>/</span>
-            <span className={language === 'es' ? 'is-active' : undefined}>ES</span>
-          </button>
+          <div className="language-toggle" aria-label={t('languageSelector')}>
+            <button type="button" className={language === 'en' ? 'is-active' : undefined} onClick={() => { setLanguage('en'); closeNavigation(); }} aria-pressed={language === 'en'}>EN</button>
+            <span aria-hidden="true">/</span>
+            <button type="button" className={language === 'es' ? 'is-active' : undefined} onClick={() => { setLanguage('es'); closeNavigation(); }} aria-pressed={language === 'es'}>ES</button>
+          </div>
           <div className="header-social-links" aria-label="Social media">
             <a href={global.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <svg viewBox="0 0 448 512" aria-hidden="true" focusable="false">
