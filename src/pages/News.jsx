@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { Footer, Header } from '../components/SiteChrome';
 import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
@@ -6,12 +5,6 @@ import { useSiteContent } from '../siteContent';
 export default function News() {
   const content = useSiteContent('news');
   const { language } = useLanguage();
-  const trackRef = useRef(null);
-  const scrollNews = direction => {
-    const track = trackRef.current;
-    if (!track) return;
-    track.scrollBy({ left: direction * Math.min(track.clientWidth * .8, 760), behavior: 'smooth' });
-  };
 
   return (
     <div className="site-page news-page">
@@ -19,8 +12,7 @@ export default function News() {
       <main className="news-main">
         <div className="visually-hidden" role="heading" aria-level="1">News</div>
         <section className="news-carousel reveal" aria-label="News">
-          <button className="news-arrow news-arrow-prev" type="button" onClick={() => scrollNews(-1)} aria-label={language === 'es' ? 'Noticias anteriores' : 'Previous news'}>←</button>
-          <div className="news-track" ref={trackRef}>
+          <div className="news-track">
           {(content.items || []).map((item, index) => {
             const caption = language === 'es' ? (item.captionEs || item.caption) : item.caption;
             const image = (
@@ -50,7 +42,6 @@ export default function News() {
             );
           })}
           </div>
-          <button className="news-arrow news-arrow-next" type="button" onClick={() => scrollNews(1)} aria-label={language === 'es' ? 'Noticias siguientes' : 'Next news'}>→</button>
         </section>
       </main>
       <Footer />

@@ -286,6 +286,32 @@ function MediaItemFields({ item, path, onChange }) {
   );
 }
 
+function ExhibitionLinksFields({ links, path, onChange, onMove, onAdd, onRemove }) {
+  return (
+    <div className="admin-exhibition-links-editor">
+      {links.map((link, index) => {
+        const itemPath = [...path, index];
+        return (
+          <article className="admin-exhibition-link-card" key={`${link.href || link.label || 'exhibition'}-${index}`}>
+            <div className="admin-exhibition-link-actions">
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <button type="button" disabled={index === 0} onClick={() => onMove(path, index, index - 1)} aria-label="Subir exhibición">↑</button>
+              <button type="button" disabled={index === links.length - 1} onClick={() => onMove(path, index, index + 1)} aria-label="Bajar exhibición">↓</button>
+              <button type="button" onClick={() => onRemove(path, index)}>Eliminar</button>
+            </div>
+            <div className="admin-content-fields">
+              <label className="admin-content-field"><span>Nombre visible · Inglés</span><input type="text" value={link.label || ''} onChange={event => onChange([...itemPath, 'label'], event.target.value)} /></label>
+              <label className="admin-content-field"><span>Nombre visible · Español</span><input type="text" value={link.labelEs || ''} onChange={event => onChange([...itemPath, 'labelEs'], event.target.value)} /></label>
+              <label className="admin-content-field field-wide"><span>Destino del enlace</span><input type="text" value={link.href || ''} placeholder="/exhibitions/... o https://... — vacío si no lleva enlace" onChange={event => onChange([...itemPath, 'href'], event.target.value)} /></label>
+            </div>
+          </article>
+        );
+      })}
+      <button className="admin-add-item" type="button" onClick={() => onAdd(path)}>＋ Agregar exhibición</button>
+    </div>
+  );
+}
+
 function ProjectFields({ project, path, onChange, onMove, onAdd, onRemove, projectCategory }) {
   return (
     <div className="admin-project-editor">
@@ -303,6 +329,12 @@ function ProjectFields({ project, path, onChange, onMove, onAdd, onRemove, proje
           <label className="admin-content-field field-wide"><span>Statement · Español</span><textarea rows="10" value={project.introEs || ''} onChange={event => onChange([...path, 'introEs'], event.target.value)} /></label>
         </div>
       </section>
+      {!projectCategory && (
+        <section className="admin-field-section">
+          <header><h4>Links de Exhibitions</h4><p>Editá el nombre, destino y orden que aparecen debajo del título del Work. Dejá el destino vacío cuando el texto no deba ser un enlace.</p></header>
+          <ExhibitionLinksFields links={project.exhibitionLinks || []} path={[...path, 'exhibitionLinks']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+        </section>
+      )}
       <section className="admin-field-section admin-project-media-section">
         <header><h4>Contenido multimedia</h4><p>Una sola lista define tanto la grilla como el recorrido ampliado.</p></header>
         <ContentFields value={project.images || []} path={[...path, 'images']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />
@@ -795,10 +827,12 @@ export default function Admin() {
         list.push({
           slug, title, titleEs: active === 'work' ? 'Nueva obra' : 'Nueva exposición', imageUrl: '/exhibicion-01.png',
           intro: '', introEs: '', statementVersion: 1,
-          images: [image], ...(active === 'exhibitions' ? { category: exhibitionCategory } : {})
+          images: [image], ...(active === 'exhibitions' ? { category: exhibitionCategory } : { exhibitionLinks: [] })
         });
       } else if (kind === 'links') {
         list.push({ label: 'Nuevo enlace', value: '', url: '' });
+      } else if (kind === 'exhibitionLinks') {
+        list.push({ label: 'New exhibition', labelEs: 'Nueva exhibición', href: '' });
       } else if (kind === 'sections') {
         list.push({ title: 'New section', titleEs: 'Nueva sección', contentHtml: '<ul><li>New entry</li></ul>', contentHtmlEs: '<ul><li>Nueva entrada</li></ul>', items: [] });
       } else if (kind === 'items') {
@@ -840,7 +874,7 @@ export default function Admin() {
     }
     const message = kind === 'projects'
       ? '¿Eliminar este proyecto y todo su contenido?'
-      : kind === 'links'
+      : kind === 'links' || kind === 'exhibitionLinks'
         ? '¿Eliminar este enlace?'
       : kind === 'sections'
           ? '¿Eliminar esta sección de CV?'

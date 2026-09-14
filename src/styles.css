@@ -33,7 +33,7 @@ img { display: block; max-width: 100%; }
 .wordmark { font-family: var(--display); font-size: 28px; letter-spacing: -.02em; }
 .site-nav { display: flex; gap: clamp(22px,3vw,46px); }
 .site-nav a { color: #58564f; font-size: 13px; text-transform: lowercase; position: relative; }
-.site-nav a::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -8px; height: 1.6px; background: var(--bordo); transition: right .25s; }
+.site-nav a::after { content: ''; position: absolute; left: 0; right: 100%; bottom: -8px; height: 1.1px; background: var(--bordo); transition: right .25s; }
 .site-nav a:hover::after, .site-nav a.active::after { right: 0; }
 .header-actions { justify-self: end; display: flex; align-items: center; gap: 22px; font-size: 12px; text-transform: uppercase; }
 .menu-button { display: none; width: 32px; height: 32px; border: 0; background: none; padding: 6px; margin-bottom: 2px;}
@@ -538,7 +538,7 @@ body { background: #fff; font-weight: 400; }
 .header-actions { gap: 17px; font-size: 10px; letter-spacing: .08em; }
 .language-toggle { display: flex; gap: 4px; padding: 0; border: 0; background: transparent; color: #a6a19a; font-size: 12px; letter-spacing: .08em; cursor: pointer; transition: color .2s ease; }
 .language-toggle span { color: #a6a19a; }
-.language-toggle .is-active { color: #7b766f; font-weight: 500; }
+.language-toggle .is-active { color: var(--bordo); font-weight: 500; }
 .eyebrow { color: var(--ink); font-size: 9px; font-weight: 400; letter-spacing: .16em; }
 .text-link { gap: 42px; padding: 10px 0; font-size: 11px; }
 .outline-link { border-color: var(--ink); }
@@ -1169,7 +1169,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
 }
 
 .language-toggle button.is-active {
-  color: #111;
+  color: var(--bordo);
   font-weight: 500;
 }
 
@@ -1180,31 +1180,16 @@ h1, h2, h3, strong, b { font-weight: 100; }
 }
 
 .news-main {
-  width: 100%;
-  margin: 0;
-  padding: 154px 0 118px;
-  overflow: hidden;
-}
-
-.news-carousel {
-  position: relative;
+  width: var(--page);
+  margin: 0 auto;
+  padding: 128px 0 118px;
 }
 
 .news-track {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(340px, 24vw);
-  gap: 28px;
-  padding: 0 max(32px, calc((100vw - 1240px) / 2));
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scroll-behavior: smooth;
-  scroll-snap-type: inline mandatory;
-  scrollbar-width: none;
-}
-
-.news-track::-webkit-scrollbar {
-  display: none;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 76px 36px;
+  align-items: start;
 }
 
 .news-entry,
@@ -1213,17 +1198,14 @@ h1, h2, h3, strong, b { font-weight: 100; }
   margin: 0;
 }
 
-.news-entry {
-  scroll-snap-align: start;
-}
-
 .news-item-link,
 .news-item-content {
   display: block;
 }
 
 .news-media {
-  height: min(57vh, 570px);
+  width: 100%;
+  aspect-ratio: 1 / 1;
   padding: 12px;
   display: flex;
   align-items: center;
@@ -1254,37 +1236,6 @@ h1, h2, h3, strong, b { font-weight: 100; }
   max-width: 32em;
   font-size: 11px;
   line-height: 1.6;
-}
-
-.news-arrow {
-  position: absolute;
-  z-index: 2;
-  top: calc(min(57vh, 570px) / 2 - 29px);
-  width: 58px;
-  height: 58px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: rgba(205, 203, 198, .92);
-  color: #fff;
-  font-size: 28px;
-  font-weight: 100;
-  line-height: 1;
-  transition: background .2s ease, transform .2s ease;
-}
-
-.news-arrow:hover,
-.news-arrow:focus-visible {
-  background: var(--bordo);
-  transform: scale(1.04);
-}
-
-.news-arrow-prev {
-  left: 18px;
-}
-
-.news-arrow-next {
-  right: 18px;
 }
 
 .bio-overview {
@@ -1336,7 +1287,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
 }
 
 .bio-cv {
-  margin-top: 88px;
+  margin-top: 46px;
 }
 
 .bio-cv-grid {
@@ -1348,6 +1299,11 @@ h1, h2, h3, strong, b { font-weight: 100; }
 
 .bio-cv-column {
   min-width: 0;
+}
+
+.bio-cv-column .bio-cv-section:first-child {
+  padding-top: 0;
+  border-top: 0;
 }
 
 .bio-cv-section {
@@ -1423,6 +1379,10 @@ h1, h2, h3, strong, b { font-weight: 100; }
   transition: border-color .2s ease;
 }
 
+.work-exhibition-links li > span {
+  color: var(--bordo);
+}
+
 .work-exhibition-links a:hover,
 .work-exhibition-links a:focus-visible {
   border-bottom-color: currentColor;
@@ -1430,7 +1390,8 @@ h1, h2, h3, strong, b { font-weight: 100; }
 
 @media (max-width: 980px) {
   .news-track {
-    grid-auto-columns: minmax(320px, 38vw);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 58px 28px;
   }
 
   .bio-overview {
@@ -1444,33 +1405,16 @@ h1, h2, h3, strong, b { font-weight: 100; }
   }
 
   .news-main {
-    padding: 124px 0 82px;
+    padding: 116px 0 82px;
   }
 
   .news-track {
-    grid-auto-columns: 78vw;
-    gap: 18px;
-    padding-inline: 22px;
+    grid-template-columns: 1fr;
+    gap: 56px;
   }
 
   .news-media {
-    height: min(54vh, 470px);
     padding: 8px;
-  }
-
-  .news-arrow {
-    top: calc(min(54vh, 470px) / 2 - 24px);
-    width: 48px;
-    height: 48px;
-    font-size: 23px;
-  }
-
-  .news-arrow-prev {
-    left: 8px;
-  }
-
-  .news-arrow-next {
-    right: 8px;
   }
 
   .bio-overview {
@@ -1488,7 +1432,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
   }
 
   .bio-cv {
-    margin-top: 70px;
+    margin-top: 42px;
   }
 
   .bio-cv-grid {
@@ -2664,6 +2608,51 @@ body,
 
 .admin-project-media-section {
   padding-bottom: 4px;
+}
+
+.admin-exhibition-links-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-exhibition-link-card {
+  padding: 18px;
+  border: 1px solid #d5d1c7;
+  background: #faf8f3;
+}
+
+.admin-exhibition-link-actions {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-exhibition-link-actions > span {
+  margin-right: auto;
+  color: #8d887f;
+  font-size: 9px;
+  letter-spacing: .1em;
+}
+
+.admin-exhibition-link-actions button {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid #c5c0b6;
+  background: transparent;
+  color: #504c45;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.admin-exhibition-link-actions button:hover:not(:disabled) {
+  border-color: #504c45;
+}
+
+.admin-exhibition-link-actions button:disabled {
+  opacity: .25;
 }
 
 .admin-editor-subheading {

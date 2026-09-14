@@ -11,6 +11,7 @@ import { normalizeProjectMedia } from './mediaContent';
 import { normalizeCvItem, normalizeCvSections } from './cvItems';
 import { mergeContentSections, normalizeStoredContent } from './contentMerge';
 import { DEFAULT_NAVIGATION_ORDER, normalizeNavigationOrder } from './navigation';
+import { defaultExhibitionLinksForWork } from './workExhibitions';
 
 const cleanLine = line => line
   .replace(/[\u200B-\u200D\uFEFF]/g, '')
@@ -57,6 +58,7 @@ const workProjects = workIndexItems.map(item => {
     intro: project.intro || '',
     introEs: workStatementsEs[item.slug] || '',
     statementVersion: 1,
+    exhibitionLinks: defaultExhibitionLinksForWork(item.slug),
     images
   };
 });
@@ -353,6 +355,10 @@ export const mergeSiteContent = (stored = {}) => {
     const sourceProject = projects.find(item => item.slug === project.slug);
     const sourceWorkProject = workProjects.find(item => item.slug === project.slug);
     const savedProject = normalizedStored.work?.projects?.find(item => item.slug === project.slug);
+    const hasSavedExhibitionLinks = Object.prototype.hasOwnProperty.call(savedProject || {}, 'exhibitionLinks');
+    const exhibitionLinks = hasSavedExhibitionLinks
+      ? (Array.isArray(project.exhibitionLinks) ? project.exhibitionLinks : [])
+      : defaultExhibitionLinksForWork(project.slug);
     const hasSavedSpanishTitle = Object.prototype.hasOwnProperty.call(savedProject || {}, 'titleEs');
     const titleEs = hasSavedSpanishTitle
       ? String(project.titleEs ?? '')
@@ -368,7 +374,7 @@ export const mergeSiteContent = (stored = {}) => {
       item.mediaType === 'video' || item.mediaType === 'youtube'
     ));
     if (!canonicalVideos.length) {
-      return { ...project, titleEs, intro, introEs, statementVersion: 1 };
+      return { ...project, titleEs, intro, introEs, statementVersion: 1, exhibitionLinks };
     }
 
     const isObsoleteUncertainVideo = item => item.imageUrl?.endsWith('/IMG_3675.m4v');
@@ -381,6 +387,7 @@ export const mergeSiteContent = (stored = {}) => {
       intro,
       introEs,
       statementVersion: 1,
+      exhibitionLinks,
       images
     };
   });

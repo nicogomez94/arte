@@ -20,7 +20,7 @@ export default function WorkProject() {
   const [open, setOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const slides = project?.images || [];
-  const relatedExhibitions = project ? exhibitionsForWork(project.slug, exhibitionProjects, language) : [];
+  const relatedExhibitions = project ? exhibitionsForWork(project, exhibitionProjects, language) : [];
 
   if (!project) return <Navigate to="/work/unfixed-landscapes" replace />;
   return (
@@ -50,11 +50,13 @@ export default function WorkProject() {
                 <div className="work-exhibition-links" aria-label={t('relatedExhibitions')}>
                   <span>{t('relatedExhibitions')}</span>
                   <ul>
-                    {relatedExhibitions.map(exhibition => (
-                      <li key={exhibition.slug || exhibition.href}>
-                        {exhibition.href ? (
+                    {relatedExhibitions.map((exhibition, index) => (
+                      <li key={`${exhibition.slug || exhibition.href || exhibition.title}-${index}`}>
+                        {exhibition.href.startsWith('/') ? (
+                          <Link to={exhibition.href}>{exhibition.title}</Link>
+                        ) : exhibition.href ? (
                           <a href={exhibition.href} target="_blank" rel="noopener noreferrer">{exhibition.title}</a>
-                        ) : <Link to={`/exhibitions/${exhibition.slug}`}>{exhibition.title}</Link>}
+                        ) : <span>{exhibition.title}</span>}
                       </li>
                     ))}
                   </ul>
