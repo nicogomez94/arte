@@ -13,7 +13,7 @@ const sections = [
   { key: 'work', label: 'Work', route: '/work' },
   { key: 'exhibitions', label: 'Exhibitions', route: '/exhibitions' },
   { key: 'news', label: 'News', route: '/news' },
-  { key: 'bio', label: 'Bio', route: '/bio' },
+  { key: 'bio', label: 'Bio', route: '/cv' },
   { key: 'workshops', label: 'Workshops', route: '/workshops' },
   { key: 'contact', label: 'Contact', route: '/contacto' }
 ];
@@ -693,10 +693,7 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
     </AdminFieldGroup>
   );
   if (active === 'news') return (
-    <>
-      <AdminFieldGroup title="Encabezado" description="Título y presentación de la sección News.">{fields(['title', 'titleEs', 'intro', 'introEs'])}</AdminFieldGroup>
-      <AdminFieldGroup title="Publicaciones" description="Cada publicación incluye imagen, texto bilingüe y un link opcional.">{fields(['items'])}</AdminFieldGroup>
-    </>
+    <AdminFieldGroup title="Publicaciones" description="Cada publicación incluye imagen, texto bilingüe y un link opcional.">{fields(['items'])}</AdminFieldGroup>
   );
   if (active === 'work' || active === 'exhibitions') return (
     <AdminFieldGroup title="Proyectos" description="Abrí un proyecto para editar sus datos, textos y contenido multimedia.">

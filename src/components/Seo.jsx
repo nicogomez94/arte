@@ -47,6 +47,8 @@ const staticCopy = {
     workDescription: 'Selected works by Andrea Alkalay across expanded photography, installation, material research, landscape and territory.',
     exhibitionsTitle: 'Exhibitions · Andrea Alkalay',
     exhibitionsDescription: 'Solo and group exhibitions by visual artist Andrea Alkalay, with installation views and selected project documentation.',
+    newsTitle: 'News · Andrea Alkalay',
+    newsDescription: 'Selected interviews, features and publications about the work of Andrea Alkalay.',
     statementTitle: 'Artist statement · Andrea Alkalay',
     aboutTitle: 'About · Andrea Alkalay',
     contactTitle: 'Contact · Andrea Alkalay',
@@ -66,6 +68,8 @@ const staticCopy = {
     workDescription: 'Obras seleccionadas de Andrea Alkalay en fotografía expandida, instalación, investigación material, paisaje y territorio.',
     exhibitionsTitle: 'Exhibiciones · Andrea Alkalay',
     exhibitionsDescription: 'Exhibiciones individuales y colectivas de la artista visual Andrea Alkalay, con vistas de montaje y documentación.',
+    newsTitle: 'News · Andrea Alkalay',
+    newsDescription: 'Entrevistas, notas y publicaciones seleccionadas sobre la obra de Andrea Alkalay.',
     statementTitle: 'Statement de artista · Andrea Alkalay',
     aboutTitle: 'Acerca de Andrea Alkalay',
     contactTitle: 'Contacto · Andrea Alkalay',
@@ -157,6 +161,7 @@ export default function Seo() {
         }
       };
     }
+    if (pathname === '/news') return { ...base, title: copy.newsTitle, description: copy.newsDescription };
     if (pathname === '/statement') return {
       ...base,
       title: copy.statementTitle,

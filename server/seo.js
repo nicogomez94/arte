@@ -122,6 +122,10 @@ export const seoForPath = (pathname, storedContent = {}) => {
   }
 
   const staticPages = {
+    '/news': {
+      title: 'News · Andrea Alkalay',
+      description: 'Selected interviews, features and publications about the work of Andrea Alkalay.'
+    },
     '/statement': {
       title: 'Artist statement · Andrea Alkalay',
       description: excerpt(storedContent.statement?.paragraphs?.[0], 'Andrea Alkalay’s artist statement on expanded photography, materiality, landscape, territory and memory.'),
@@ -220,7 +224,7 @@ export const sitemapXml = storedContent => {
   const paths = [
     '/', '/work', ...work.map(project => `/work/${project.slug}`),
     '/exhibitions', ...exhibitions.map(project => `/exhibitions/${project.slug}`),
-    '/statement', '/acerca-de-mi', '/contacto', '/cv', '/workshops'
+    '/news', '/statement', '/acerca-de-mi', '/contacto', '/cv', '/workshops'
   ];
   const uniquePaths = [...new Set(paths)];
   const urls = uniquePaths.map(path => `  <url><loc>${escapeXml(`${SITE_URL}${path}`)}</loc></url>`).join('\n');

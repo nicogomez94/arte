@@ -11,7 +11,7 @@ test('every sitemap URL has unique indexable metadata and canonical URL', () => 
   const paths = sitemapPaths(sitemapXml({}));
   const pages = paths.map(path => seoForPath(path, {}));
 
-  assert.equal(paths.length, 33);
+  assert.equal(paths.length, 34);
   assert.equal(new Set(pages.map(page => page.title)).size, pages.length);
   assert.equal(new Set(pages.map(page => page.description)).size, pages.length);
   assert.equal(new Set(pages.map(page => page.path)).size, pages.length);
@@ -22,6 +22,13 @@ test('every sitemap URL has unique indexable metadata and canonical URL', () => 
     assert.ok(page.description);
     assert.ok(page.image);
   });
+});
+
+test('News has valid metadata in the server-rendered document', () => {
+  const seo = seoForPath('/news', {});
+  assert.equal(seo.valid, true);
+  assert.equal(seo.noIndex, false);
+  assert.equal(seo.title, 'News · Andrea Alkalay');
 });
 
 test('unknown and private routes are excluded from indexing', () => {
