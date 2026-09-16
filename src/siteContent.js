@@ -8,7 +8,7 @@ import { useLanguage } from './i18n';
 import { exhibitionStatementsEs, workStatementsEs } from './spanishStatements';
 import { spanishWorkTitles, statementParagraphsEs, translateSiteContent } from './translations';
 import { normalizeProjectMedia } from './mediaContent';
-import { normalizeCvItem, normalizeCvSections } from './cvItems';
+import { isCvPublicationsSection, normalizeCvItem, normalizeCvSections } from './cvItems';
 import { mergeContentSections, normalizeStoredContent } from './contentMerge';
 import { DEFAULT_NAVIGATION_ORDER, normalizeNavigationOrder } from './navigation';
 import { defaultExhibitionLinksForWork } from './workExhibitions';
@@ -59,6 +59,7 @@ const workProjects = workIndexItems.map(item => {
     introEs: workStatementsEs[item.slug] || '',
     statementVersion: 1,
     exhibitionLinks: defaultExhibitionLinksForWork(item.slug),
+    exhibitionLinksVersion: 2,
     images
   };
 });
@@ -95,16 +96,16 @@ const newsItems = [
     id: 'aesthetica-107',
     imageUrl: '/news/2 Aesthetica Magazine, Issue 107. .png', width: 1447, height: 1034,
     imageAlt: 'Aesthetica Magazine issue 107 featuring Andrea Alkalay',
-    caption: 'Aesthetica Magazine, Issue 107. Distort and Reveal. Landscape on Landscape. UK, 2022.',
-    captionEs: 'Aesthetica Magazine, número 107. Distort and Reveal. Landscape on Landscape. Reino Unido, 2022.',
+    caption: 'Aesthetica Magazine, Issue 107. Distort and Reveal. (Pages 75 to 86). Landscape on Landscape. UK, 2022.',
+    captionEs: 'Aesthetica Magazine, número 107. Distort and Reveal. (Páginas 75 a 86). Landscape on Landscape. Reino Unido, 2022.',
     url: 'https://issuu.com/aesthetica_magazine/docs/aesthetica-issue107?fr=sMWQ3ODQ4NTY2MTM'
   },
   {
     id: 'arte-al-limite-109',
     imageUrl: '/news/3- Arte Al Límite, Issue 109. Interview by Felipe Forteza. Chile, 2025..JPG', width: 2012, height: 1417,
     imageAlt: 'Arte Al Límite issue 109 featuring Andrea Alkalay',
-    caption: 'Arte Al Límite, Issue 109. Interview by Felipe Forteza. Chile, 2025.',
-    captionEs: 'Arte Al Límite, número 109. Entrevista por Felipe Forteza. Chile, 2025.',
+    caption: 'Arte Al Límite, Issue 109. Interview by Felipe Forteza. (Pages 62 to 69). Chile, 2025.',
+    captionEs: 'Arte Al Límite, número 109. Entrevista por Felipe Forteza. (Páginas 62 a 69). Chile, 2025.',
     url: 'https://www.instagram.com/p/DLa_jqEOAir/'
   },
   {
@@ -143,8 +144,8 @@ const newsItems = [
     id: 'see-zeen-13',
     imageUrl: '/news/8 see-zeen, Issue #13, The 10. Unearth. New York : Berlin, 2024..png', width: 1417, height: 1251,
     imageAlt: 'see-zeen issue 13 featuring Unearth',
-    caption: 'see-zeen, Issue #13, The 10. Unearth. New York / Berlin, 2024.',
-    captionEs: 'see-zeen, número 13, The 10. Unearth. Nueva York / Berlín, 2024.',
+    caption: 'see-zeen, Issue #13, The 10. Unearth, 2024.',
+    captionEs: 'see-zeen, número 13, The 10. Unearth, 2024.',
     url: 'https://see-zeen.com/andrea-alkalay'
   },
   {
@@ -208,6 +209,7 @@ export const defaultSiteContent = {
     viewMoreLabel: 'View more'
   },
   news: {
+    contentVersion: 2,
     title: 'News / Press',
     titleEs: 'News / Prensa',
     intro: 'Selected interviews, features and publications.',
@@ -259,6 +261,8 @@ export const defaultSiteContent = {
     introHtml: '',
     introHtmlEs: '',
     introEs: cvIntroEs,
+    representationHtml: '<p>Gallery Representation Hafez Gallery, Saudi Arabia – Middle East<br>Works available through Praxis Art, Buenos Aires, Argentina.</p>',
+    representationHtmlEs: '<p>Representación: Hafez Gallery, Arabia Saudita – Medio Oriente<br>Obras disponibles a través de Praxis Art, Buenos Aires, Argentina.</p>',
     ...parsedCvContent
   },
   workshops: {
@@ -299,6 +303,29 @@ export const mergeSiteContent = (stored = {}) => {
     };
   }
   merged.global.menuOrder = normalizeNavigationOrder(merged.global.menuOrder);
+  if (Number(normalizedStored.news?.contentVersion || 0) < 2) {
+    const savedItems = Array.isArray(merged.news?.items) ? merged.news.items : [];
+    const savedById = new Map(savedItems.filter(item => item?.id).map(item => [item.id, item]));
+    const defaultIds = new Set(defaultSiteContent.news.items.map(item => item.id));
+    merged.news = {
+      ...merged.news,
+      contentVersion: 2,
+      items: [
+        ...defaultSiteContent.news.items.map(item => {
+          const saved = savedById.get(item.id);
+          return {
+            ...saved,
+            ...item,
+            imageUrl: saved?.imageUrl || item.imageUrl,
+            imageAlt: saved?.imageAlt || item.imageAlt,
+            width: saved?.width || item.width,
+            height: saved?.height || item.height
+          };
+        }),
+        ...savedItems.filter(item => item?.id && !defaultIds.has(item.id))
+      ]
+    };
+  }
   merged.contact.links = (merged.contact.links || []).filter(link => link.url !== 'https://www.andrealkalay.com/');
   if (Number(normalizedStored.contact?.contentVersion || 0) < 1) {
     defaultSiteContent.contact.links.slice(-2).forEach(socialLink => {
@@ -308,9 +335,18 @@ export const mergeSiteContent = (stored = {}) => {
     });
   }
   delete merged.cv.links;
+  const stripAtrumEntry = html => String(html || '').replace(
+    /<li\b[^>]*>(?:(?!<\/li>)[\s\S])*?\batrum\b(?:(?!<\/li>)[\s\S])*?<\/li>/gi,
+    ''
+  );
   merged.cv.sections = normalizeCvSections((merged.cv.sections || []).filter(section => (
     !section.title?.trim().toLowerCase().startsWith('group exhibitions')
-  )));
+  ))).map(section => isCvPublicationsSection(section) ? {
+    ...section,
+    items: (section.items || []).filter(item => !/\batrum\b/i.test(item.title || '')),
+    contentHtml: stripAtrumEntry(section.contentHtml),
+    contentHtmlEs: stripAtrumEntry(section.contentHtmlEs)
+  } : section);
   // Bio used to live inside Statement. Strip legacy saved fields as well so it
   // disappears from both the public page and the content editor.
   if (merged.statement) {
@@ -356,9 +392,17 @@ export const mergeSiteContent = (stored = {}) => {
     const sourceWorkProject = workProjects.find(item => item.slug === project.slug);
     const savedProject = normalizedStored.work?.projects?.find(item => item.slug === project.slug);
     const hasSavedExhibitionLinks = Object.prototype.hasOwnProperty.call(savedProject || {}, 'exhibitionLinks');
-    const exhibitionLinks = hasSavedExhibitionLinks
+    let exhibitionLinks = hasSavedExhibitionLinks
       ? (Array.isArray(project.exhibitionLinks) ? project.exhibitionLinks : [])
       : defaultExhibitionLinksForWork(project.slug);
+    const exhibitionLinksVersion = Number(savedProject?.exhibitionLinksVersion || 0);
+    if (project.slug === 'the-rock-cycle' && exhibitionLinksVersion < 2) {
+      exhibitionLinks = exhibitionLinks.map(link => (
+        /museo arte al l[ií]mite/i.test(`${link.label || ''} ${link.labelEs || ''}`)
+          ? { ...link, href: '' }
+          : link
+      ));
+    }
     const hasSavedSpanishTitle = Object.prototype.hasOwnProperty.call(savedProject || {}, 'titleEs');
     const titleEs = hasSavedSpanishTitle
       ? String(project.titleEs ?? '')
@@ -374,7 +418,7 @@ export const mergeSiteContent = (stored = {}) => {
       item.mediaType === 'video' || item.mediaType === 'youtube'
     ));
     if (!canonicalVideos.length) {
-      return { ...project, titleEs, intro, introEs, statementVersion: 1, exhibitionLinks };
+      return { ...project, titleEs, intro, introEs, statementVersion: 1, exhibitionLinks, exhibitionLinksVersion: 2 };
     }
 
     const isObsoleteUncertainVideo = item => item.imageUrl?.endsWith('/IMG_3675.m4v');
@@ -388,6 +432,7 @@ export const mergeSiteContent = (stored = {}) => {
       introEs,
       statementVersion: 1,
       exhibitionLinks,
+      exhibitionLinksVersion: 2,
       images
     };
   });

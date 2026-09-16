@@ -18,7 +18,6 @@ Talking Pictures
 AAL Mag Page 62-69
 See-Zeen Photo Mag 2024
  Art Amalgama
- Atrum Art  S.A
 2023. F-Stop interview
 2022. Lenscratch Mag .
 2022. Aethetica Mag . Pag 75 - 86

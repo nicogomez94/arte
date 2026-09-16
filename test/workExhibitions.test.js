@@ -27,7 +27,7 @@ test('the rock cycle uses the corrected exhibition labels and destinations', () 
   assert.deepEqual(exhibitionsForWork('the-rock-cycle', exhibitions, 'es'), [
     { href: '/exhibitions/park-pecno-slovenia', title: 'Park Pečno / Eslovenia' },
     { href: '/exhibitions/bienal-sur', title: 'Bienal Sur / Buenos Aires' },
-    { href: 'https://www.instagram.com/p/DLa_jqEOAir/', title: 'Museo Arte Al Límite / Chile' }
+    { href: '', title: 'Museo Arte Al Límite / Chile' }
   ]);
 });
 

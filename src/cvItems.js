@@ -3,7 +3,6 @@ const legacyCvItemLinks = [
   ['aal mag', 'https://www.instagram.com/p/DLa_jqEOAir/'],
   ['see-zeen photo mag', 'https://see-zeen.com/andrea-alkalay'],
   ['art amalgama', 'https://www.artamalgama.com/artists-1/andrea-alkalay'],
-  ['atrum art', 'https://www.atrumart.com/artists/544'],
   ['f-stop interview', 'https://www.fstopmagazine.com/blog/2023/interview-with-featured-photographer-andrea-alkalay/'],
   ['f-stop entrevista', 'https://www.fstopmagazine.com/blog/2023/interview-with-featured-photographer-andrea-alkalay/'],
   ['lenscratch', 'http://lenscratch.com/2022/06/andrea-alkalay-landscape-on-landscape/'],
@@ -19,6 +18,10 @@ const legacyCvItemLinks = [
 ];
 
 const normalizedTitle = value => String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+
+export const isCvPublicationsSection = section => (
+  /publications|publicaciones/i.test(`${section?.title || ''} ${section?.titleEs || ''}`)
+);
 
 const escapeHtml = value => String(value || '')
   .replaceAll('&', '&amp;')

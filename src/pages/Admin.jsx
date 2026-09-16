@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
-import { cvItemsToRichText, plainTextToCvHtml, safeCvHref, sanitizeCvRichText } from '../cvItems';
+import { cvItemsToRichText, isCvPublicationsSection, plainTextToCvHtml, safeCvHref, sanitizeCvRichText } from '../cvItems';
 import { mediaTypeFor, mediaValidationError, youtubeMediaFromUrl } from '../mediaContent';
 import { defaultSiteContent, mergeSiteContent, SITE_CONTENT_UPDATED_EVENT } from '../siteContent';
 import { NAVIGATION_ITEMS, normalizeNavigationOrder } from '../navigation';
@@ -52,9 +52,19 @@ const hiddenKeys = new Set(['slug', 'id', 'category', 'slideIndex', 'mediaType',
 const imageKeys = new Set(['imageUrl', 'heroImageUrl', 'portraitImageUrl', 'detailImageUrl']);
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const clone = value => JSON.parse(JSON.stringify(value));
-const draftForSection = (content, key) => key === 'bio'
-  ? { statement: clone(content.statement), cv: clone(content.cv) }
-  : clone(content[key]);
+const cvWithPublications = cv => {
+  const next = clone(cv);
+  if (!(next.sections || []).some(isCvPublicationsSection)) {
+    const fallback = defaultSiteContent.cv.sections.find(isCvPublicationsSection);
+    next.sections = [...(fallback ? [clone(fallback)] : []), ...(next.sections || [])];
+  }
+  return next;
+};
+const draftForSection = (content, key) => {
+  if (key === 'bio') return { statement: clone(content.statement), cv: cvWithPublications(content.cv) };
+  if (key === 'news') return { news: clone(content.news), cv: cvWithPublications(content.cv) };
+  return clone(content[key]);
+};
 const titleForItem = (item, index) => item.title || item.caption || item.label || item.value || `Elemento ${index + 1}`;
 const thumbnailForItem = item => mediaTypeFor(item) === 'image' ? item.imageUrl : (item.posterUrl || item.imageUrl);
 const uniqueId = prefix => `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -449,7 +459,7 @@ function CvSectionFields({ section, path, onChange }) {
   );
 }
 
-function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, projectCategory = null, includeKeys = null }) {
+function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, projectCategory = null, includeKeys = null, excludeCvPublications = false }) {
   const [dragIndex, setDragIndex] = useState(null);
   const [dropTarget, setDropTarget] = useState(null);
   if (Array.isArray(value)) {
@@ -486,7 +496,10 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
             : 'Agregar imagen';
     return (
       <div className={`admin-content-list ${dragIndex !== null ? 'is-reordering' : ''}`}>
-        {value.map((item, index) => ({ item, index })).filter(({ item }) => kind !== 'projects' || !projectCategory || item.category === projectCategory).map(({ item, index }) => {
+        {value.map((item, index) => ({ item, index })).filter(({ item }) => (
+          (kind !== 'projects' || !projectCategory || item.category === projectCategory) &&
+          !(excludeCvPublications && kind === 'sections' && isCvPublicationsSection(item))
+        )).map(({ item, index }) => {
           const itemPath = [...path, index];
           if (item && typeof item === 'object') return (
             <details
@@ -531,7 +544,7 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
               </summary>
               <div className="admin-content-card-body">
                 {editableList && <button className="admin-remove-item" type="button" onClick={() => onRemove(path, index)}>Eliminar</button>}
-                <ContentFields value={item} path={itemPath} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />
+                <ContentFields value={item} path={itemPath} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} excludeCvPublications={excludeCvPublications} />
               </div>
             </details>
           );
@@ -565,7 +578,7 @@ function ContentFields({ value, path = [], onChange, onMove, onAdd, onRemove, pr
         if (Array.isArray(fieldValue) || (fieldValue && typeof fieldValue === 'object')) return (
           <section className="admin-content-group" key={key}>
             <h3>{label}</h3>
-            <ContentFields value={fieldValue} path={fieldPath} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} />
+            <ContentFields value={fieldValue} path={fieldPath} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} projectCategory={projectCategory} excludeCvPublications={excludeCvPublications} />
           </section>
         );
         if (key === 'category') return (
@@ -693,7 +706,21 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
     </AdminFieldGroup>
   );
   if (active === 'news') return (
-    <AdminFieldGroup title="Publicaciones" description="Cada publicación incluye imagen, texto bilingüe y un link opcional.">{fields(['items'])}</AdminFieldGroup>
+    <>
+      <AdminFieldGroup title="Publicaciones · listado" description="Este listado aparece en la columna izquierda de News y cambia con el idioma del sitio.">
+        <ContentFields
+          value={draft.cv.sections.find(isCvPublicationsSection)}
+          path={['cv', 'sections', draft.cv.sections.findIndex(isCvPublicationsSection)]}
+          onChange={onChange}
+          onMove={onMove}
+          onAdd={onAdd}
+          onRemove={onRemove}
+        />
+      </AdminFieldGroup>
+      <AdminFieldGroup title="Galería de News" description="La primera publicación también puede reemplazarse para anunciar una novedad. Cada imagen tiene texto bilingüe y un link opcional.">
+        <ContentFields value={draft.news} path={['news']} includeKeys={['items']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+      </AdminFieldGroup>
+    </>
   );
   if (active === 'work' || active === 'exhibitions') return (
     <AdminFieldGroup title="Proyectos" description="Abrí un proyecto para editar sus datos, textos y contenido multimedia.">
@@ -724,8 +751,16 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
           <RichTextEditor label="Contenido · Español" value={draft.cv.introHtmlEs || plainTextToCvHtml(draft.cv.introEs)} onChange={value => onChange(['cv', 'introHtmlEs'], value)} />
         </AdminFieldGroup>
       </div>
-      <AdminFieldGroup title="Trayectoria" description="Libro de artista, residencias, publicaciones, exhibiciones y premios con sus links editables.">
-        <ContentFields value={draft.cv} path={['cv']} includeKeys={['sections']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+      <div className="admin-language-columns admin-bio-language-block">
+        <AdminFieldGroup className="admin-language-panel" title="Representación · English" description="Texto editable que aparece debajo del retrato.">
+          <RichTextEditor label="Contenido · Inglés" value={draft.cv.representationHtml || ''} onChange={value => onChange(['cv', 'representationHtml'], value)} />
+        </AdminFieldGroup>
+        <AdminFieldGroup className="admin-language-panel" title="Representación · Español" description="Texto editable que aparece debajo del retrato.">
+          <RichTextEditor label="Contenido · Español" value={draft.cv.representationHtmlEs || ''} onChange={value => onChange(['cv', 'representationHtmlEs'], value)} />
+        </AdminFieldGroup>
+      </div>
+      <AdminFieldGroup title="Trayectoria" description="Libro de artista, residencias, exhibiciones y premios con sus links editables.">
+        <ContentFields value={draft.cv} path={['cv']} includeKeys={['sections']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} excludeCvPublications />
       </AdminFieldGroup>
     </>
   );
@@ -883,7 +918,7 @@ export default function Admin() {
       : kind === 'sections'
           ? '¿Eliminar esta sección de CV?'
           : kind === 'items'
-            ? '¿Eliminar esta entrada de CV?'
+            ? (active === 'news' ? '¿Eliminar esta publicación de News?' : '¿Eliminar esta entrada de CV?')
             : kind === 'rows'
               ? '¿Eliminar esta fila de Workshops?'
             : '¿Eliminar esta imagen?';
@@ -926,6 +961,17 @@ export default function Admin() {
     }
     setBusy(true); setStatus('Guardando…');
     try {
+      if (active === 'news') {
+        const [news, cv] = await Promise.all([
+          api.updateContent('news', draft.news),
+          api.updateContent('cv', draft.cv)
+        ]);
+        setContent(current => ({ ...current, news, cv }));
+        setDraft({ news: clone(news), cv: cvWithPublications(cv) });
+        setDirty(false); setStatus('News publicada correctamente.');
+        window.dispatchEvent(new Event(SITE_CONTENT_UPDATED_EVENT));
+        return;
+      }
       if (active === 'bio') {
         const [statement, cv] = await Promise.all([
           api.updateContent('statement', draft.statement),

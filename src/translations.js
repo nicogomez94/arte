@@ -320,6 +320,7 @@ export function translateSiteContent(content, language) {
       introLabel: '',
       intro: content.cv.introEs?.trim() || translateCvText(content.cv.intro),
       introHtml: content.cv.introHtmlEs?.trim() || content.cv.introHtml,
+      representationHtml: content.cv.representationHtmlEs?.trim() || content.cv.representationHtml,
       sections: (content.cv.sections || []).map(section => ({
         ...section,
         title: section.titleEs?.trim() || translateCvText(section.title),

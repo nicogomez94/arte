@@ -8,7 +8,7 @@ const associations = {
   'the-rock-cycle': [
     { label: 'Park Pečno / Slovenia', labelEs: 'Park Pečno / Eslovenia', href: '/exhibitions/park-pecno-slovenia' },
     { label: 'Bienal Sur / Buenos Aires', labelEs: 'Bienal Sur / Buenos Aires', href: '/exhibitions/bienal-sur' },
-    { label: 'Museo Arte Al Límite / Chile', labelEs: 'Museo Arte Al Límite / Chile', href: 'https://www.instagram.com/p/DLa_jqEOAir/' }
+    { label: 'Museo Arte Al Límite / Chile', labelEs: 'Museo Arte Al Límite / Chile', href: '' }
   ],
   'landscape-on-landscape': [
     { label: 'Recoleta Cultural Center', labelEs: 'Centro Cultural Recoleta', href: '/exhibitions/recoleta-cultural-center' },

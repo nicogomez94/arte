@@ -1,6 +1,12 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { cvItemsToRichText, normalizeCvItem, normalizeCvSections, safeCvHref, sanitizeCvRichText } from '../src/cvItems.js';
+import { cvItemsToRichText, isCvPublicationsSection, normalizeCvItem, normalizeCvSections, safeCvHref, sanitizeCvRichText } from '../src/cvItems.js';
+
+test('Publications is identified in both site languages', () => {
+  assert.equal(isCvPublicationsSection({ title: 'Publications' }), true);
+  assert.equal(isCvPublicationsSection({ titleEs: 'Publicaciones' }), true);
+  assert.equal(isCvPublicationsSection({ title: 'Artist Book' }), false);
+});
 
 test('legacy Bio entries keep their existing automatic links', () => {
   const item = normalizeCvItem('2025 · Talking Pictures · Interview');
