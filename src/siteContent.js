@@ -8,7 +8,7 @@ import { useLanguage } from './i18n';
 import { exhibitionStatementsEs, workStatementsEs } from './spanishStatements';
 import { spanishWorkTitles, statementParagraphsEs, translateSiteContent } from './translations';
 import { normalizeProjectMedia } from './mediaContent';
-import { isCvPublicationsSection, normalizeCvItem, normalizeCvSections } from './cvItems';
+import { isCvPublicationsSection, normalizeCvItem, normalizeCvSections, stripRepresentationFromPublications } from './cvItems';
 import { mergeContentSections, normalizeStoredContent } from './contentMerge';
 import { DEFAULT_NAVIGATION_ORDER, normalizeNavigationOrder } from './navigation';
 import { defaultExhibitionLinksForWork } from './workExhibitions';
@@ -344,8 +344,8 @@ export const mergeSiteContent = (stored = {}) => {
   ))).map(section => isCvPublicationsSection(section) ? {
     ...section,
     items: (section.items || []).filter(item => !/\batrum\b/i.test(item.title || '')),
-    contentHtml: stripAtrumEntry(section.contentHtml),
-    contentHtmlEs: stripAtrumEntry(section.contentHtmlEs)
+    contentHtml: stripRepresentationFromPublications(stripAtrumEntry(section.contentHtml)),
+    contentHtmlEs: stripRepresentationFromPublications(stripAtrumEntry(section.contentHtmlEs))
   } : section);
   // Bio used to live inside Statement. Strip legacy saved fields as well so it
   // disappears from both the public page and the content editor.

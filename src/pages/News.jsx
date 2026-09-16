@@ -1,5 +1,5 @@
 import { Footer, Header } from '../components/SiteChrome';
-import { cvItemsToRichText, isCvPublicationsSection, sanitizeCvRichText } from '../cvItems';
+import { cvItemsToRichText, isCvPublicationsSection, sanitizeCvRichText, stripRepresentationFromPublications } from '../cvItems';
 import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
 
@@ -21,7 +21,11 @@ export default function News() {
                 <p className="news-publications-title" role="heading" aria-level="2">{publications.title}</p>
                 <div
                   className="cv-rich-text cv-section-entries"
-                  dangerouslySetInnerHTML={{ __html: sanitizeCvRichText(publications.contentHtml || cvItemsToRichText(publications.items)) }}
+                  dangerouslySetInnerHTML={{
+                    __html: stripRepresentationFromPublications(
+                      sanitizeCvRichText(publications.contentHtml || cvItemsToRichText(publications.items))
+                    )
+                  }}
                 />
               </aside>
             )}
