@@ -26,7 +26,7 @@ export const isCvPublicationsSection = section => (
 // Some production CV content kept the gallery-representation copy appended to
 // Publications. It belongs exclusively below the portrait on Bio.
 export const stripRepresentationFromPublications = value => String(value || '').replace(
-  /<(p|li)\b[^>]*>(?:(?!<\/\1>)[\s\S])*?(?:gallery\s+representation\s+hafez|representaci[oó]n\s*:?\s*hafez|works\s+available\s+(?:through|at)\s+praxis|obras\s+disponibles\s+(?:en|a\s+trav[eé]s\s+de)\s+praxis)(?:(?!<\/\1>)[\s\S])*?<\/\1>/gi,
+  /<(p|li)\b[^>]*>(?:(?!<\/\1>)[\s\S])*?(?:hafez(?:\s|&nbsp;|<br>)*gallery|praxis(?:\s|&nbsp;|<br>)*art)(?:(?!<\/\1>)[\s\S])*?<\/\1>/gi,
   ''
 ).trim();
 

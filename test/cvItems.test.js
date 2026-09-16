@@ -9,7 +9,7 @@ test('Publications is identified in both site languages', () => {
 });
 
 test('representation copy is removed from Publications without changing publication entries', () => {
-  const html = '<ul><li>Talking Pictures</li><li>Art Fluent</li></ul><p>Representación : Hafez Gallery, Arabia Saudita – Medio Oriente<br>Obras disponibles en Praxis Art, Buenos Aires, Argentina.</p>';
+  const html = '<ul><li>Talking Pictures</li><li>Art Fluent</li></ul><p>Representaci&oacute;n&nbsp;: Hafez Gallery,<br>Arabia Saudita – Medio Oriente</p><p>Obras disponibles en Praxis Art, Buenos Aires, Argentina.</p>';
   const cleaned = stripRepresentationFromPublications(html);
 
   assert.equal(cleaned, '<ul><li>Talking Pictures</li><li>Art Fluent</li></ul>');
