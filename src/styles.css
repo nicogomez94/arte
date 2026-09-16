@@ -1198,10 +1198,11 @@ h1, h2, h3, strong, b { font-weight: 100; }
   min-width: 0;
 }
 
-.news-publications-title {
+.site-page .news-publications-title {
   margin: 0 0 24px;
-  color: var(--bordo);
+  color: #990c00;
   font-size: 10px;
+  font-weight: 500;
   letter-spacing: .12em;
   line-height: 1.2;
   text-transform: uppercase;
@@ -1210,7 +1211,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
 .news-publications .cv-rich-text,
 .news-publications .cv-rich-text li {
   color: #000;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.55;
 }
 

@@ -732,6 +732,16 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
       <AdminFieldGroup title="Imagen" description="Retrato que acompaña la página de Bio.">
         <ContentFields value={draft.statement} path={['statement']} includeKeys={['imageUrl', 'imageAlt']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
       </AdminFieldGroup>
+      <AdminFieldGroup title="Texto debajo del retrato" description="Representación y disponibilidad que aparecen inmediatamente debajo de la foto en Bio.">
+        <div className="admin-language-columns admin-bio-language-block">
+          <AdminFieldGroup className="admin-language-panel" title="English" description="Texto visible cuando el sitio está en inglés.">
+            <RichTextEditor label="Representación · Inglés" value={draft.cv.representationHtml || ''} onChange={value => onChange(['cv', 'representationHtml'], value)} />
+          </AdminFieldGroup>
+          <AdminFieldGroup className="admin-language-panel" title="Español" description="Texto visible cuando el sitio está en español.">
+            <RichTextEditor label="Representación · Español" value={draft.cv.representationHtmlEs || ''} onChange={value => onChange(['cv', 'representationHtmlEs'], value)} />
+          </AdminFieldGroup>
+        </div>
+      </AdminFieldGroup>
       <AdminFieldGroup title="Statement" description="Título y texto que abren la página de Bio.">
         <ContentFields value={draft.statement} path={['statement']} includeKeys={['title']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
       </AdminFieldGroup>
@@ -749,14 +759,6 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
         </AdminFieldGroup>
         <AdminFieldGroup className="admin-language-panel" title="Bio · Español" description="Biografía que aparece debajo del Statement.">
           <RichTextEditor label="Contenido · Español" value={draft.cv.introHtmlEs || plainTextToCvHtml(draft.cv.introEs)} onChange={value => onChange(['cv', 'introHtmlEs'], value)} />
-        </AdminFieldGroup>
-      </div>
-      <div className="admin-language-columns admin-bio-language-block">
-        <AdminFieldGroup className="admin-language-panel" title="Representación · English" description="Texto editable que aparece debajo del retrato.">
-          <RichTextEditor label="Contenido · Inglés" value={draft.cv.representationHtml || ''} onChange={value => onChange(['cv', 'representationHtml'], value)} />
-        </AdminFieldGroup>
-        <AdminFieldGroup className="admin-language-panel" title="Representación · Español" description="Texto editable que aparece debajo del retrato.">
-          <RichTextEditor label="Contenido · Español" value={draft.cv.representationHtmlEs || ''} onChange={value => onChange(['cv', 'representationHtmlEs'], value)} />
         </AdminFieldGroup>
       </div>
       <AdminFieldGroup title="Trayectoria" description="Libro de artista, residencias, exhibiciones y premios con sus links editables.">

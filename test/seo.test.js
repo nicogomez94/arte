@@ -31,6 +31,12 @@ test('News has valid metadata in the server-rendered document', () => {
   assert.equal(seo.title, 'News · Andrea Alkalay');
 });
 
+test('Bio uses its current section name in the server-rendered title', () => {
+  const seo = seoForPath('/cv', {});
+  assert.equal(seo.valid, true);
+  assert.equal(seo.title, 'Bio · Andrea Alkalay');
+});
+
 test('unknown and private routes are excluded from indexing', () => {
   assert.deepEqual(
     { valid: seoForPath('/missing', {}).valid, noIndex: seoForPath('/missing', {}).noIndex },

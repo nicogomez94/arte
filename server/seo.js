@@ -145,7 +145,7 @@ export const seoForPath = (pathname, storedContent = {}) => {
       description: 'Contact visual artist Andrea Alkalay for exhibitions, collaborations and press inquiries.'
     },
     '/cv': {
-      title: 'CV · Andrea Alkalay',
+      title: 'Bio · Andrea Alkalay',
       description: 'Curriculum vitae of Andrea Alkalay: exhibitions, residencies, grants, publications and selected honors.',
       image: storedContent.cv?.imageUrl || '/contact/Andrea-Alkalay.jpg.avif',
       imageAlt: storedContent.cv?.imageAlt || 'Andrea Alkalay',
