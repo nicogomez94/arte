@@ -41,7 +41,7 @@ const labels = {
   practiceParagraphs: 'Textos de práctica', detailImageUrl: 'Imagen de detalle', detailImageAlt: 'Descripción de imagen de detalle',
   detailCaption: 'Epígrafe de detalle', detailLabel: 'Etiqueta de detalle', detailTitle: 'Título de detalle',
   facts: 'Datos', label: 'Etiqueta', value: 'Texto visible', linkLabel: 'Texto del enlace', imageAlt: 'Descripción de imagen',
-  subtitle: 'Bajada', links: 'Enlaces', url: 'Destino del enlace', introLabel: 'Título de introducción',
+  subtitle: 'Bajada · Inglés', subtitleEs: 'Bajada · Español', links: 'Enlaces', url: 'Destino del enlace', introLabel: 'Título de introducción',
   caption: 'Texto · Inglés', captionEs: 'Texto · Español',
   sections: 'Secciones de CV', items: 'Entradas', href: 'Destino del enlace (href)', category: 'Categoría',
   rows: 'Filas', text: 'Texto · Inglés', textEs: 'Texto · Español', titleEs: 'Título · Español',
@@ -768,7 +768,17 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
   );
   if (active === 'contact') return (
     <>
-      <AdminFieldGroup title="Presentación" description="Imagen y encabezado de la página de contacto.">{fields(['imageUrl', 'imageAlt', 'title', 'subtitle'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Imagen" description="Retrato que acompaña la página de contacto.">{fields(['imageUrl', 'imageAlt'])}</AdminFieldGroup>
+      <AdminFieldGroup title="Presentación" description="Título y bajada visibles en Contact según el idioma elegido.">
+        <div className="admin-language-columns">
+          <AdminFieldGroup className="admin-language-panel" title="English" description="Contenido visible cuando el sitio está en inglés.">
+            <ContentFields value={draft} includeKeys={['title', 'subtitle']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+          </AdminFieldGroup>
+          <AdminFieldGroup className="admin-language-panel" title="Español" description="Contenido visible cuando el sitio está en español.">
+            <ContentFields value={draft} includeKeys={['titleEs', 'subtitleEs']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
+          </AdminFieldGroup>
+        </div>
+      </AdminFieldGroup>
       <AdminFieldGroup title="Enlaces" description="Canales de contacto y redes sociales visibles.">{fields(['links'])}</AdminFieldGroup>
     </>
   );
@@ -878,7 +888,7 @@ export default function Admin() {
         list.push({ title: 'New section', titleEs: 'Nueva sección', contentHtml: '<ul><li>New entry</li></ul>', contentHtmlEs: '<ul><li>Nueva entrada</li></ul>', items: [] });
       } else if (kind === 'items') {
         if (active === 'news') {
-          list.push({ id: uniqueId('news'), imageUrl: '/exhibicion-01.png', imageAlt: 'Nueva publicación', caption: 'New publication', captionEs: 'Nueva publicación', url: '' });
+          list.unshift({ id: uniqueId('news'), imageUrl: '/exhibicion-01.png', imageAlt: 'Nueva publicación', caption: 'New publication', captionEs: 'Nueva publicación', url: '' });
         } else {
           list.push({ title: 'Nueva entrada', contentHtml: '', href: '' });
         }
@@ -904,7 +914,10 @@ export default function Admin() {
       }
       return next;
     });
-    setDirty(true); setStatus('Nuevo elemento agregado. Completá sus datos y guardá los cambios.');
+    setDirty(true);
+    setStatus(active === 'news' && path.at(-1) === 'items'
+      ? 'Nueva publicación agregada en la primera posición. Completá sus datos y guardá los cambios.'
+      : 'Nuevo elemento agregado. Completá sus datos y guardá los cambios.');
   };
 
   const removeAtPath = (path, index) => {

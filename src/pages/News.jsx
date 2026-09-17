@@ -1,4 +1,5 @@
 import { Footer, Header } from '../components/SiteChrome';
+import { MasonryColumns } from '../components/MasonryThumbGrid';
 import { cvItemsToRichText, isCvPublicationsSection, sanitizeCvRichText, stripRepresentationFromPublications } from '../cvItems';
 import { useLanguage } from '../i18n';
 import { useSiteContent } from '../siteContent';
@@ -29,8 +30,12 @@ export default function News() {
                 />
               </aside>
             )}
-            <div className="news-track">
-              {(content.items || []).map((item, index) => {
+            <MasonryColumns
+              className="news-track news-masonry"
+              items={content.items || []}
+              keyPrefix="news"
+              getKey={item => item.id || item.imageUrl}
+              renderItem={(item, index) => {
                 const caption = language === 'es' ? (item.captionEs || item.caption) : item.caption;
                 const image = (
                   <div className="news-media">
@@ -46,7 +51,7 @@ export default function News() {
                 );
 
                 return (
-                  <article className="news-entry" key={item.id || item.imageUrl}>
+                  <article className="news-entry">
                     <figure>
                       {item.url ? (
                         <a className="news-item-link" href={item.url} target="_blank" rel="noopener noreferrer" aria-label={caption}>
@@ -57,8 +62,8 @@ export default function News() {
                     </figure>
                   </article>
                 );
-              })}
-            </div>
+              }}
+            />
           </div>
         </section>
       </main>

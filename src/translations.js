@@ -308,8 +308,8 @@ export function translateSiteContent(content, language) {
     contact: {
       ...content.contact,
       imageAlt: 'Detalle de una exhibición de Andrea Alkalay',
-      title: 'Conversemos.',
-      subtitle: 'Exhibiciones, colaboraciones y prensa.',
+      title: content.contact.titleEs?.trim() || 'Conversemos.',
+      subtitle: content.contact.subtitleEs?.trim() || 'Exhibiciones, colaboraciones y prensa.',
       links: (content.contact.links || []).map(link => ({
         ...link,
         label: link.label === 'Email' ? 'E-mail' : link.label

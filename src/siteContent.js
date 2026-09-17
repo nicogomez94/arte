@@ -245,9 +245,10 @@ export const defaultSiteContent = {
     linkLabel: 'View work'
   },
   contact: {
-    contentVersion: 1,
+    contentVersion: 2,
     imageUrl: '/exhibicion-03.png', imageAlt: 'Andrea Alkalay exhibition detail',
-    title: 'Let’s connect.', subtitle: 'Exhibitions, collaborations and press.',
+    title: 'Let’s connect.', titleEs: 'Conversemos.',
+    subtitle: 'Exhibitions, collaborations and press.', subtitleEs: 'Exhibiciones, colaboraciones y prensa.',
     links: [
       { label: 'Email', value: 'info@andrealkalay.com', url: 'mailto:info@andrealkalay.com' },
       { label: 'Instagram', value: '@andrealkalay', url: 'https://instagram.com/andrealkalay' },
@@ -327,12 +328,23 @@ export const mergeSiteContent = (stored = {}) => {
     };
   }
   merged.contact.links = (merged.contact.links || []).filter(link => link.url !== 'https://www.andrealkalay.com/');
-  if (Number(normalizedStored.contact?.contentVersion || 0) < 1) {
+  const storedContactVersion = Number(normalizedStored.contact?.contentVersion || 0);
+  if (storedContactVersion < 1) {
     defaultSiteContent.contact.links.slice(-2).forEach(socialLink => {
       if (!merged.contact.links.some(link => link.label?.trim().toLowerCase() === socialLink.label.toLowerCase())) {
         merged.contact.links.push(socialLink);
       }
     });
+  }
+  if (storedContactVersion < 2) {
+    merged.contact = {
+      ...merged.contact,
+      contentVersion: 2,
+      title: String(normalizedStored.contact?.title || '').trim() || defaultSiteContent.contact.title,
+      titleEs: String(normalizedStored.contact?.titleEs || '').trim() || defaultSiteContent.contact.titleEs,
+      subtitle: String(normalizedStored.contact?.subtitle || '').trim() || defaultSiteContent.contact.subtitle,
+      subtitleEs: String(normalizedStored.contact?.subtitleEs || '').trim() || defaultSiteContent.contact.subtitleEs
+    };
   }
   delete merged.cv.links;
   const stripAtrumEntry = html => String(html || '').replace(

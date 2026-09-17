@@ -1277,6 +1277,25 @@ h1, h2, h3, strong, b { font-weight: 100; }
   line-height: 1.6;
 }
 
+.news-masonry .artwork-thumb-column {
+  gap: 46px;
+}
+
+.news-masonry .news-media {
+  min-height: 0;
+  aspect-ratio: auto;
+}
+
+.news-masonry .news-media img {
+  height: auto;
+  object-fit: contain;
+}
+
+.news-masonry .news-entry figcaption {
+  min-height: 0;
+  padding-top: 14px;
+}
+
 .bio-overview {
   display: grid;
   grid-template-columns: minmax(260px, 1fr) 2fr;
@@ -1487,6 +1506,10 @@ h1, h2, h3, strong, b { font-weight: 100; }
   .news-track {
     grid-template-columns: 1fr;
     gap: 56px;
+  }
+
+  .news-masonry .artwork-thumb-column {
+    gap: 44px;
   }
 
   .news-media {

@@ -32,12 +32,19 @@ test('Spanish translation preserves Contact and CV image URLs', () => {
     exhibitions: { projects: [] },
     statement: { paragraphs: [] },
     about: {},
-    contact: { imageUrl: '/api/media/contact-uuid', links: [{ label: 'Email', value: 'info@example.com', url: 'mailto:info@example.com' }] },
+    contact: {
+      imageUrl: '/api/media/contact-uuid',
+      title: 'Let’s connect.', titleEs: 'Conversemos editable.',
+      subtitle: 'English contact copy.', subtitleEs: 'Texto de contacto editable.',
+      links: [{ label: 'Email', value: 'info@example.com', url: 'mailto:info@example.com' }]
+    },
     cv: { imageUrl: '/api/media/cv-uuid', intro: '', representationHtml: '<p>English representation</p>', representationHtmlEs: '<p>Representación en español</p>', sections: [] },
     workshops: { title: 'Workshops', rows: [] }
   };
   const translated = translateSiteContent(content, 'es');
   assert.equal(translated.contact.imageUrl, content.contact.imageUrl);
+  assert.equal(translated.contact.title, 'Conversemos editable.');
+  assert.equal(translated.contact.subtitle, 'Texto de contacto editable.');
   assert.equal(translated.cv.imageUrl, content.cv.imageUrl);
   assert.equal(translated.cv.representationHtml, '<p>Representación en español</p>');
   assert.equal(translated.global.exhibitionsMenuLabel, 'Exhibiciones');

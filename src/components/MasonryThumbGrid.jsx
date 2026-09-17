@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import { toMasonryColumns } from '../projectNavigation';
 
 const getColumnCount = () => {
   if (typeof window === 'undefined') return 3;
@@ -7,7 +8,7 @@ const getColumnCount = () => {
   return 3;
 };
 
-export default function MasonryThumbGrid({ items, getKey, onOpen, keyPrefix = 'masonry', showCaptions = false }) {
+export function MasonryColumns({ items, getKey, renderItem, keyPrefix = 'masonry', className = '' }) {
   const [columnCount, setColumnCount] = useState(getColumnCount);
 
   useEffect(() => {
@@ -17,24 +18,32 @@ export default function MasonryThumbGrid({ items, getKey, onOpen, keyPrefix = 'm
     return () => window.removeEventListener('resize', updateColumnCount);
   }, []);
 
-  const columns = useMemo(() => {
-    const nextColumns = Array.from({ length: columnCount }, () => []);
-    items.forEach((item, index) => {
-      nextColumns[index % columnCount].push({ item, index });
-    });
-    return nextColumns;
-  }, [items, columnCount]);
+  const columns = useMemo(() => toMasonryColumns(items, columnCount), [items, columnCount]);
 
   return (
-    <div className="artwork-thumb-grid artwork-thumb-masonry" style={{ '--masonry-columns': columnCount }}>
+    <div className={`artwork-thumb-grid artwork-thumb-masonry ${className}`.trim()} style={{ '--masonry-columns': columnCount }}>
       {columns.map((column, columnIndex) => (
         <div className="artwork-thumb-column" key={`${keyPrefix}-column-${columnIndex}`}>
-          {column.map(({ item, index }) => {
+          {column.map(({ item, sourceIndex }) => (
+            <Fragment key={getKey(item, sourceIndex)}>{renderItem(item, sourceIndex)}</Fragment>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default function MasonryThumbGrid({ items, getKey, onOpen, keyPrefix = 'masonry', showCaptions = false }) {
+  return (
+    <MasonryColumns
+      items={items}
+      getKey={getKey}
+      keyPrefix={keyPrefix}
+      renderItem={(item, index) => {
             const visibleTitle = String(item.title || '').trim();
             return (
               <button
                 type="button"
-                key={getKey(item, index)}
                 onClick={() => onOpen(item, index)}
                 className="artwork-thumb"
               >
@@ -49,9 +58,7 @@ export default function MasonryThumbGrid({ items, getKey, onOpen, keyPrefix = 'm
                 {showCaptions && visibleTitle ? <span className="artwork-thumb-caption">{visibleTitle}</span> : null}
               </button>
             );
-          })}
-        </div>
-      ))}
-    </div>
+      }}
+    />
   );
 }
