@@ -1281,7 +1281,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
 }
 
 .news-masonry .artwork-thumb-column {
-  gap: 34px;
+  gap: 20px;
 }
 
 .news-masonry .news-media {
@@ -1512,7 +1512,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
   }
 
   .news-masonry .artwork-thumb-column {
-    gap: 34px;
+    gap: 20px;
   }
 
   .news-media {
