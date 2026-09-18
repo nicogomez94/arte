@@ -1358,6 +1358,7 @@ h1, h2, h3, strong, b { font-weight: 100; }
 .bio-statement-copy .bio-section-title,
 .bio-profile .bio-section-title {
   margin-bottom: 26px;
+  color: var(--bordo);
   font-size: 15px;
   line-height: 1.2;
 }
@@ -1667,8 +1668,9 @@ h1, h2, h3, strong, b { font-weight: 100; }
 /* Compact contact page */
 .contact-hero {
   min-height: auto;
-  padding: 112px 0 82px;
+  padding: 28px 0 82px;
   gap: clamp(34px, 6vw, 78px);
+  align-items: start;
 }
 
 .contact-portrait {

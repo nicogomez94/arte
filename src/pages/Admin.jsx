@@ -769,16 +769,6 @@ function SectionEditor({ active, draft, onChange, onMove, onAdd, onRemove, proje
   if (active === 'contact') return (
     <>
       <AdminFieldGroup title="Imagen" description="Retrato que acompaña la página de contacto.">{fields(['imageUrl', 'imageAlt'])}</AdminFieldGroup>
-      <AdminFieldGroup title="Presentación" description="Título y bajada visibles en Contact según el idioma elegido.">
-        <div className="admin-language-columns">
-          <AdminFieldGroup className="admin-language-panel" title="English" description="Contenido visible cuando el sitio está en inglés.">
-            <ContentFields value={draft} includeKeys={['title', 'subtitle']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
-          </AdminFieldGroup>
-          <AdminFieldGroup className="admin-language-panel" title="Español" description="Contenido visible cuando el sitio está en español.">
-            <ContentFields value={draft} includeKeys={['titleEs', 'subtitleEs']} onChange={onChange} onMove={onMove} onAdd={onAdd} onRemove={onRemove} />
-          </AdminFieldGroup>
-        </div>
-      </AdminFieldGroup>
       <AdminFieldGroup title="Enlaces" description="Canales de contacto y redes sociales visibles.">{fields(['links'])}</AdminFieldGroup>
     </>
   );
